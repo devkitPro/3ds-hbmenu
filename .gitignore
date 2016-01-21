@@ -1,0 +1,6 @@
+build/
+*.3dsx
+*.smdh
+*.exe
+*.elf
+*~
