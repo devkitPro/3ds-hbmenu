@@ -16,6 +16,8 @@ static void startup(void* unused)
 	uiEnterState(UI_STATE_MENU);
 }
 
+const char* __romfs_path = "sdmc:/boot.3dsx";
+
 int main()
 {
 	Result rc;
