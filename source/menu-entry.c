@@ -136,8 +136,8 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut)
 			}
 
 			// Attempt loading the embedded SMDH
-			smdhLoaded = menuEntryLoadEmbeddedSmdh(me);
-			if (smdhLoaded) break;
+			if (!shortcut)
+				smdhLoaded = menuEntryLoadEmbeddedSmdh(me);
 		} while (0);
 
 		if (smdhLoaded)
@@ -152,7 +152,7 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut)
 		}
 
 		// Load the descriptor
-		if (shortcut && fileExists(sc.descriptor))
+		if (shortcut && sc.descriptor && fileExists(sc.descriptor))
 			descriptorLoad(&me->descriptor, sc.descriptor);
 		else
 		{

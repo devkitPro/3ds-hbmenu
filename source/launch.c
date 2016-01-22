@@ -110,10 +110,10 @@ void launchMenuEntry(menuEntry_s* me)
 
 Handle launchOpenFile(const char* path)
 {
-	if (strncmp(path, "sdmc:/", 6) != 0)
+	if (strncmp(path, "sdmc:/", 6) == 0)
+		path += 5;
+	else if (*path != '/')
 		return 0;
-
-	path += 5;
 
 	// Convert the executable path to UTF-16
 	static uint16_t __utf16path[PATH_MAX+1];
