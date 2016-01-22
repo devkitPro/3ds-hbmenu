@@ -69,7 +69,8 @@ void backgroundUpdate(void)
 		return;
 	}
 
-	ACU_GetWifiStatus(&wifiStatus);
+	if(ACU_GetWifiStatus(&wifiStatus) != 0)
+		wifiStatus = 0;
 	PTMU_GetBatteryLevel(&batteryLevel);
 	PTMU_GetBatteryChargeState(&charging);
 
