@@ -57,7 +57,7 @@ struct menu_s_tag
 
 	touchPosition previousTouch, firstTouch;
 	int touchTimer;
-	bool atEquilibrium;
+	bool perturbed;
 };
 
 menu_s* menuGetCurrent(void);
