@@ -76,7 +76,10 @@ void launchAddArgsFromString(argData_s* ad, char* arg)
 
 		if (str == (endarg - 1))
 		{
-			if(*str == '\"' || *str == '\'') *(str++) = 0;
+			if(*str == '\"' || *str == '\'')
+				*(str++) = 0;
+			else
+				str++;
 		}
 		else
 		{
