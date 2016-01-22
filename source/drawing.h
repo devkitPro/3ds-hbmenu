@@ -19,6 +19,7 @@ typedef struct
 void drawingInit(void);
 void drawingExit(void);
 void drawingFrame(void);
+void drawingSetFade(float fade);
 
 void drawingEnableDepth(bool enable);
 void drawingSetMode(DrawingMode mode);

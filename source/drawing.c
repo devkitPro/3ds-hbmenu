@@ -18,6 +18,8 @@ static float s_drawBufferZ = 0.5;
 static C3D_Tex* s_curTex;
 static C3D_Tex s_imagesTex;
 static float s_screenWidth;
+static float s_brightnessLevel;
+static float s_brightnessFade = 2.5f / 60;
 
 #define CLEAR_COLOR 0x68B0D8FF
 
@@ -97,6 +99,12 @@ void drawingExit(void)
 	gfxExit();
 }
 
+void drawingSetFade(float fade)
+{
+	s_brightnessFade = fade;
+	s_brightnessLevel = fade > 0.0f ? 0.0f : 1.0f;
+}
+
 void drawingEnableDepth(bool enable)
 {
 	// Configure depth test to overwrite pixels with the same depth (needed to draw overlapping graphics)
@@ -165,6 +173,13 @@ void drawingSubmitPrim(GPU_Primitive_t prim, int vertices)
 	C3D_DrawArrays(prim, s_drawBufferPos-vertices, vertices);
 }
 
+static void drawingFade(float width, float height)
+{
+	if (s_brightnessLevel >= 1.0f) return;
+	drawingWithColor(((u32)((1-s_brightnessLevel)*255)) << 24);
+	drawingDrawQuad(0, 0, width, height);
+}
+
 static void drawingTopScreen(float iod)
 {
 	const uiStateInfo_s* ui;
@@ -189,6 +204,9 @@ static void drawingTopScreen(float iod)
 	drawingSetZ(0.0f);
 	textSetColor(0xFFFFFFFF);
 	textDraw(8.0f, 32.0f, 0.5f, 0.5f, true, debugText);
+
+	// Draw fade
+	drawingFade(400, 240);
 }
 
 static void drawingBottomScreen(void)
@@ -231,12 +249,27 @@ static void drawingBottomScreen(void)
 		textSetColor(0xFF000000); // black
 		textDrawInBox("Loading...", 0, 0.5f, 0.5f, 170.f, 0.0f, 320.0f);
 	}
+
+	// Draw fade
+	drawingFade(320, 240);
 }
 
 void drawingFrame(void)
 {
 	float slider = osGet3DSliderState();
 	float iod = slider/3;
+
+	// Update brightness level
+	s_brightnessLevel += s_brightnessFade;
+	if (s_brightnessLevel < 0.0f)
+	{
+		s_brightnessLevel = 0.0f;
+		s_brightnessFade = 0.0f;
+	} else if (s_brightnessLevel >= 1.0f)
+	{
+		s_brightnessLevel = 1.0f;
+		s_brightnessFade = 0.0f;
+	}
 
 	C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
 	s_drawBufferPos = 0;
