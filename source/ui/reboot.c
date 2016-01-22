@@ -7,6 +7,16 @@ void rebootUpdate(void)
 	if (rebooting) return;
 
 	u32 down = hidKeysDown();
+	if (down & KEY_A)
+	{
+		rebooting = true;
+		drawingSetFade(-1.0/60);
+		aptOpenSession();
+		APT_HardwareResetAsync();
+		aptCloseSession();
+		return;
+	}
+
 	if (down & KEY_B)
 	{
 		uiExitState();
