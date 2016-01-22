@@ -94,7 +94,7 @@ void bubbleDraw(bubble_t* bubble, float top, float iod)
 	float x = bubble->x + iod*(10+10*bubble->z);
 	float y = bubble->y - top;
 	if (top > 0.0f)
-		x -= (400-320);
+		x -= (400-320)/2;
 	drawingDrawImage(imgId_bubble, color, x, y);
 }
 
