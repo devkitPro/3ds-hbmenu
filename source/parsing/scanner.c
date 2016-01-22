@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "scanner.h"
+#include "descriptor.h"
 
 static const char* const servicesThatMatter[] =
 {
@@ -47,9 +48,6 @@ static Result scan3dsx(const char* path, const char* const* patterns, int num_pa
 		sectionSizes[2] = hdr.dataSegSize + hdr.bssSize;
 	}
 
-	// Skip headers
-	fseek(f, hdr.headerSize + 3*hdr.relocHdrSize, SEEK_SET);
-
 	if(patterns && num_patterns && patternsFound)
 	{
 		const int buffer_size = 0x1000;
@@ -60,8 +58,8 @@ static Result scan3dsx(const char* path, const char* const* patterns, int num_pa
 		int j;
 		for(j=0; j<num_patterns; j++)patternsFound[j] = false;
 
-		// only scan rodata
-		fseek(f, hdr.codeSegSize, SEEK_CUR);
+		// Skip headers and the code section - we only want to scan rodata
+		fseek(f, hdr.headerSize + 3*hdr.relocHdrSize + hdr.codeSegSize, SEEK_SET);
 
 		int elements;
 		int total_scanned = 0;
@@ -107,42 +105,38 @@ end:
 	return ret;
 }
 
-void scannerScan(executableMetadata_s* em, const char* path)
+void scannerScan(executableMetadata_s* em, const char* path, bool autodetectServices)
 {
 	if(!em || !path || em->scanned)return;
 
-	Result ret = scan3dsx(path, servicesThatMatter, NUM_SERVICESTHATMATTER, em->sectionSizes, em->servicesThatMatter);
+	Result ret;
+	if (autodetectServices)
+		ret = scan3dsx(path, servicesThatMatter, NUM_SERVICESTHATMATTER, em->sectionSizes, em->servicesThatMatter);
+	else
+		ret = scan3dsx(path, NULL, 0, em->sectionSizes, NULL);
 
-	if(!ret)em->scanned = true;
-	else em->scanned = false;
+	em->scanned = R_SUCCEEDED(ret);
 }
 
-/*
-void scanMenuEntry(menuEntry_s* me)
+void descriptorScanFile(descriptor_s* d, const char* path)
 {
-	if(!me)return;
+	executableMetadata_s* em = &d->executableMetadata;
 
-	executableMetadata_s* em = &me->descriptor.executableMetadata;
+	// Retrieve section sizes from the executable and, if autodetection is enabled,
+	// scan it for service names (default, not ideal but whatchagonnado)
+	scannerScan(em, path, d->autodetectServices);
 
-	static char tmp[0x200];
-	snprintf(tmp, 0x200, "sdmc:%s", me->executablePath);
-
-	if(me->descriptor.autodetectServices)
+	if (!d->autodetectServices)
 	{
-		// if autodetection is enabled (default), we just scan the 3dsx for service names (not ideal but whatchagonnado)
-		scanExecutable(em, tmp);
-	}else{
-		// if it's disabled, then we just populate the metadata structure with section sizes and requested services from descriptor
+		// Populate the metadata structure with section sizes and requested services from descriptor
 		int i, j;
-		scan3dsx(tmp, NULL, 0, em->sectionSizes, NULL);
-
-		for(i=0; i<me->descriptor.numRequestedServices; i++)
+		for(i=0; i<d->numRequestedServices; i++)
 		{
 			for(j=0; j<NUM_SERVICESTHATMATTER; j++)
 			{
-				if(!strcmp(me->descriptor.requestedServices[i].name, servicesThatMatter[j]))
+				if(!strcmp(d->requestedServices[i].name, servicesThatMatter[j]))
 				{
-					em->servicesThatMatter[j] = me->descriptor.requestedServices[i].priority;
+					em->servicesThatMatter[j] = d->requestedServices[i].priority;
 					break;
 				}
 			}
@@ -150,4 +144,3 @@ void scanMenuEntry(menuEntry_s* me)
 		em->scanned = true;
 	}
 }
-*/

@@ -11,4 +11,4 @@ typedef struct
 } executableMetadata_s;
 
 void scannerInit(executableMetadata_s* em);
-void scannerScan(executableMetadata_s* em, const char* path);
+void scannerScan(executableMetadata_s* em, const char* path, bool autodetectServices);

@@ -6,15 +6,13 @@ static void changeDirTask(void* arg)
 	uiEnterState(UI_STATE_MENU);
 }
 
-static void runMenuEntryTask(void* arg)
+static void launchMenuEntryTask(void* arg)
 {
 	menuEntry_s* me = (menuEntry_s*)arg;
 	if (me->type == ENTRY_TYPE_FOLDER)
 		changeDirTask(me->path);
 	else
-	{
-		// Not implemented
-	}
+		launchMenuEntry(me);
 }
 
 static float menuGetScrollHeight(menu_s* menu)
@@ -50,7 +48,7 @@ void menuUpdate(void)
 			int i;
 			menuEntry_s* me;
 			for (i = 0, me = menu->firstEntry; i != menu->curEntry; i ++, me = me->next);
-			workerSchedule(runMenuEntryTask, me);
+			workerSchedule(launchMenuEntryTask, me);
 		}
 	}
 	else if (down & KEY_B)
@@ -108,7 +106,7 @@ void menuUpdate(void)
 
 			if (menu->curEntry == (i-1))
 			{
-				workerSchedule(runMenuEntryTask, me_sel);
+				workerSchedule(launchMenuEntryTask, me_sel);
 				return;
 			}
 

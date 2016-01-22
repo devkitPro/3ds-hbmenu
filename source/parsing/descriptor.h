@@ -30,3 +30,4 @@ typedef struct
 void descriptorInit(descriptor_s* d);
 void descriptorFree(descriptor_s* d);
 void descriptorLoad(descriptor_s* d, const char* path);
+void descriptorScanFile(descriptor_s* d, const char* path);

@@ -1,4 +1,4 @@
-#include "menu.h"
+#include "common.h"
 #include "parsing/shortcut.h"
 
 void menuEntryInit(menuEntry_s* me, MenuEntryType type)
@@ -169,8 +169,14 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut)
 				descriptorLoad(&me->descriptor, tempbuf);
 		}
 
-		// Load the argument
-		// TODO
+		// Initialize the argument data
+		argData_s* ad = &me->args;
+		ad->dst = (char*)&ad->buf[1];
+		launchAddArg(ad, me->path);
+
+		// Load the argument(s) from the shortcut
+		if (shortcut && sc.arg && *sc.arg)
+			launchAddArgsFromString(ad, sc.arg);
 
 		if (shortcut)
 			shortcutFree(&sc);

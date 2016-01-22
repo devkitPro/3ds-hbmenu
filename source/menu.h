@@ -17,6 +17,12 @@ typedef enum
 typedef struct menuEntry_s_tag menuEntry_s;
 typedef struct menu_s_tag menu_s;
 
+typedef struct
+{
+	char* dst;
+	u32 buf[ENTRY_ARGBUFSIZE/sizeof(u32)];
+} argData_s;
+
 struct menuEntry_s_tag
 {
 	menu_s* menu;
@@ -24,8 +30,7 @@ struct menuEntry_s_tag
 	MenuEntryType type;
 
 	char path[PATH_MAX+1];
-	int argc;
-	u32 argbuffer[ENTRY_ARGBUFSIZE/sizeof(u32)];
+	argData_s args;
 
 	char name[ENTRY_NAMELENGTH+1];
 	char description[ENTRY_DESCLENGTH+1];

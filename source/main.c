@@ -32,6 +32,7 @@ int main()
 	drawingInit();
 	textInit();
 	workerInit();
+	launchInit();
 
 	backgroundInit();
 
@@ -44,6 +45,7 @@ int main()
 		drawingFrame();
 	}
 
+	launchExit();
 	workerExit();
 	textExit();
 	drawingExit();

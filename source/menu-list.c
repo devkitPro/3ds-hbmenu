@@ -1,4 +1,4 @@
-#include "menu.h"
+#include "common.h"
 
 static menu_s s_menu[2];
 static bool s_curMenu;

@@ -35,7 +35,7 @@ export VERSTRING	:=	v$(VER_MAJOR).$(VER_MINOR).$(VER_PATCH)
 #---------------------------------------------------------------------------------
 TARGET		:=	$(notdir $(CURDIR))
 BUILD		:=	build
-SOURCES		:=	source source/ui source/parsing
+SOURCES		:=	source source/ui source/parsing source/loaders
 DATA		:=	data
 INCLUDES	:=	include
 ROMFS		:=	romfs
