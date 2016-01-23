@@ -50,6 +50,21 @@ static bool menuEntryLoadExternalSmdh(menuEntry_s* me, const char* file)
 	return ok;
 }
 
+static void fixSpaceNewLine(char* buf)
+{
+	char *outp = buf, *inp = buf;
+	char lastc = 0;
+	do
+	{
+		char c = *inp++;
+		if (c == ' ' && lastc == ' ')
+			outp[-1] = '\n';
+		else
+			*outp++ = c;
+		lastc = c;
+	} while (lastc);
+}
+
 bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut)
 {
 	static char tempbuf[PATH_MAX+1];
@@ -142,7 +157,12 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut)
 		} while (0);
 
 		if (smdhLoaded)
+		{
 			menuEntryParseSmdh(me);
+
+			// Fix description for some applications using multiple spaces to indicate newline
+			fixSpaceNewLine(me->description);
+		}
 
 		// Metadata overrides for shortcuts
 		if (shortcut)
