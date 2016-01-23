@@ -40,9 +40,15 @@ void textSetColor(u32 color)
 	C3D_TexEnvColor(env, color);
 }
 
+static inline float maxf(float a, float b)
+{
+	return a > b ? a : b;
+}
+
 float textCalcWidth(const char* text)
 {
 	float    width = 0.0f;
+	float    maxWidth = 0.0f;
 	ssize_t  units;
 	uint32_t code;
 	const uint8_t* p = (const uint8_t*)text;
@@ -54,6 +60,12 @@ float textCalcWidth(const char* text)
 			break;
 		p += units;
 
+		if (code == '\n')
+		{
+			maxWidth = maxf(width, maxWidth);
+			width = 0.0f;
+		}
+
 		if (code > 0)
 		{
 			int glyphIdx = fontGlyphIndexFromCodePoint(code);
@@ -61,7 +73,7 @@ float textCalcWidth(const char* text)
 			width += cwi->charWidth;
 		}
 	} while (code > 0);
-	return width;
+	return maxf(width, maxWidth);
 }
 
 void textDraw(float x, float y, float scaleX, float scaleY, bool baseline, const char* text)

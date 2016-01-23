@@ -1,4 +1,5 @@
 #include "common.h"
+#include "ui/titleselect.h"
 
 static const loaderFuncs_s* s_loader;
 
@@ -130,10 +131,15 @@ void launchMenuEntry(menuEntry_s* me)
 	{
 		if (!checkUseTitle()) return;
 
-		// Not implemented - launch the title selector
-		//uiEnterState(UI_STATE_TITLESELECT);
-		errorInit("Title selector", "Target title selection is not available yet.");
-		return;
+		// Launch the title selector
+		if (!me->titleSelected)
+		{
+			titleSelectInit(me);
+			return;
+		}
+
+		// Use the title
+		s_loader->useTitle(me->titleId, me->titleMediatype);
 	}
 
 	// Scan the executable

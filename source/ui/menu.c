@@ -171,7 +171,7 @@ void menuDrawTop(float iod)
 	textDrawInBox(menu->dirname, 0, 0.5f, 0.5f, 240.0f-8, 8.0f, 400-8.0f);
 }
 
-static float menuDrawEntry(menuEntry_s* me, float x, float y, bool selected)
+float menuDrawEntry(menuEntry_s* me, float x, float y, bool selected)
 {
 	float bubbleWidth = g_imageData[imgId_appbubble].width;
 	float bubbleHeight = g_imageData[imgId_appbubble].height;

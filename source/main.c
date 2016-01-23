@@ -2,6 +2,7 @@
 #include "ui/menu.h"
 #include "ui/error.h"
 #include "ui/reboot.h"
+#include "ui/titleselect.h"
 #include "ui/background.h"
 
 const uiStateInfo_s g_uiStateTable[UI_STATE_MAX] =
@@ -9,6 +10,7 @@ const uiStateInfo_s g_uiStateTable[UI_STATE_MAX] =
 	[UI_STATE_MENU]       = { .update = menuUpdate,       .drawTop = menuDrawTop,       .drawBot = menuDrawBot,       },
 	[UI_STATE_ERROR]      = { .update = errorUpdate,                                    .drawBot = errorDrawBot,      },
 	[UI_STATE_REBOOT]     = { .update = rebootUpdate,                                   .drawBot = rebootDrawBot,     },
+	[UI_STATE_TITLESELECT]= { .update = titleSelectUpdate,                              .drawBot = titleSelectDrawBot,},
 	[UI_STATE_BACKGROUND] = { .update = backgroundUpdate, .drawTop = backgroundDrawTop, .drawBot = backgroundDrawBot, },
 };
 

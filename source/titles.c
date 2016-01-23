@@ -22,6 +22,35 @@ void titlesClear(void)
 		titleListClear(&s_titles[i]);
 }
 
+int titlesCount(void)
+{
+	return s_titles[2].filteredNum + s_titles[1].filteredNum + s_titles[0].filteredNum;
+}
+
+void titlesGetEntry(u64* outTid, u8* outMediatype, int index)
+{
+	if (index < 0)
+		return;
+	if (index < s_titles[2].filteredNum)
+	{
+		*outTid = s_titles[2].ids[index];
+		*outMediatype = 2;
+		return;
+	}
+	index -= s_titles[2].filteredNum;
+	if (index < s_titles[1].filteredNum)
+	{
+		*outTid = s_titles[1].ids[index];
+		*outMediatype = 1;
+		return;
+	}
+	index -= s_titles[1].filteredNum;
+	if (index >= s_titles[0].filteredNum)
+		return;
+	*outTid = s_titles[0].ids[index];
+	*outMediatype = 0;
+}
+
 bool titlesExists(u64 tid, u8 mediatype)
 {
 	titleList_s* tl = &s_titles[mediatype];
@@ -72,7 +101,11 @@ bool titlesCheckUpdate(bool async, UIState newState)
 	{
 		int num;
 		Result res = AM_GetTitleCount(i, (u32*)&num);
-		if (R_SUCCEEDED(res) && s_titles[i].totalNum != num)
+		if (R_FAILED(res) && s_titles[i].totalNum != 0)
+		{
+			needUpdate = true;
+			s_titles[i].totalNum = 0;
+		} else if (R_SUCCEEDED(res) && s_titles[i].totalNum != num)
 		{
 			needUpdate = true;
 			s_titles[i].totalNum = num;

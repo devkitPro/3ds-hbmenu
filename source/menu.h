@@ -41,6 +41,10 @@ struct menuEntry_s_tag
 
 	C3D_Tex* icon;
 	C3D_Tex texture;
+
+	u64 titleId;
+	u8 titleMediatype;
+	bool titleSelected;
 };
 
 void menuEntryInit(menuEntry_s* me, MenuEntryType type);
