@@ -121,7 +121,7 @@ bool titlesCheckUpdate(bool async, UIState newState)
 	return true;
 }
 
-Result titlesLoadSmdh(smdh_s* smdh, u8 mediatype, u64 tid)
+bool titlesLoadSmdh(smdh_s* smdh, u8 mediatype, u64 tid)
 {
 	static const u32 filePath[] = {0, 0, 2, 0x6E6F6369, 0};
 	Result res;
@@ -131,11 +131,11 @@ Result titlesLoadSmdh(smdh_s* smdh, u8 mediatype, u64 tid)
 	FS_Path apath = { PATH_BINARY, sizeof(filePath), filePath };
 	Handle file = 0;
 	res = FSUSER_OpenFileDirectly(&file, arch, apath, FS_OPEN_READ, 0);
-	if (R_FAILED(res)) return res;
+	if (R_FAILED(res)) return false;
 
 	u32 bytesRead;
 	res = FSFILE_Read(file, &bytesRead, 0, smdh, sizeof(*smdh));
 	FSFILE_Close(file);
 
-	return R_SUCCEEDED(res);
+	return R_SUCCEEDED(res) && bytesRead==sizeof(*smdh);
 }

@@ -5,27 +5,37 @@
 
 static menuEntry_s* s_launchEntry;
 static menuEntry_s s_iconEntry;
-static int s_curTitle;
-static bool s_iconReady;
+static int s_curTitle, s_move;
+static volatile bool s_iconReady;
 static u64 s_curTitleID;
 static u8 s_curMediatype;
 static u64 s_lastUpdate;
 
 static void loadTitleData(void* unused)
 {
-	titlesGetEntry(&s_curTitleID, &s_curMediatype, s_curTitle);
-	if (R_FAILED(titlesLoadSmdh(&s_iconEntry.smdh, s_curMediatype, s_curTitleID)))
+	int count = titlesCount(), oldPos = s_curTitle;
+	do
 	{
-		s_curTitle = -1;
-		errorInit("Title selector", "Error reading title metadata.\n%08lX%08lX@%d",
-			(u32)(s_curTitleID>>32), (u32)s_curTitleID, s_curMediatype);
-		return;
-	}
+		titlesGetEntry(&s_curTitleID, &s_curMediatype, s_curTitle);
+		if (titlesLoadSmdh(&s_iconEntry.smdh, s_curMediatype, s_curTitleID))
+		{
+			// Reading this title's SMDH succeeded - display it.
+			s_iconReady = false;
+			menuEntryParseSmdh(&s_iconEntry);
+			s_iconReady = true;
+			uiEnterState(UI_STATE_TITLESELECT);
+			return;
+		}
+		s_curTitle += s_move;
+		if (s_curTitle < 0) s_curTitle += count;
+		if (s_curTitle >= count) s_curTitle -= count;
+	} while (s_curTitle != oldPos);
 
-	s_iconReady = false;
-	menuEntryParseSmdh(&s_iconEntry);
-	s_iconReady = true;
-	uiEnterState(UI_STATE_TITLESELECT);
+	// If we got here we failed to find a title with a readable SMDH.
+	s_curTitle = -1;
+	uiExitState();
+	errorInit("Title selector", "Error reading title metadata.\n%08lX%08lX@%d",
+		(u32)(s_curTitleID>>32), (u32)s_curTitleID, s_curMediatype);
 }
 
 void titleSelectInit(menuEntry_s* me)
@@ -55,6 +65,7 @@ void titleSelectUpdate(void)
 	if (s_curTitle < 0)
 	{
 		s_curTitle = 0;
+		s_move = 1;
 		workerSchedule(loadTitleData, NULL);
 		return;
 	}
@@ -85,14 +96,14 @@ void titleSelectUpdate(void)
 		return;
 	}
 
-	int move = 0;
-	if (kDown & KEY_RIGHT) move++;
-	if (kDown & KEY_LEFT) move--;
+	s_move = 0;
+	if (kDown & KEY_RIGHT) s_move++;
+	if (kDown & KEY_LEFT) s_move--;
 
-	int tgt = s_curTitle+move;
+	int tgt = s_curTitle+s_move;
 	int cnt = titlesCount();
-	while (tgt < 0) tgt += cnt;
-	while (tgt >= cnt) tgt -= cnt;
+	if (tgt < 0) tgt += cnt;
+	if (tgt >= cnt) tgt -= cnt;
 
 	if (tgt != s_curTitle)
 	{
