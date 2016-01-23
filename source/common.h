@@ -21,3 +21,5 @@
 #include "worker.h"
 #include "menu.h"
 #include "launch.h"
+#include "titles.h"
+#include "ui/error.h"

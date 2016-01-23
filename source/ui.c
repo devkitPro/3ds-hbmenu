@@ -1,4 +1,4 @@
-#include "ui.h"
+#include "common.h"
 
 // Global variables
 touchPosition g_touchPos;

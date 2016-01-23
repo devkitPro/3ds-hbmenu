@@ -29,7 +29,7 @@ static void launchFile(const char* path, argData_s* args, executableMetadata_s* 
 	fileHandle = launchOpenFile(path);
 	if (fileHandle==0)
 	{
-		// Error! TODO: Jump to error
+		errorInit("I/O Error", "Could not open file:\n%s", path);
 		return;
 	}
 	setArgs_1x(args->buf, sizeof(args->buf));

@@ -25,11 +25,12 @@ static u32 argBufLen;
 
 static bool init(void)
 {
-	return true;
+	return R_SUCCEEDED(amInit());
 }
 
 static void deinit(void)
 {
+	amExit();
 }
 
 static void bootloaderJump(void)
@@ -89,7 +90,7 @@ static void launchFile(const char* path, argData_s* args, executableMetadata_s* 
 		fileHandle = launchOpenFile(path);
 		if (fileHandle==0)
 		{
-			// Error! TODO: Jump to error
+			errorInit("I/O Error", "Could not open file:\n%s", path);
 			return;
 		}
 	}

@@ -94,7 +94,8 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut)
 				shortcutFree(&sc);
 				return false;
 			}
-			strcpy(me->path, sc.executable);
+			strcpy(me->path, "sdmc:");
+			strcat(me->path, sc.executable);
 		}
 
 		bool smdhLoaded = false;

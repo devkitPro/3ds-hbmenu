@@ -91,16 +91,48 @@ void launchAddArgsFromString(argData_s* ad, char* arg)
 	} while(str<endarg);
 }
 
+static bool checkUseTitle(void)
+{
+	bool canUse = s_loader->useTitle != NULL;
+	if (!canUse)
+		errorInit(s_loader->name,
+			"This homebrew exploit does not have support\n"
+			"for launching applications under target titles.\n"
+			"Please use a different exploit.");
+	return canUse;
+}
+
 void launchMenuEntry(menuEntry_s* me)
 {
 	if (me->descriptor.numTargetTitles)
 	{
-		// Not implemented - find the target title
-		return;
+		if (!checkUseTitle()) return;
+
+		// Update the list of available titles
+		titlesCheckUpdate(false, UI_STATE_NULL);
+
+		int i;
+		for (i = 0; i < me->descriptor.numTargetTitles; i ++)
+			if (titlesExists(me->descriptor.targetTitles[i].tid, me->descriptor.targetTitles[i].mediatype))
+				break;
+
+		if (i == me->descriptor.numTargetTitles)
+		{
+			errorInit("Target title",
+				"The application you attempted to run requires\n"
+				"a title that is not installed in the system.");
+			return;
+		}
+
+		// Use the title
+		s_loader->useTitle(me->descriptor.targetTitles[i].tid, me->descriptor.targetTitles[i].mediatype);
 	} else if (me->descriptor.selectTargetProcess)
 	{
+		if (!checkUseTitle()) return;
+
 		// Not implemented - launch the title selector
-		uiEnterState(UI_STATE_TITLESELECT);
+		//uiEnterState(UI_STATE_TITLESELECT);
+		errorInit("Title selector", "Target title selection is not available yet.");
 		return;
 	}
 
