@@ -1,12 +1,14 @@
 #pragma once
 #include "../common.h"
 
-#define BUBBLE_COUNT 15
+#define BUBBLE_COUNT 64
 
 typedef struct
 {
 	s32 x, y;
 	float z;
+	float angle;
+	float angv;
 	u8 fade;
 } bubble_t;
 

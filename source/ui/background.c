@@ -32,8 +32,10 @@ void backgroundInit(void)
 	for (i = 0; i < BUBBLE_COUNT; i ++)
 	{
 		bubbles[i].x = rand() % 400;
-		bubbles[i].y = 240 + (rand() % 240);
+		bubbles[i].y = 172 + (rand() % 308);
 		bubbles[i].z = randf();
+		bubbles[i].angle = randf();
+		bubbles[i].angv = 0.02f*randf();
 		bubbles[i].fade = 15;
 	}
 }
@@ -49,6 +51,8 @@ static void bubbleUpdate(bubble_t* bubble)
 		bubble->x = rand() % 400;
 		bubble->y = 470 + (rand() % 10);
 		bubble->z = randf();
+		bubble->angle = randf();
+		bubble->angv = 0.02f*randf();
 		bubble->fade = 15;
 	}
 	// Check if too far up screen and start fizzling away.
@@ -57,6 +61,8 @@ static void bubbleUpdate(bubble_t* bubble)
 	// Otherwise make sure the bubble is visible.
 	else if (bubble->fade < 255)
 		bubble->fade += 10;
+
+	bubble->angle += bubble->angv;
 }
 
 void backgroundUpdate(void)
@@ -91,7 +97,7 @@ void bubbleDraw(bubble_t* bubble, float top, float iod)
 	if ((bubble->y+32) <= top)
 		return; // Nothing to do
 	u32 color = ((u32)bubble->fade << 24) | 0xFFFFFF;
-	float x = bubble->x + iod*(10+10*bubble->z);
+	float x = bubble->x + iod*(10+10*bubble->z) + 16*sinf(M_TAU*bubble->angle);
 	float y = bubble->y - top;
 	if (top > 0.0f)
 		x -= (400-320)/2;
