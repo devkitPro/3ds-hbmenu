@@ -7,13 +7,19 @@ void rebootUpdate(void)
 	if (rebooting) return;
 
 	u32 down = hidKeysDown();
-	if (down & KEY_A)
+	if ((down & KEY_A) || (down & KEY_X))
 	{
 		rebooting = true;
 		drawingSetFade(-1.0/60);
-		aptOpenSession();
-		APT_HardwareResetAsync();
-		aptCloseSession();
+
+		if (!(down & KEY_X) && launchHomeMenuEnabled())
+			launchHomeMenu();
+		else
+		{
+			aptOpenSession();
+			APT_HardwareResetAsync();
+			aptCloseSession();
+		}
 		return;
 	}
 
@@ -33,12 +39,19 @@ void rebootDrawBot(void)
 	drawingDrawQuad(0.0f, 60.0f, 320.0f, 120.0f);
 	drawingSubmitPrim(GPU_TRIANGLE_STRIP, 4);
 
+	static const char* const msg1 =
+		"Returning to home menu is not available.\n"
+		"You're about to reboot your console.\n\n"
+		"  \xEE\x80\x80 Proceed\n"
+		"  \xEE\x80\x81 Cancel";
+
+	static const char* const msg2 =
+		"You're about to return to home menu.\n\n"
+		"  \xEE\x80\x80 Proceed\n"
+		"  \xEE\x80\x81 Cancel\n"
+		"  \xEE\x80\x82 Reboot";
+
 	//textSetColor(0xFF767676);
 	textSetColor(0xFF545454);
-	textDraw(8.0f, 60.0f+8.0f, 0.6f, 0.6f, false,
-		"You're about to reboot your console\n"
-		"into home menu.\n\n"
-		"  \xEE\x80\x80 Proceed\n"
-		"  \xEE\x80\x81 Cancel"
-	);
+	textDraw(8.0f, 60.0f+8.0f, 0.6f, 0.6f, false, launchHomeMenuEnabled() ? msg2 : msg1);
 }

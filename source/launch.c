@@ -2,6 +2,7 @@
 #include "ui/titleselect.h"
 
 static const loaderFuncs_s* s_loader;
+static Handle s_hbKill;
 
 void launchInit(void)
 {
@@ -14,6 +15,8 @@ void launchInit(void)
 			return; \
 		} \
 	} while(0)
+
+	s_hbKill = envGetHandle("hb:kill");
 
 	ADD_LOADER(loader_Ninjhax1);
 	ADD_LOADER(loader_Ninjhax2);
@@ -168,4 +171,17 @@ Handle launchOpenFile(const char* path)
 	Handle file;
 	Result res = FSUSER_OpenFileDirectly(&file, arch, apath, FS_OPEN_READ, 0);
 	return R_SUCCEEDED(res) ? file : 0;
+}
+
+bool launchHomeMenuEnabled(void)
+{
+	return s_hbKill != 0;
+}
+
+void launchHomeMenu(void)
+{
+	if (!launchHomeMenuEnabled()) return;
+	svcSignalEvent(s_hbKill);
+	__system_retAddr = NULL;
+	uiExitLoop();
 }

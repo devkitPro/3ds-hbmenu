@@ -21,3 +21,5 @@ void launchAddArg(argData_s* ad, const char* arg);
 void launchAddArgsFromString(argData_s* ad, char* arg);
 void launchMenuEntry(menuEntry_s* me);
 Handle launchOpenFile(const char* path);
+bool launchHomeMenuEnabled(void);
+void launchHomeMenu(void);
