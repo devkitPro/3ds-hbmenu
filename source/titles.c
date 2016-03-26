@@ -133,6 +133,12 @@ bool titlesLoadSmdh(smdh_s* smdh, u8 mediatype, u64 tid)
 	res = FSUSER_OpenFileDirectly(&file, arch, apath, FS_OPEN_READ, 0);
 	if (R_FAILED(res)) return false;
 
+	if (!smdh)
+	{
+		FSFILE_Close(file);
+		return true;
+	}
+
 	u32 bytesRead;
 	res = FSFILE_Read(file, &bytesRead, 0, smdh, sizeof(*smdh));
 	FSFILE_Close(file);

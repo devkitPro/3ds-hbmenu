@@ -23,6 +23,25 @@ void rebootUpdate(void)
 		return;
 	}
 
+	if (down & KEY_Y)
+	{
+		// Check a gamecard is inserted.
+		if (titlesLoadSmdh(NULL, 2, 0))
+		{
+			// Check we have access to ns:s.
+			Result rc = nsInit();
+			if (R_SUCCEEDED(rc))
+			{
+				// Reboot the console.
+				rebooting = true;
+				drawingSetFade(-1.0/60);
+				NS_RebootToTitle(2, 0);
+				nsExit();
+				return;
+			}
+		}
+	}
+
 	if (down & KEY_B)
 	{
 		uiExitState();
