@@ -102,7 +102,8 @@ int menuScan(const char* target)
 
 	while ((dp = readdir(dir)))
 	{
-		FS_DirectoryEntry* entry = &((sdmc_dir_t*)dir->dirData->dirStruct)->entry_data;
+		sdmc_dir_t* dirSt = (sdmc_dir_t*)dir->dirData->dirStruct;
+		FS_DirectoryEntry* entry = &dirSt->entry_data[dirSt->index];
 		menuEntry_s* me = NULL;
 		bool shortcut = false;
 

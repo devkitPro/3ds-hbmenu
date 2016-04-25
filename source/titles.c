@@ -72,7 +72,8 @@ static void titlesUpdate(void* pnewState)
 		u64* new_list = (u64*)realloc(tl->ids, tl->totalNum*sizeof(u64));
 		if (!new_list) goto _fail;
 		tl->ids = new_list;
-		Result ret = AM_GetTitleIdList(i, tl->totalNum, tl->ids);
+		u32 temp;
+		Result ret = AM_GetTitleList(&temp, i, tl->totalNum, tl->ids);
 		if (R_FAILED(ret)) goto _fail;
 		tl->filteredNum = 0;
 		for (j = 0; j < tl->totalNum; j ++)
