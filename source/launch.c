@@ -166,10 +166,10 @@ Handle launchOpenFile(const char* path)
 	__utf16path[units] = 0;
 
 	// Open the file directly
-	FS_Archive arch = { ARCHIVE_SDMC, { PATH_EMPTY, 1, (u8*)"" }, 0 };
-	FS_Path apath = { PATH_UTF16, (units+1)*2, (u8*)__utf16path };
+	FS_Path apath = { PATH_EMPTY, 1, (u8*)"" };
+	FS_Path fpath = { PATH_UTF16, (units+1)*2, (u8*)__utf16path };
 	Handle file;
-	Result res = FSUSER_OpenFileDirectly(&file, arch, apath, FS_OPEN_READ, 0);
+	Result res = FSUSER_OpenFileDirectly(&file, ARCHIVE_SDMC, apath, fpath, FS_OPEN_READ, 0);
 	return R_SUCCEEDED(res) ? file : 0;
 }
 
