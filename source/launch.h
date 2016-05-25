@@ -17,7 +17,7 @@ typedef struct
 void launchInit(void);
 void launchExit(void);
 const loaderFuncs_s* launchGetLoader(void);
-void launchAddArg(argData_s* ad, const char* arg);
+size_t launchAddArg(argData_s* ad, const char* arg);
 void launchAddArgsFromString(argData_s* ad, char* arg);
 void launchMenuEntry(menuEntry_s* me);
 Handle launchOpenFile(const char* path);

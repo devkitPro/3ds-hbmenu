@@ -196,14 +196,16 @@ static void drawingTopScreen(float iod)
 	ui = uiGetStateInfo();
 	if (ui->drawTop) ui->drawTop(iod);
 
+	/*
 	// Draw debug text
 	static char debugText[128];
 	snprintf(debugText, sizeof(debugText), "Cmdbuf usage: %d%%", (int)(C3D_GetCmdBufUsage()*100));
+	*/
 
 	drawingSetMode(DRAW_MODE_DRAWING);
 	drawingSetZ(0.0f);
 	textSetColor(0xFFFFFFFF);
-	textDraw(8.0f, 32.0f, 0.5f, 0.5f, true, debugText);
+	//textDraw(8.0f, 32.0f, 0.5f, 0.5f, true, debugText);
 
 	// Draw fade
 	drawingFade(400, 240);
@@ -235,7 +237,6 @@ static void drawingBottomScreen(void)
 
 		drawingWithColor(0x80FFFFFF);
 		drawingDrawQuad(0.0f, 80.0f, 320.0f, 100.0f);
-		drawingSubmitPrim(GPU_TRIANGLE_STRIP, 4);
 
 		for (i = 0; i < 8; i ++)
 		{

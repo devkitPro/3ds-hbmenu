@@ -35,13 +35,14 @@ const loaderFuncs_s* launchGetLoader(void)
 	return s_loader;
 }
 
-void launchAddArg(argData_s* ad, const char* arg)
+size_t launchAddArg(argData_s* ad, const char* arg)
 {
 	size_t len = strlen(arg)+1;
-	if ((ad->dst+len) >= (char*)(ad+1)) return; // Overflow
+	if ((ad->dst+len) >= (char*)(ad+1)) return len; // Overflow
 	ad->buf[0]++;
 	strcpy(ad->dst, arg);
 	ad->dst += len;
+	return len;
 }
 
 void launchAddArgsFromString(argData_s* ad, char* arg)
