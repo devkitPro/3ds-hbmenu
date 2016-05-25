@@ -248,7 +248,7 @@ static void drawingBottomScreen(void)
 		counter += 0.5f/60;
 
 		textSetColor(0xFF000000); // black
-		textDrawInBox("Loading...", 0, 0.5f, 0.5f, 170.f, 0.0f, 320.0f);
+		textDrawInBox(textGetString(StrId_Loading), 0, 0.5f, 0.5f, 170.f, 0.0f, 320.0f);
 	}
 
 	// Draw fade

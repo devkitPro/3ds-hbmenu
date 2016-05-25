@@ -89,14 +89,14 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut)
 			me->type = ENTRY_TYPE_FILE;
 			strcpy(me->path, tempbuf);
 		} else
-			strcpy(me->description, "Directory");
+			strcpy(me->description, textGetString(StrId_Directory));
 	}
 
 	if (me->type == ENTRY_TYPE_FILE)
 	{
 		strcpy(me->name, name);
-		strcpy(me->description, "Homebrew application");
-		strcpy(me->author, "Unknown publisher");
+		strcpy(me->description, textGetString(StrId_DefaultLongTitle));
+		strcpy(me->author, textGetString(StrId_DefaultPublisher));
 
 		shortcut_s sc;
 
@@ -232,7 +232,8 @@ void menuEntryParseSmdh(menuEntry_s* me)
 		dest += 64*8;
 	}
 
-	safe_utf8_convert(me->name, me->smdh.applicationTitles[1].shortDescription, ENTRY_NAMELENGTH);
-	safe_utf8_convert(me->description, me->smdh.applicationTitles[1].longDescription, ENTRY_NAMELENGTH);
-	safe_utf8_convert(me->author, me->smdh.applicationTitles[1].publisher, ENTRY_NAMELENGTH);
+	int lang = textGetLang();
+	safe_utf8_convert(me->name, me->smdh.applicationTitles[lang].shortDescription, ENTRY_NAMELENGTH);
+	safe_utf8_convert(me->description, me->smdh.applicationTitles[lang].longDescription, ENTRY_NAMELENGTH);
+	safe_utf8_convert(me->author, me->smdh.applicationTitles[lang].publisher, ENTRY_NAMELENGTH);
 }

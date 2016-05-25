@@ -58,19 +58,7 @@ void rebootDrawBot(void)
 	drawingDrawQuad(0.0f, 60.0f, 320.0f, 120.0f);
 	drawingSubmitPrim(GPU_TRIANGLE_STRIP, 4);
 
-	static const char* const msg1 =
-		"Returning to home menu is not available.\n"
-		"You're about to reboot your console.\n\n"
-		"  \xEE\x80\x80 Proceed\n"
-		"  \xEE\x80\x81 Cancel";
-
-	static const char* const msg2 =
-		"You're about to return to home menu.\n\n"
-		"  \xEE\x80\x80 Proceed\n"
-		"  \xEE\x80\x81 Cancel\n"
-		"  \xEE\x80\x82 Reboot";
-
 	//textSetColor(0xFF767676);
 	textSetColor(0xFF545454);
-	textDraw(8.0f, 60.0f+8.0f, 0.6f, 0.6f, false, launchHomeMenuEnabled() ? msg2 : msg1);
+	textDraw(8.0f, 60.0f+8.0f, 0.6f, 0.6f, false, textGetString(launchHomeMenuEnabled() ? StrId_ReturnToHome : StrId_Reboot));
 }

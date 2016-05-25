@@ -1,6 +1,7 @@
 #include "text.h"
 
 static C3D_Tex* s_glyphSheets;
+static int s_textLang = CFG_LANGUAGE_EN;
 
 void textInit(void)
 {
@@ -22,11 +23,33 @@ void textInit(void)
 		tex->param = GPU_TEXTURE_MAG_FILTER(GPU_LINEAR) | GPU_TEXTURE_MIN_FILTER(GPU_LINEAR)
 			| GPU_TEXTURE_WRAP_S(GPU_CLAMP_TO_EDGE) | GPU_TEXTURE_WRAP_T(GPU_CLAMP_TO_EDGE);
 	}
+
+	Result res = cfguInit();
+	if (R_SUCCEEDED(res))
+	{
+		u8 lang;
+		res = CFGU_GetSystemLanguage(&lang);
+		if (R_SUCCEEDED(res))
+			s_textLang = lang;
+		cfguExit();
+	}
 }
 
 void textExit(void)
 {
 	free(s_glyphSheets);
+}
+
+int textGetLang(void)
+{
+	return s_textLang;
+}
+
+const char* textGetString(StrId id)
+{
+	const char* str = g_strings[id][s_textLang];
+	if (!str) str = g_strings[id][CFG_LANGUAGE_EN];
+	return str;
 }
 
 void textSetColor(u32 color)

@@ -234,12 +234,8 @@ void menuDrawBot(void)
 		drawingSubmitPrim(GPU_TRIANGLE_STRIP, 4);
 
 		textSetColor(0xFF545454);
-		textDrawInBox("No applications found", 0, 0.75f, 0.75f, 60.0f+25.0f, 8.0f, 320-8.0f);
-		textDraw(8.0f, 60.0f+25.0f+8.0f, 0.5f, 0.5f, false,
-			"No applications could be found on the SD card.\n"
-			"Make sure a folder named /3ds exists in the\n"
-			"root of the SD card and it contains applications."
-		);
+		textDrawInBox(textGetString(StrId_NoAppsFound_Title), 0, 0.75f, 0.75f, 60.0f+25.0f, 8.0f, 320-8.0f);
+		textDraw(8.0f, 60.0f+25.0f+8.0f, 0.5f, 0.5f, false, textGetString(StrId_NoAppsFound_Msg));
 	} else
 	{
 		// Draw menu entries

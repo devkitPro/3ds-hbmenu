@@ -100,10 +100,7 @@ static bool checkUseTitle(void)
 {
 	bool canUse = s_loader->useTitle != NULL;
 	if (!canUse)
-		errorInit(s_loader->name,
-			"This homebrew exploit does not have support\n"
-			"for launching applications under target titles.\n"
-			"Please use a different exploit.");
+		errorInit(s_loader->name, textGetString(StrId_NoTargetTitleSupport));
 	return canUse;
 }
 
@@ -123,9 +120,7 @@ void launchMenuEntry(menuEntry_s* me)
 
 		if (i == me->descriptor.numTargetTitles)
 		{
-			errorInit("Target title",
-				"The application you attempted to run requires\n"
-				"a title that is not installed in the system.");
+			errorInit(s_loader->name, textGetString(StrId_MissingTargetTitle));
 			return;
 		}
 

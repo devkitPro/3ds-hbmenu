@@ -34,7 +34,7 @@ static void loadTitleData(void* unused)
 	// If we got here we failed to find a title with a readable SMDH.
 	s_curTitle = -1;
 	uiExitState();
-	errorInit("Title selector", "Error reading title metadata.\n%08lX%08lX@%d",
+	errorInit(textGetString(StrId_TitleSelector), textGetString(StrId_ErrorReadingTitleMetadata),
 		(u32)(s_curTitleID>>32), (u32)s_curTitleID, s_curMediatype);
 }
 
@@ -45,7 +45,7 @@ void titleSelectInit(menuEntry_s* me)
 	s_lastUpdate = osGetTime();
 	if (!titlesCount())
 	{
-		errorInit("Title selector", "No titles could be detected.");
+		errorInit(textGetString(StrId_TitleSelector), textGetString(StrId_NoTitlesFound));
 		return;
 	}
 	s_curTitle = -1;
@@ -123,12 +123,8 @@ void titleSelectDrawBot(void)
 	drawingSubmitPrim(GPU_TRIANGLE_STRIP, 4);
 
 	textSetColor(0xFF545454);
-	textDrawInBox("Title selector", 0, 0.75f, 0.75f, 10.0f+25.0f, 8.0f, 320-8.0f);
-	textDraw(8.0f, 10.0f+25.0f+8.0f, 0.5f, 0.5f, false,
-		"Please select a target title.\n\n"
-		"  \xEE\x80\x80 Select\n"
-		"  \xEE\x80\x81 Cancel"
-		);
+	textDrawInBox(textGetString(StrId_TitleSelector), 0, 0.75f, 0.75f, 10.0f+25.0f, 8.0f, 320-8.0f);
+	textDraw(8.0f, 10.0f+25.0f+8.0f, 0.5f, 0.5f, false, textGetString(StrId_SelectTitle));
 
 	if (s_iconReady)
 	{
