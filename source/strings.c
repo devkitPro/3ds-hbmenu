@@ -160,4 +160,48 @@ const char* const g_strings[StrId_Max][16] =
 			"que no está instalado en el sistema."
 		),
 	},
+
+	[StrId_NetLoader] =
+	{
+		STR_EN("3dslink NetLoader"),
+		STR_ES("Cargador de programas 3dslink"),
+	},
+
+	[StrId_NetLoaderUnavailable] =
+	{
+		STR_EN("The NetLoader is currently unavailable."),
+		STR_ES("El cargador de programas no está disponible."),
+	},
+
+	[StrId_NetLoaderError] =
+	{
+		STR_EN("An error occurred.\nTechnical details: [%s:%d]"),
+		STR_ES("Ha ocurrido un error.\nDatos técnicos: [%s:%d]"),
+	},
+
+	[StrId_NetLoaderActive] =
+	{
+		STR_EN(
+			"Waiting for 3dslink to connect…\n"
+			"IP Addr: %lu.%lu.%lu.%lu, Port: %d\n\n"
+			"  \xEE\x80\x81 Cancel"
+		),
+		STR_ES(
+			"Esperando a que se conecte 3dslink…\n"
+			"Dir.IP: %lu.%lu.%lu.%lu, Puerto: %d\n\n"
+			"  \xEE\x80\x81 Cancelar"
+		),
+	},
+
+	[StrId_NetLoaderTransferring] =
+	{
+		STR_EN(
+			"Transferring…\n"
+			"%zu out of %zu KiB written"
+		),
+		STR_ES(
+			"Transfiriendo…\n"
+			"%zu de %zu KiB escritos"
+		),
+	},
 };

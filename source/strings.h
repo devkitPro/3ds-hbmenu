@@ -24,6 +24,12 @@ typedef enum
 	StrId_NoTargetTitleSupport,
 	StrId_MissingTargetTitle,
 
+	StrId_NetLoader,
+	StrId_NetLoaderUnavailable,
+	StrId_NetLoaderError,
+	StrId_NetLoaderActive,
+	StrId_NetLoaderTransferring,
+
 	StrId_Max,
 } StrId;
 

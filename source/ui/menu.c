@@ -1,4 +1,5 @@
 #include "menu.h"
+#include "netloader.h"
 
 static void changeDirTask(void* arg)
 {
@@ -61,7 +62,7 @@ void menuUpdate(void)
 	}
 	else if (down & KEY_Y)
 	{
-		uiEnterState(UI_STATE_NETLOADER);
+		workerSchedule(netloaderTask, NULL);
 	}
 	else if (menu->nEntries > 0)
 	{
