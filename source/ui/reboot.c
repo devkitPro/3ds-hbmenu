@@ -15,11 +15,7 @@ void rebootUpdate(void)
 		if (!(down & KEY_X) && launchHomeMenuEnabled())
 			launchHomeMenu();
 		else
-		{
-			aptOpenSession();
 			APT_HardwareResetAsync();
-			aptCloseSession();
-		}
 		return;
 	}
 
