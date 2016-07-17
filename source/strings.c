@@ -19,42 +19,49 @@ const char* const g_strings[StrId_Max][16] =
 	{
 		STR_EN("Loading…"),
 		STR_ES("Cargando…"),
+		STR_DE("Lade…"),
 	},
 
 	[StrId_Directory] =
 	{
 		STR_EN("Directory"),
 		STR_ES("Carpeta"),
+		STR_DE("Verzeichnis"),
 	},
 
 	[StrId_DefaultLongTitle] =
 	{
 		STR_EN("Homebrew application"),
 		STR_ES("Aplicación casera"),
+		STR_DE("Homebrew-Anwendung"),
 	},
 
 	[StrId_DefaultPublisher] =
 	{
 		STR_EN("Unknown author"),
 		STR_ES("Autor desconocido"),
+		STR_DE("Unbekannter Autor"),
 	},
 
 	[StrId_IOError] =
 	{
 		STR_EN("I/O Error"),
 		STR_ES("Error de E/S"),
+		STR_DE("IO-Fehler"),
 	},
 
 	[StrId_CouldNotOpenFile] =
 	{
 		STR_EN("Could not open file:\n%s"),
 		STR_ES("No se pudo abrir el archivo:\n%s"),
+		STR_DE("Konnte Datei \"%s\" nicht öffnen."),
 	},
 
 	[StrId_NoAppsFound_Title] =
 	{
 		STR_EN("No applications found"),
 		STR_ES("No hay aplicaciones"),
+		STR_DE("Keine Anwendungen gefunden"),
 	},
 
 	[StrId_NoAppsFound_Msg] =
@@ -69,6 +76,13 @@ const char* const g_strings[StrId_Max][16] =
 			"tarjeta SD. Compruebe que haya una carpeta\n"
 			"llamada /3ds y que contenga aplicaciones.\n"
 		),
+		STR_DE(
+		        "Auf der SD-Karte wurden keine Anwendungen\n"
+			"gefunden. Stelle sicher, dass ein Verzeichnis\n"
+			"names /3ds im Wurzelverzeichnis der SD-Karte\n"
+			"existiert und Anwendungen enthält!"
+		),
+
 	},
 
 	[StrId_Reboot] =
@@ -84,6 +98,12 @@ const char* const g_strings[StrId_Max][16] =
 			"Está a punto de reiniciar su consola.\n\n"
 			"  \xEE\x80\x80 Reiniciar\n"
 			"  \xEE\x80\x81 Cancelar"
+		),
+		STR_DE(
+		        "Rückkehr zu \xEE\x81\xB3HOME nicht verfügbar.\n"
+			"Deine Konsole wird neu gestartet.\n\n"
+			"  \xEE\x80\x80 Neu starten\n"
+			"  \xEE\x80\x81 Abbrechen"	
 		),
 	},
 
@@ -101,24 +121,33 @@ const char* const g_strings[StrId_Max][16] =
 			"  \xEE\x80\x81 Cancelar\n"
 			"  \xEE\x80\x82 Reiniciar"
 		),
+	 	STR_DE(
+			"Rückkehr zum \xEE\x81\xB3HOME-Menü.\n\n"
+			"  \xEE\x80\x80 Fortfahren\n"
+			"  \xEE\x80\x81 Abbrechen\n"
+			"  \xEE\x80\x82 Konsole neustarten"
+		),
 	},
 
 	[StrId_TitleSelector] =
 	{
 		STR_EN("Title selector"),
 		STR_ES("Selector de título"),
+		STR_DE("Titel-Selektor"),
 	},
 
 	[StrId_ErrorReadingTitleMetadata] =
 	{
 		STR_EN("Error reading title metadata.\n%08lX%08lX@%d"),
 		STR_ES("Error leyendo los metadatos de los títulos.\n%08lX%08lX@%d"),
+		STR_DE("Fehler beim lesen der Titel-Metadaten.\n%08lX%08lX@%d"),
 	},
 
 	[StrId_NoTitlesFound] =
 	{
 		STR_EN("No titles could be detected."),
 		STR_ES("No se han podido detectar títulos."),
+		STR_DE("Keine Titel gefunden."),
 	},
 
 	[StrId_SelectTitle] =
@@ -132,6 +161,11 @@ const char* const g_strings[StrId_Max][16] =
 			"Elija el título de destino.\n\n"
 			"  \xEE\x80\x80 Seleccionar\n"
 			"  \xEE\x80\x81 Cancelar"
+		),
+		STR_DE(
+			"Bitte wähle den Ziel-Titel aus.\n\n"
+			"  \xEE\x80\x80 Auswählen\n"
+			"  \xEE\x80\x81 Abbrechen"
 		),
 	},
 
@@ -147,6 +181,11 @@ const char* const g_strings[StrId_Max][16] =
 			"ejecutar aplicaciones bajo títulos de destino.\n"
 			"Use otro exploit diferente."
 		),
+	 	STR_DE(
+			"Dieser Homebrew-Exploit unterstützt das starten\n"
+			"von Anwendungen unter Ziel-Titeln nicht.\n"
+			"Bitte verwende einen anderen Exploit."
+		),
 	},
 
 	[StrId_MissingTargetTitle] =
@@ -159,24 +198,31 @@ const char* const g_strings[StrId_Max][16] =
 			"La aplicación seleccionada necesita un título\n"
 			"que no está instalado en el sistema."
 		),
+		STR_DE(
+		        "Die ausgewählte Anwendung benötigt einen\n"
+			"Titel der nicht installiert ist"
+		),
 	},
 
 	[StrId_NetLoader] =
 	{
 		STR_EN("3dslink NetLoader"),
 		STR_ES("Cargador de programas 3dslink"),
+		STR_DE("3dslink Netzwerk-Loader"),
 	},
 
 	[StrId_NetLoaderUnavailable] =
 	{
 		STR_EN("The NetLoader is currently unavailable."),
 		STR_ES("El cargador de programas no está disponible."),
+		STR_DE("Der Netzwerk-Loader ist zur Zeit nicht verfügbar."),
 	},
 
 	[StrId_NetLoaderError] =
 	{
 		STR_EN("An error occurred.\nTechnical details: [%s:%d]"),
 		STR_ES("Ha ocurrido un error.\nDatos técnicos: [%s:%d]"),
+		STR_DE("Ein Fehler ist aufgetreten\nTechnische Details: [%s:%d]"),
 	},
 
 	[StrId_NetLoaderActive] =
@@ -191,6 +237,11 @@ const char* const g_strings[StrId_Max][16] =
 			"Dir.IP: %lu.%lu.%lu.%lu, Puerto: %d\n\n"
 			"  \xEE\x80\x81 Cancelar"
 		),
+		STR_DE(
+			"Warte auf Verbindung von 3dslink…\n"
+			"IP Addr: %lu.%lu.%lu.%lu, Port: %d\n\n"
+			"  \xEE\x80\x81 Abbrechen"
+		),		
 	},
 
 	[StrId_NetLoaderTransferring] =
@@ -202,6 +253,10 @@ const char* const g_strings[StrId_Max][16] =
 		STR_ES(
 			"Transfiriendo…\n"
 			"%zu de %zu KiB escritos"
+		),
+		STR_ES(
+			"Übertragen…\n"
+			"%zu von %zu KiB geschrieben"
 		),
 	},
 };
