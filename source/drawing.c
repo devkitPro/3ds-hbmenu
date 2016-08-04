@@ -80,8 +80,8 @@ void drawingInit(void)
 	C3D_RenderTargetSetOutput(s_targets[2], GFX_BOTTOM, GFX_LEFT,  DISPLAY_TRANSFER_FLAGS);
 
 	// Precalc stuff
-	Mtx_OrthoTilt(&s_projectionTop, 0.0, 400.0, 240.0, 0.0, 0.0, 1.0);
-	Mtx_OrthoTilt(&s_projectionBot, 0.0, 320.0, 240.0, 0.0, 0.0, 1.0);
+	Mtx_OrthoTilt(&s_projectionTop, 0.0, 400.0, 240.0, 0.0, 0.0, 1.0, true);
+	Mtx_OrthoTilt(&s_projectionBot, 0.0, 320.0, 240.0, 0.0, 0.0, 1.0, true);
 	loadImages();
 }
 
