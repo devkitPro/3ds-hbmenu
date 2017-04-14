@@ -69,12 +69,6 @@ void backgroundUpdate(void)
 {
 	int i;
 
-	if (keysDown() & KEY_SELECT)
-	{
-		uiExitLoop();
-		return;
-	}
-
 	if(ACU_GetWifiStatus(&wifiStatus) != 0)
 		wifiStatus = 0;
 	PTMU_GetBatteryLevel(&batteryLevel);
