@@ -18,6 +18,7 @@ void launchInit(void)
 
 	s_hbKill = envGetHandle("hb:kill");
 
+	ADD_LOADER(loader_Rosalina);
 	ADD_LOADER(loader_Ninjhax1);
 	ADD_LOADER(loader_Ninjhax2);
 
