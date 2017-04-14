@@ -100,7 +100,7 @@ static void launchFile(const char* path, argData_s* args, executableMetadata_s* 
 		fileHandle = launchOpenFile(path);
 		if (fileHandle==0)
 		{
-			errorInit(textGetString(StrId_IOError), textGetString(StrId_CouldNotOpenFile), path);
+			errorScreen(textGetString(StrId_IOError), textGetString(StrId_CouldNotOpenFile), path);
 			return;
 		}
 	}

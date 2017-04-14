@@ -161,7 +161,7 @@ void netloaderError(const char* func, int err)
 	netloaderDeactivate();
 	if (uiGetStateInfo()->update == netloaderUpdate)
 		uiExitState();
-	errorInit(textGetString(StrId_NetLoader), textGetString(StrId_NetLoaderError), func, err);
+	errorScreen(textGetString(StrId_NetLoader), textGetString(StrId_NetLoaderError), func, err);
 }
 
 static int decompress(int sock, FILE* fh, size_t filesize)
@@ -262,7 +262,7 @@ void netloaderTask(void* arg)
 
 	if (!netloaderInit())
 	{
-		errorInit(textGetString(StrId_NetLoader), textGetString(StrId_NetLoaderUnavailable));
+		errorScreen(textGetString(StrId_NetLoader), textGetString(StrId_NetLoaderUnavailable));
 		return;
 	}
 	if (!netloaderActivate())

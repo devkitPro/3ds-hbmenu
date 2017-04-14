@@ -34,7 +34,7 @@ static void loadTitleData(void* unused)
 	// If we got here we failed to find a title with a readable SMDH.
 	s_curTitle = -1;
 	uiExitState();
-	errorInit(textGetString(StrId_TitleSelector), textGetString(StrId_ErrorReadingTitleMetadata),
+	errorScreen(textGetString(StrId_TitleSelector), textGetString(StrId_ErrorReadingTitleMetadata),
 		(u32)(s_curTitleID>>32), (u32)s_curTitleID, s_curMediatype);
 }
 
@@ -45,7 +45,7 @@ void titleSelectInit(menuEntry_s* me)
 	s_lastUpdate = osGetTime();
 	if (!titlesCount())
 	{
-		errorInit(textGetString(StrId_TitleSelector), textGetString(StrId_NoTitlesFound));
+		errorScreen(textGetString(StrId_TitleSelector), textGetString(StrId_NoTitlesFound));
 		return;
 	}
 	s_curTitle = -1;

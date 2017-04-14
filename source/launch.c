@@ -100,7 +100,7 @@ static bool checkUseTitle(void)
 {
 	bool canUse = s_loader->useTitle != NULL;
 	if (!canUse)
-		errorInit(s_loader->name, textGetString(StrId_NoTargetTitleSupport));
+		errorScreen(s_loader->name, textGetString(StrId_NoTargetTitleSupport));
 	return canUse;
 }
 
@@ -120,7 +120,7 @@ void launchMenuEntry(menuEntry_s* me)
 
 		if (i == me->descriptor.numTargetTitles)
 		{
-			errorInit(s_loader->name, textGetString(StrId_MissingTargetTitle));
+			errorScreen(s_loader->name, textGetString(StrId_MissingTargetTitle));
 			return;
 		}
 
