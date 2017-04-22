@@ -4,6 +4,7 @@ static u32 wifiStatus;
 static u8 batteryLevel = 5;
 static u8 charging;
 static char timeString[9];
+static char versionString[64];
 
 #define SECONDS_IN_DAY 86400
 #define SECONDS_IN_HOUR 3600
@@ -38,6 +39,7 @@ void backgroundInit(void)
 		bubbles[i].angv = 0.02f*randf();
 		bubbles[i].fade = 15;
 	}
+	sprintf(versionString, "%s \xEE\x80\x9D %s", launchGetLoader()->name, VERSION);
 }
 
 static void bubbleUpdate(bubble_t* bubble)
@@ -121,7 +123,7 @@ void backgroundDrawTop(float iod)
 
 	textSetColor(0xFFFFFFFF);
 	textDrawInBox(timeString, 0, 0.5f, 0.5f, 15.0f, 0.0f, 400.0f);
-	textDrawInBox(VERSION, 1, 0.5f, 0.5f, 200.0f, 80.0f, 80.0f+271-10);
+	textDrawInBox(versionString, 1, 0.5f, 0.5f, 200.0f, 80.0f, 80.0f+271-10);
 
 	drawingDrawImage(imgId_logo, 0xFFFFFFFF, 80.0f+iod*8, 63.0f);
 	drawingDrawImage(wifiStatus ? imgId_wifi3 : imgId_wifiNull, 0xFFFFFFFF, 0.0f, 0.0f);
