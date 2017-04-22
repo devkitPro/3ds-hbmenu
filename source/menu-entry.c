@@ -160,6 +160,10 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut)
 		{
 			menuEntryParseSmdh(me);
 
+			// Detect HANS, and only show it if the loader supports target titles
+			if (strcmp(me->name, "HANS")==0 && !loaderCanUseTitles())
+				return false;
+
 			// Fix description for some applications using multiple spaces to indicate newline
 			fixSpaceNewLine(me->description);
 		}
