@@ -142,8 +142,9 @@ void launchMenuEntry(menuEntry_s* me)
 		s_loader->useTitle(me->titleId, me->titleMediatype);
 	}
 
-	// Scan the executable
-	descriptorScanFile(&me->descriptor, me->path);
+	// Scan the executable if needed
+	if (loaderHasFlag(LOADER_NEED_SCAN))
+		descriptorScanFile(&me->descriptor, me->path);
 
 	// Launch it
 	s_loader->launchFile(me->path, &me->args, &me->descriptor.executableMetadata);

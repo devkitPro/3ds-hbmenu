@@ -135,6 +135,7 @@ static void useTitle(u64 tid, u8 mediatype)
 const loaderFuncs_s loader_Ninjhax2 =
 {
 	.name = "hax 2.x",
+	.flags = LOADER_SHOW_REBOOT | LOADER_NEED_SCAN,
 	.init = init,
 	.deinit = deinit,
 	.launchFile = launchFile,

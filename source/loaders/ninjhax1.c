@@ -40,6 +40,7 @@ static void launchFile(const char* path, argData_s* args, executableMetadata_s* 
 const loaderFuncs_s loader_Ninjhax1 =
 {
 	.name = "ninjhax 1.x",
+	.flags = LOADER_SHOW_REBOOT,
 	.init = init,
 	.deinit = deinit,
 	.launchFile = launchFile,

@@ -56,7 +56,7 @@ void menuUpdate(void)
 	{
 		workerSchedule(changeDirTask, "..");
 	}
-	else if (down & KEY_START)
+	else if ((down & KEY_START) && loaderHasFlag(LOADER_SHOW_REBOOT))
 	{
 		uiEnterState(UI_STATE_REBOOT);
 	}
