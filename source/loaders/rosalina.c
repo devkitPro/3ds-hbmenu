@@ -4,18 +4,7 @@ static Handle hbldrHandle;
 
 static bool init(void)
 {
-	Result res = svcConnectToPort(&hbldrHandle, "hb:ldr");
-	if (R_FAILED(res))
-		return false;
-
-	res = amInit();
-	if (R_FAILED(res))
-	{
-		svcCloseHandle(hbldrHandle);
-		return false;
-	}
-
-	return true;
+	return R_SUCCEEDED(svcConnectToPort(&hbldrHandle, "hb:ldr"));
 }
 
 static Result HBLDR_SetTarget(const char* path)
@@ -47,7 +36,6 @@ static Result HBLDR_SetArgv(const void* buffer, u32 size)
 
 static void deinit(void)
 {
-	amExit();
 	svcCloseHandle(hbldrHandle);
 }
 
@@ -60,16 +48,10 @@ static void launchFile(const char* path, argData_s* args, executableMetadata_s* 
 	uiExitLoop();
 }
 
-static void useTitle(u64 tid, u8 mediatype)
-{
-	aptSetChainloader(tid, mediatype);
-}
-
 const loaderFuncs_s loader_Rosalina =
 {
 	.name = "Rosalina",
 	.init = init,
 	.deinit = deinit,
 	.launchFile = launchFile,
-	.useTitle = useTitle,
 };

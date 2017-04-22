@@ -97,20 +97,11 @@ void launchAddArgsFromString(argData_s* ad, char* arg)
 	} while(str<endarg);
 }
 
-static bool checkUseTitle(void)
-{
-	bool canUse = s_loader->useTitle != NULL;
-	if (!canUse)
-		errorScreen(s_loader->name, textGetString(StrId_NoTargetTitleSupport));
-	return canUse;
-}
-
 void launchMenuEntry(menuEntry_s* me)
 {
-	if (me->descriptor.numTargetTitles)
+	bool canUseTitles = loaderCanUseTitles();
+	if (me->descriptor.numTargetTitles && !canUseTitles)
 	{
-		if (!checkUseTitle()) return;
-
 		// Update the list of available titles
 		titlesCheckUpdate(false, UI_STATE_NULL);
 
@@ -129,7 +120,11 @@ void launchMenuEntry(menuEntry_s* me)
 		s_loader->useTitle(me->descriptor.targetTitles[i].tid, me->descriptor.targetTitles[i].mediatype);
 	} else if (me->descriptor.selectTargetProcess)
 	{
-		if (!checkUseTitle()) return;
+		if (!canUseTitles)
+		{
+			errorScreen(s_loader->name, textGetString(StrId_NoTargetTitleSupport));
+			return;
+		}
 
 		// Launch the title selector
 		if (!me->titleSelected)

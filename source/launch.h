@@ -35,3 +35,8 @@ static inline bool loaderHasFlag(u32 flag)
 {
 	return (launchGetLoader()->flags & flag) != 0;
 }
+
+static inline bool loaderCanUseTitles(void)
+{
+	return launchGetLoader()->useTitle != NULL;
+}
