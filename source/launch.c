@@ -100,7 +100,7 @@ void launchAddArgsFromString(argData_s* ad, char* arg)
 void launchMenuEntry(menuEntry_s* me)
 {
 	bool canUseTitles = loaderCanUseTitles();
-	if (me->descriptor.numTargetTitles && !canUseTitles)
+	if (me->descriptor.numTargetTitles && canUseTitles)
 	{
 		// Update the list of available titles
 		titlesCheckUpdate(false, UI_STATE_NULL);
