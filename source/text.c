@@ -89,6 +89,7 @@ float textCalcWidth(const char* text)
 		{
 			maxWidth = maxf(width, maxWidth);
 			width = 0.0f;
+			continue;
 		}
 
 		if (code > 0)
