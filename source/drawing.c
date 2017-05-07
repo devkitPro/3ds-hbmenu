@@ -41,7 +41,7 @@ static void loadImages(void)
 	fread(temp, 1, size, f);
 	fclose(f);
 
-	C3D_TexInit(&s_imagesTex, 512, 256, GPU_RGBA8);
+	C3D_TexInit(&s_imagesTex, 512, 512, GPU_RGBA8);
 	lzssDecompress((char*)temp+4, s_imagesTex.data, s_imagesTex.size);
 }
 

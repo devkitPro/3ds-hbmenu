@@ -14,6 +14,7 @@ typedef enum
 	imgId_folderIcon,
 	imgId_loading,
 	imgId_logo,
+	imgId_logo2,
 	imgId_scrollbarKnob,
 	imgId_scrollbarTrack,
 	imgId_settings,

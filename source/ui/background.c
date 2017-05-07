@@ -11,6 +11,8 @@ static char versionString[64];
 #define SECONDS_IN_MINUTE 60
 
 static bubble_t bubbles[BUBBLE_COUNT];
+static float logoPosX, logoPosY;
+static ImageId logoImg = imgId_logo;
 
 static const ImageId batteryLevels[] =
 {
@@ -67,9 +69,32 @@ static void bubbleUpdate(bubble_t* bubble)
 	bubble->angle += bubble->angv;
 }
 
+static bool checkLogoAdv(u32 down)
+{
+	static const u32 params[] = { KEY_UP, KEY_UP, KEY_DOWN, KEY_DOWN, KEY_LEFT, KEY_RIGHT, KEY_LEFT, KEY_RIGHT, KEY_SELECT };
+	static u32 state, timeout;
+
+	if (down & params[state])
+	{
+		state++;
+		timeout = 30;
+		if (state == sizeof(params)/sizeof(params[0]))
+		{
+			state = 0;
+			return true;
+		}
+	}
+
+	if (timeout && !--timeout)
+		state = 0;
+
+	return false;
+}
+
 void backgroundUpdate(void)
 {
 	int i;
+	u32 kDown = hidKeysDown();
 
 	if(ACU_GetWifiStatus(&wifiStatus) != 0)
 		wifiStatus = 0;
@@ -86,6 +111,13 @@ void backgroundUpdate(void)
 	// Update bubble
 	for (i = 0; i < BUBBLE_COUNT; i ++)
 		bubbleUpdate(&bubbles[i]);
+
+	// Update logo
+	if (logoImg == imgId_logo2)
+		logoPosX += 1.0f/64;
+	logoPosY -= 1.0f/192;
+	if (checkLogoAdv(kDown))
+		logoImg = imgId_logo2;
 }
 
 void bubbleDraw(bubble_t* bubble, float top, float iod)
@@ -125,7 +157,9 @@ void backgroundDrawTop(float iod)
 	textDrawInBox(timeString, 0, 0.5f, 0.5f, 15.0f, 0.0f, 400.0f);
 	textDrawInBox(versionString, 1, 0.5f, 0.5f, 200.0f, 80.0f, 80.0f+271-10);
 
-	drawingDrawImage(imgId_logo, 0xFFFFFFFF, 80.0f+iod*8, 63.0f);
+	float posX = 20.0f*sinf(C3D_Angle(logoPosX));
+	float posY =  6.0f*sinf(C3D_Angle(logoPosY));
+	drawingDrawImage(logoImg, 0xFFFFFFFF, 80.0f+posX+iod*8, 63.0f+posY);
 	drawingDrawImage(wifiStatus ? imgId_wifi3 : imgId_wifiNull, 0xFFFFFFFF, 0.0f, 0.0f);
 	drawingDrawImage(charging ? imgId_batteryCharge : batteryLevels[batteryLevel], 0xFFFFFFFF, 400.0f-27, 0.0f);
 }
