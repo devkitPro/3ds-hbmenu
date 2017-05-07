@@ -60,7 +60,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_EN("Could not open file:\n%s"),
 		STR_ES("No se pudo abrir el archivo:\n%s"),
 		STR_DE("Konnte Datei \"%s\" nicht öffnen."),
-		STR_FR("Impossible d'ouvrir le fichier :\n%s")
+		STR_FR("Impossible d'ouvrir le fichier :\n%s"),
 	},
 
 	[StrId_NoAppsFound_Title] =
@@ -112,15 +112,15 @@ const char* const g_strings[StrId_Max][16] =
 			"  \xEE\x80\x81 Cancelar"
 		),
 		STR_DE(
-		        "Rückkehr zu \xEE\x81\xB3HOME nicht verfügbar.\n"
+			"Rückkehr zu \xEE\x81\xB3HOME nicht verfügbar.\n"
 			"Deine Konsole wird neu gestartet.\n\n"
 			"  \xEE\x80\x80 Neu starten\n"
-			"  \xEE\x80\x81 Abbrechen"	
+			"  \xEE\x80\x81 Abbrechen"
 		),
 		STR_FR(
 			"Retour au menu \xEE\x81\xB3HOME indisponible.\n"
-			"Vous êtes sur le point de redémarrer votre\n"
-			"console.\n\n"
+			"Vous êtes sur le point de redémarrer\n"
+			"votre console.\n\n"
 			"  \xEE\x80\x80 Redémarrer\n"
 			"  \xEE\x80\x81 Annuler"
 		),
@@ -178,7 +178,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_EN("No titles could be detected."),
 		STR_ES("No se han podido detectar títulos."),
 		STR_DE("Keine Titel gefunden."),
-		STR_FR("Aucun titre trouvé"),
+		STR_FR("Aucun titre trouvé."),
 	},
 
 	[StrId_SelectTitle] =
@@ -240,7 +240,7 @@ const char* const g_strings[StrId_Max][16] =
 			"que no está instalado en el sistema."
 		),
 		STR_DE(
-		        "Die ausgewählte Anwendung benötigt einen\n"
+			"Die ausgewählte Anwendung benötigt einen\n"
 			"Titel der nicht installiert ist"
 		),
 		STR_FR(
@@ -307,7 +307,7 @@ const char* const g_strings[StrId_Max][16] =
 			"Transfiriendo…\n"
 			"%zu de %zu KiB escritos"
 		),
-		STR_ES(
+		STR_DE(
 			"Übertragen…\n"
 			"%zu von %zu KiB geschrieben"
 		),
