@@ -72,9 +72,9 @@ void drawingInit(void)
 	BufInfo_Add(&g_drawBufInfo, s_drawBuffer, sizeof(drawVertex_s), 2, 0x10);
 
 	// Create rendering targets
-	s_targets[0] = C3D_RenderTargetCreate(240, 400, GPU_RB_RGBA8, GPU_RB_DEPTH24_STENCIL8);
-	s_targets[1] = C3D_RenderTargetCreate(240, 400, GPU_RB_RGBA8, GPU_RB_DEPTH24_STENCIL8);
-	s_targets[2] = C3D_RenderTargetCreate(240, 320, GPU_RB_RGBA8, GPU_RB_DEPTH24_STENCIL8);
+	s_targets[0] = C3D_RenderTargetCreate(240, 400, GPU_RB_RGBA8, GPU_RB_DEPTH16);
+	s_targets[1] = C3D_RenderTargetCreate(240, 400, GPU_RB_RGBA8, GPU_RB_DEPTH16);
+	s_targets[2] = C3D_RenderTargetCreate(240, 320, GPU_RB_RGBA8, GPU_RB_DEPTH16);
 	C3D_RenderTargetSetOutput(s_targets[0], GFX_TOP,    GFX_LEFT,  DISPLAY_TRANSFER_FLAGS);
 	C3D_RenderTargetSetOutput(s_targets[1], GFX_TOP,    GFX_RIGHT, DISPLAY_TRANSFER_FLAGS);
 	C3D_RenderTargetSetOutput(s_targets[2], GFX_BOTTOM, GFX_LEFT,  DISPLAY_TRANSFER_FLAGS);
