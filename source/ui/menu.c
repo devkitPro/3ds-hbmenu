@@ -1,6 +1,9 @@
 #include "menu.h"
 #include "netloader.h"
 
+static bool showingHomeIcon;
+static float homeIconStatus;
+
 static void changeDirTask(void* arg)
 {
 	menuScan((const char*)arg);
@@ -42,6 +45,7 @@ void menuUpdate(void)
 	u32 down = hidKeysDown();
 	u32 held = hidKeysHeld();
 	u32 up   = hidKeysUp();
+	bool pressedSettings = (down & KEY_TOUCH) && g_touchPos.px >= (320-g_imageData[imgId_settings].width) && g_touchPos.py >= (240-g_imageData[imgId_settings].height);
 	if (down & KEY_A)
 	{
 		if (menu->nEntries > 0)
@@ -56,9 +60,12 @@ void menuUpdate(void)
 	{
 		workerSchedule(changeDirTask, "..");
 	}
-	else if ((down & KEY_START) && loaderHasFlag(LOADER_SHOW_REBOOT))
+	else if ((down & KEY_START) || pressedSettings)
 	{
-		uiEnterState(UI_STATE_REBOOT);
+		if (loaderHasFlag(LOADER_SHOW_REBOOT))
+			uiEnterState(UI_STATE_REBOOT);
+		else
+			showingHomeIcon = true;
 	}
 	else if (down & KEY_Y)
 	{
@@ -251,4 +258,26 @@ void menuDrawBot(void)
 	}
 
 	drawingDrawImage(imgId_settings, 0xFFFFFFFF, 320.0f-g_imageData[imgId_settings].width, 240.0f-g_imageData[imgId_settings].height);
+
+	if (showingHomeIcon)
+	{
+		const float maxOpac = 0.75f;
+		homeIconStatus += 1.0/32;
+		float opac = 0.0;
+		if (homeIconStatus < 1.0f)
+			opac = maxOpac*sqrtf(homeIconStatus);
+		else if (homeIconStatus < 2.0f)
+			opac = maxOpac;
+		else if (homeIconStatus < 3.0f)
+			opac = maxOpac*sqrtf(3.0f-homeIconStatus);
+		if (opac > 0.0f)
+		{
+			textSetColor((u32)(opac*0x100) << 24);
+			textDrawInBox("\xEE\x81\xB3\n▼", 0, 1.0f, 1.0f, 200.0f, 0.0f, 320.0f);
+		} else
+		{
+			showingHomeIcon = false;
+			homeIconStatus = 0.0f;
+		}
+	}
 }
