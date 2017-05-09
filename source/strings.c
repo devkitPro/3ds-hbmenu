@@ -173,9 +173,9 @@ const char* const g_strings[StrId_Max][16] =
 		),
 		STR_IT(
 			"Ritorno al menu \xEE\x81\xB3HOME.\n\n"
-			"  \xEE\x80\x80 Continuare\n"
-			"  \xEE\x80\x81 Annullare\n"
-			"  \xEE\x80\x82 Riavviare"
+			"  \xEE\x80\x80 Continua\n"
+			"  \xEE\x80\x81 Annulla\n"
+			"  \xEE\x80\x82 Riavvia"
 		),
 	},
 
