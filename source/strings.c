@@ -1,5 +1,5 @@
 #include "strings.h"
-
+ 
 #define STR_JP(_str) [CFG_LANGUAGE_JP] = _str
 #define STR_EN(_str) [CFG_LANGUAGE_EN] = _str
 #define STR_FR(_str) [CFG_LANGUAGE_FR] = _str
@@ -22,8 +22,9 @@ const char* const g_strings[StrId_Max][16] =
 		STR_DE("Lade…"),
 		STR_FR("Chargement…"),
 		STR_IT("Caricamento…"),
+		STR_JP("ロード中…"),
 		STR_PT("Carregando…"),
-		STR_NL("Laden..."),
+		STR_NL("Laden…"),
 	},
 
 	[StrId_Directory] =
@@ -33,6 +34,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_DE("Verzeichnis"),
 		STR_FR("Dossier"),
 		STR_IT("Cartella"),
+		STR_JP("ディレクトリ"),
 		STR_PT("Directório"),
 		STR_NL("Map"),
 	},
@@ -44,6 +46,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_DE("Homebrew-Anwendung"),
 		STR_FR("Application homebrew"),
 		STR_IT("Applicazione homebrew"),
+		STR_JP("自作アプリ"),
 		STR_PT("Aplicação Homebrew"),
 		STR_NL("Homebrew toepassing"),
 	},
@@ -55,6 +58,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_DE("Unbekannter Autor"),
 		STR_FR("Auteur inconnu"),
 		STR_IT("Autore sconosciuto"),
+		STR_JP("未知の作者"),
 		STR_PT("Autor Desconhecido"),
 		STR_NL("Auteur onbekend"),
 	},
@@ -66,6 +70,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_DE("IO-Fehler"),
 		STR_FR("Erreur d'E/S"),
 		STR_IT("Errore di I/O"),
+		STR_JP("I／Oエラー"),
 		STR_PT("Erro de E/S"),
 		STR_NL("I/O Fout"),
 	},
@@ -77,6 +82,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_DE("Konnte Datei \"%s\" nicht öffnen."),
 		STR_FR("Impossible d'ouvrir le fichier :\n%s"),
 		STR_IT("Impossibile aprire il file:\n%s"),
+		STR_JP("ファイルを開くことができませんでした：\n%s"),
 		STR_PT("Não foi possível abrir o ficheiro:\n%s"),
 		STR_NL("Kan bestand niet openen:\n%s"),
 	},
@@ -88,6 +94,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_DE("Keine Anwendungen gefunden"),
 		STR_FR("Aucune application trouvée"),
 		STR_IT("Nessun'applicazione trovata"),
+		STR_JP("アプリを見つかりませんでした"),
 		STR_PT("Não foram encontradas aplicações"),
 		STR_NL("Geen toepassingen gevonden"),
 	},
@@ -121,6 +128,10 @@ const char* const g_strings[StrId_Max][16] =
 			"SD. Assicurati che esista una cartella chiamata\n"
 			"/3ds nella root della scheda SD e che contenga\n"
 			"delle applicazioni."
+		),
+		STR_JP(
+			"SDカードにアプリケーションが見つかりませんでした。\n"
+			"SDカードのルートに /3ds という名前のフォルダを作成してください。"
 		),
 		STR_PT(
 			"Nenhuma aplicação foi encontrada no cartão SD.\n"
@@ -168,6 +179,12 @@ const char* const g_strings[StrId_Max][16] =
 			"  \xEE\x80\x80 Riavvia\n"
 			"  \xEE\x80\x81 Annulla"
 		),
+		STR_JP(
+			"\xEE\x81\xB3HOMEに戻ることはできません。\n"
+			"コンソールが今すぐ再起動する。\n"
+			"  \xEE\x80\x80 再起動\n"
+			"  \xEE\x80\x81 中止する"
+		),
 		STR_PT(
 			"Regressar para \xEE\x81\xB3HOME não está disponível.\n"
 			"Está a reiniciar a sua consola.\n\n"
@@ -214,6 +231,12 @@ const char* const g_strings[StrId_Max][16] =
 			"  \xEE\x80\x81 Annulla\n"
 			"  \xEE\x80\x82 Riavvia"
 		),
+		STR_JP(
+			"あなたは今すぐ\xEE\x81\xB3HOMEに戻されます。\n"
+			"赴く\n"
+			"中止する\n"
+			"再起動"
+		),
 		STR_PT(
 			"Regressar ao menu \xEE\x81\xB3HOME.\n\n"
 			"  \xEE\x80\x80 Regressar\n"
@@ -235,6 +258,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_DE("Titel-Selektor"),
 		STR_FR("Sélecteur de titre"),
 		STR_IT("Selettore del titolo"),
+		STR_JP("題名セレクタ"),
 		STR_PT("Selector de Títulos"),
 		STR_NL("Titel selector"),
 	},
@@ -249,6 +273,7 @@ const char* const g_strings[StrId_Max][16] =
 			"de titre.\n%08lX%08lX@%d"
 		),
 		STR_IT("Errore nella lettura dei metadata dei titoli.\n%08lX%08lX@%d"),
+		STR_JP("題名メタデータを読み取ることができませんでした。\n%08lX%08lX@%d"),
 		STR_PT("Erro a ler os metadados do título.\n%08lX%08lX@%d"),
 		STR_NL("Fout bij het lezen van titel metadata.\n%08lX%08lX@%d"),
 	},
@@ -259,7 +284,8 @@ const char* const g_strings[StrId_Max][16] =
 		STR_ES("No se han podido detectar títulos."),
 		STR_DE("Keine Titel gefunden."),
 		STR_FR("Aucun titre trouvé."),
-		STR_IT("Nessun titolo trovato."),		
+		STR_IT("Nessun titolo trovato."),
+		STR_JP("題名を見つかりませんでした。"),
 		STR_PT("Nenhum título foi encontrado."),
 		STR_NL("Geen titels gevonden."),
 	},
@@ -290,6 +316,11 @@ const char* const g_strings[StrId_Max][16] =
 			"Seleziona il titolo di destinazione.\n\n"
 			"  \xEE\x80\x80 Seleziona\n"
 			"  \xEE\x80\x81 Annulla"
+		),
+		STR_JP(
+			"有効な題名を選択してください。\n\n"
+			"  \xEE\x80\x80 選ぶ\n"
+			"  \xEE\x80\x81 中止する"
 		),
 		STR_PT(
 			"Por favor escolha um título alvo.\n\n"
@@ -330,6 +361,11 @@ const char* const g_strings[StrId_Max][16] =
 			"applicazioni in titoli specifici.\n"
 			"Utilizza un exploit diverso."
 		),
+		STR_JP(
+			"この自家製の搾取は、ターゲットタイトルの下で\n"
+			"アプリを起動するためのサポートを持っていません。\n"
+			"別の自家製の搾取を使用してください。"
+		),
 		STR_PT(
 			"Este exploit homebrew não têm suporte\n"
 			"para executar aplicações no título alvo.\n"
@@ -364,6 +400,10 @@ const char* const g_strings[StrId_Max][16] =
 			"L'applicazione selezionata richiede un titolo\n"
 			"che non è installato nel sistema."
 		),
+		STR_JP(
+			"このアプリを実行するために\n"
+			"適切なタイトルがインストールされていません。"
+		),
 		STR_PT(
 			"A aplicação que acabou de tentar executar requer\n"
 			"um título que não está instalado neste sistema."
@@ -381,6 +421,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_DE("3dslink Netzwerk-Loader"),
 		STR_FR("Chargeur de programme 3dslink"),
 		STR_IT("Caricamento programmi 3dslink"),
+		STR_JP("3dslinkネットローダ"),
 		STR_PT("Carregador de programas 3dslink"),
 		STR_NL("3dslink netwerk lader"),
 	},
@@ -392,6 +433,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_DE("Der Netzwerk-Loader ist zur Zeit nicht verfügbar."),
 		STR_FR("Le chargeur de programme 3dslink est indisponible."),
 		STR_IT("Il caricamento programmi 3dslink non è disponibile."),
+		STR_JP("3dslinkネットローダを利用できません。"),
 		STR_PT("O carregador de programas está de momento indisponível."),
 		STR_NL("De netwerk lader is niet beschikbaar."),
 	},
@@ -403,6 +445,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_DE("Ein Fehler ist aufgetreten\nTechnische Details: [%s:%d]"),
 		STR_FR("Une erreur s'est produite.\nDétails techniques : [%s:%d]"),
 		STR_IT("Si è verificato un errore.\nDettagli tecnici : [%s:%d]"),
+		STR_JP("エラーが発生しました。\n詳細：[%s:%d]"),
 		STR_PT("Ocorreu um erro.\nDetalhes técnicos: [%s:%d]"),
 		STR_NL("Er is een fout opgetreden\nTechnische details: [%s:%d]"),
 	},
@@ -433,6 +476,11 @@ const char* const g_strings[StrId_Max][16] =
 			"In attesa della connessione di 3dslink…\n"
 			"Ind. IP : %lu.%lu.%lu.%lu, Porta : %d\n\n"
 			"  \xEE\x80\x81 Annullare"
+		),
+		STR_JP(
+			"3dslinkが接続するのを待っている…\n"
+			"IPアドレス： %lu.%lu.%lu.%lu, ポート：  %d\n\n"
+			"  \xEE\x80\x81 中止する"
 		),
 		STR_PT(
 			"A aguardar pela conexão do 3dslink…\n"
@@ -467,6 +515,10 @@ const char* const g_strings[StrId_Max][16] =
 		STR_IT(
 			"Trasferimento…\n"
 			"%zu di %zu KiB scritti"
+		),
+		STR_JP(
+			"データが転送されます…\n"
+			"%zu / %zu KiB書かれた"
 		),
 		STR_PT(
 			"A transferir…\n"
