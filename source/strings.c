@@ -462,7 +462,7 @@ const char* const g_strings[StrId_Max][16] =
 		),
 		STR_FR(
 			"Transfert…\n"
-			"%zu sur %zu KiO écrits"
+			"%zu sur %zu Kio écrits"
 		),
 		STR_IT(
 			"Trasferimento…\n"
