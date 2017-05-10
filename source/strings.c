@@ -23,6 +23,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_FR("Chargement…"),
 		STR_IT("Caricamento…"),
 		STR_PT("Carregando…"),
+		STR_NL("Laden..."),
 	},
 
 	[StrId_Directory] =
@@ -33,6 +34,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_FR("Dossier"),
 		STR_IT("Cartella"),
 		STR_PT("Directório"),
+		STR_NL("Map"),
 	},
 
 	[StrId_DefaultLongTitle] =
@@ -43,6 +45,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_FR("Application homebrew"),
 		STR_IT("Applicazione homebrew"),
 		STR_PT("Aplicação Homebrew"),
+		STR_NL("Homebrew toepassing"),
 	},
 
 	[StrId_DefaultPublisher] =
@@ -53,6 +56,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_FR("Auteur inconnu"),
 		STR_IT("Autore sconosciuto"),
 		STR_PT("Autor Desconhecido"),
+		STR_NL("Auteur onbekend"),
 	},
 
 	[StrId_IOError] =
@@ -63,6 +67,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_FR("Erreur d'E/S"),
 		STR_IT("Errore di I/O"),
 		STR_PT("Erro de E/S"),
+		STR_NL("I/O Fout"),
 	},
 
 	[StrId_CouldNotOpenFile] =
@@ -73,6 +78,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_FR("Impossible d'ouvrir le fichier :\n%s"),
 		STR_IT("Impossibile aprire il file:\n%s"),
 		STR_PT("Não foi possível abrir o ficheiro:\n%s"),
+		STR_NL("Kan bestand niet openen:\n%s"),
 	},
 
 	[StrId_NoAppsFound_Title] =
@@ -83,6 +89,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_FR("Aucune application trouvée"),
 		STR_IT("Nessun'applicazione trovata"),
 		STR_PT("Não foram encontradas aplicações"),
+		STR_NL("Geen toepassingen gevonden"),
 	},
 
 	[StrId_NoAppsFound_Msg] =
@@ -119,6 +126,12 @@ const char* const g_strings[StrId_Max][16] =
 			"Nenhuma aplicação foi encontrada no cartão SD.\n"
 			"Certifique-se que uma pasta com o nome /3ds existe\n"
 			"na raiz do cartão SD e que contêm aplicações"
+		),
+		STR_NL(
+			"Geen toepassingen gevonden op de SD kaart.\n"
+			"Zorg ervoor dat een map genaamd /rds in de\n"
+			"rootdirectory van de SD kaart aangemaakt is\n"
+			"en de toepassingen bevat."
 		),
 	},
 
@@ -161,6 +174,12 @@ const char* const g_strings[StrId_Max][16] =
 			"  \xEE\x80\x80 Reiniciar\n"
 			"  \xEE\x80\x81 Cancelar"
 		),
+		STR_NL(
+			"Terugkeren naar \xEE\x81\xB3HOME is niet beschikbaar.\n"
+			"Wil je de console herstarten?.\n\n"
+			"  \xEE\x80\x80 Herstarten\n"
+			"  \xEE\x80\x81 Annuleren"
+		),
 	},
 
 	[StrId_ReturnToHome] =
@@ -201,6 +220,12 @@ const char* const g_strings[StrId_Max][16] =
 			"  \xEE\x80\x81 Cancelar\n"
 			"  \xEE\x80\x82 Reiniciar"
 		),
+		STR_NL(
+			"Je keert zo terug naar \xEE\x81\xB3HOME.\n\n"
+			"  \xEE\x80\x80 Doorgaan\n"
+			"  \xEE\x80\x81 Annuleren\n"
+			"  \xEE\x80\x82 Herstarten"
+		),
 	},
 
 	[StrId_TitleSelector] =
@@ -211,6 +236,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_FR("Sélecteur de titre"),
 		STR_IT("Selettore del titolo"),
 		STR_PT("Selector de Títulos"),
+		STR_NL("Titel selector"),
 	},
 
 	[StrId_ErrorReadingTitleMetadata] =
@@ -224,6 +250,7 @@ const char* const g_strings[StrId_Max][16] =
 		),
 		STR_IT("Errore nella lettura dei metadata dei titoli.\n%08lX%08lX@%d"),
 		STR_PT("Erro a ler os metadados do título.\n%08lX%08lX@%d"),
+		STR_NL("Fout bij het lezen van titel metadata.\n%08lX%08lX@%d"),
 	},
 
 	[StrId_NoTitlesFound] =
@@ -234,6 +261,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_FR("Aucun titre trouvé."),
 		STR_IT("Nessun titolo trovato."),		
 		STR_PT("Nenhum título foi encontrado."),
+		STR_NL("Geen titels gevonden."),
 	},
 
 	[StrId_SelectTitle] =
@@ -267,6 +295,11 @@ const char* const g_strings[StrId_Max][16] =
 			"Por favor escolha um título alvo.\n\n"
 			"  \xEE\x80\x80 Escolher\n"
 			"  \xEE\x80\x81 Cancelar"
+		),
+		STR_NL(
+			"Selecteer een titel.\n\n"
+			"  \xEE\x80\x80 Selecteer\n"
+			"  \xEE\x80\x81 Annuleren"
 		),
 	},
 
@@ -302,6 +335,11 @@ const char* const g_strings[StrId_Max][16] =
 			"para executar aplicações no título alvo.\n"
 			"Por favor use um exploit diferente."
 		),
+		STR_NL(
+			"Deze homebrew exploit heeft geen ondersteuning\n"
+			"voor het starten van toepassingen met de gekozen titlel.\n"
+			"Gebruik een andere exploit."
+		),
 	},
 
 	[StrId_MissingTargetTitle] =
@@ -330,6 +368,10 @@ const char* const g_strings[StrId_Max][16] =
 			"A aplicação que acabou de tentar executar requer\n"
 			"um título que não está instalado neste sistema."
 		),
+		STR_NL(
+			"De toepassing die je probeert te starten\n"
+			"vereist een titel die niet geinstalleerd is."
+		),
 	},
 
 	[StrId_NetLoader] =
@@ -340,6 +382,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_FR("Chargeur de programme 3dslink"),
 		STR_IT("Caricamento programmi 3dslink"),
 		STR_PT("Carregador de programas 3dslink"),
+		STR_NL("3dslink netwerk lader"),
 	},
 
 	[StrId_NetLoaderUnavailable] =
@@ -350,6 +393,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_FR("Le chargeur de programme 3dslink est indisponible."),
 		STR_IT("Il caricamento programmi 3dslink non è disponibile."),
 		STR_PT("O carregador de programas está de momento indisponível."),
+		STR_NL("De netwerk lader is niet beschikbaar."),
 	},
 
 	[StrId_NetLoaderError] =
@@ -360,6 +404,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_FR("Une erreur s'est produite.\nDétails techniques : [%s:%d]"),
 		STR_IT("Si è verificato un errore.\nDettagli tecnici : [%s:%d]"),
 		STR_PT("Ocorreu um erro.\nDetalhes técnicos: [%s:%d]"),
+		STR_NL("Er is een fout opgetreden\nTechnische details: [%s:%d]"),
 	},
 
 	[StrId_NetLoaderActive] =
@@ -394,6 +439,11 @@ const char* const g_strings[StrId_Max][16] =
 			"End. IP: %lu.%lu.%lu.%lu, Porta: %d\n\n"
 			"  \xEE\x80\x81 Cancelar"
 		),
+		STR_NL(
+			"Wachten op 3dslink verbinding...\n"
+			"IP Addr: %lu.%lu.%lu.%lu, Poort: %d\n\n"
+			"  \xEE\x80\x81 Annuleren"
+		),
 	},
 
 	[StrId_NetLoaderTransferring] =
@@ -421,6 +471,10 @@ const char* const g_strings[StrId_Max][16] =
 		STR_PT(
 			"A transferir…\n"
 			"%zu de %zu KiB escritos"
+		),
+		STR_NL(
+			"Overbrengen...\n"
+			"%zu van %zu KiB geschreven"
 		),
 	},
 };
