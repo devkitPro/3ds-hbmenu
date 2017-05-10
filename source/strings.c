@@ -105,7 +105,7 @@ const char* const g_strings[StrId_Max][16] =
 			"llamada /3ds y que contenga aplicaciones.\n"
 		),
 		STR_DE(
-		        "Auf der SD-Karte wurden keine Anwendungen\n"
+			"Auf der SD-Karte wurden keine Anwendungen\n"
 			"gefunden. Stelle sicher, dass ein Verzeichnis\n"
 			"names /3ds im Wurzelverzeichnis der SD-Karte\n"
 			"existiert und Anwendungen enthält!"
@@ -129,7 +129,7 @@ const char* const g_strings[StrId_Max][16] =
 		),
 		STR_NL(
 			"Geen toepassingen gevonden op de SD kaart.\n"
-			"Zorg ervoor dat een map genaamd /rds in de\n"
+			"Zorg ervoor dat een map genaamd /3ds in de\n"
 			"rootdirectory van de SD kaart aangemaakt is\n"
 			"en de toepassingen bevat."
 		),
@@ -462,7 +462,7 @@ const char* const g_strings[StrId_Max][16] =
 		),
 		STR_FR(
 			"Transfert…\n"
-			"%zu sur %zu KiB écrits"
+			"%zu sur %zu KiO écrits"
 		),
 		STR_IT(
 			"Trasferimento…\n"
