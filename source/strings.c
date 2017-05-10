@@ -1,5 +1,5 @@
 #include "strings.h"
- 
+
 #define STR_JP(_str) [CFG_LANGUAGE_JP] = _str
 #define STR_EN(_str) [CFG_LANGUAGE_EN] = _str
 #define STR_FR(_str) [CFG_LANGUAGE_FR] = _str
@@ -233,9 +233,9 @@ const char* const g_strings[StrId_Max][16] =
 		),
 		STR_JP(
 			"あなたは今すぐ\xEE\x81\xB3HOMEに戻されます。\n"
-			"赴く\n"
-			"中止する\n"
-			"再起動"
+			"  \xEE\x80\x80 赴く\n"
+			"  \xEE\x80\x81 中止する\n"
+			"  \xEE\x80\x82 再起動"
 		),
 		STR_PT(
 			"Regressar ao menu \xEE\x81\xB3HOME.\n\n"
