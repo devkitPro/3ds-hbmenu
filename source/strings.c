@@ -25,6 +25,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_JP("ロード中…"),
 		STR_PT("Carregando…"),
 		STR_NL("Laden…"),
+		STR_KO("로딩중…"),
 	},
 
 	[StrId_Directory] =
@@ -37,6 +38,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_JP("ディレクトリ"),
 		STR_PT("Directório"),
 		STR_NL("Map"),
+		STR_KO("디렉토리"),
 	},
 
 	[StrId_DefaultLongTitle] =
@@ -49,6 +51,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_JP("自作アプリ"),
 		STR_PT("Aplicação Homebrew"),
 		STR_NL("Homebrew toepassing"),
+		STR_KO("홈브류 애플리케이션"),
 	},
 
 	[StrId_DefaultPublisher] =
@@ -61,6 +64,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_JP("未知の作者"),
 		STR_PT("Autor Desconhecido"),
 		STR_NL("Auteur onbekend"),
+		STR_KO("작자미상"),
 	},
 
 	[StrId_IOError] =
@@ -73,6 +77,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_JP("I／Oエラー"),
 		STR_PT("Erro de E/S"),
 		STR_NL("I/O Fout"),
+		STR_KO("I/O 에러"),
 	},
 
 	[StrId_CouldNotOpenFile] =
@@ -85,6 +90,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_JP("ファイルを開くことができませんでした：\n%s"),
 		STR_PT("Não foi possível abrir o ficheiro:\n%s"),
 		STR_NL("Kan bestand niet openen:\n%s"),
+		STR_KO("파일을 열 수 없습니다:\n%s"),
 	},
 
 	[StrId_NoAppsFound_Title] =
@@ -97,6 +103,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_JP("アプリを見つかりませんでした"),
 		STR_PT("Não foram encontradas aplicações"),
 		STR_NL("Geen toepassingen gevonden"),
+		STR_KO("애플리케이션을 찾을 수 없습니다"),
 	},
 
 	[StrId_NoAppsFound_Msg] =
@@ -143,6 +150,11 @@ const char* const g_strings[StrId_Max][16] =
 			"Zorg ervoor dat een map genaamd /3ds in de\n"
 			"rootdirectory van de SD kaart aangemaakt is\n"
 			"en de toepassingen bevat."
+		),
+		STR_KO(
+			"애플리케이션을 SD 카드에서 찾을 수 없습니다.\n"
+			"SD 카드 최상단에 /3ds 라는 이름의 폴더가 있는지,\n"
+			"애플리케이션을 포함하고 있는지 확인해 주십시오."
 		),
 	},
 
@@ -197,6 +209,12 @@ const char* const g_strings[StrId_Max][16] =
 			"  \xEE\x80\x80 Herstarten\n"
 			"  \xEE\x80\x81 Annuleren"
 		),
+		STR_KO(
+			"\xEE\x81\xB3홈으로 돌아갈 수 없습니다.\n"
+			"당신의 기기를 리부팅 하려 합니다.\n\n"
+			"  \xEE\x80\x80 리부팅\n"
+			"  \xEE\x80\x81 취소"
+		),
 	},
 
 	[StrId_ReturnToHome] =
@@ -249,6 +267,12 @@ const char* const g_strings[StrId_Max][16] =
 			"  \xEE\x80\x81 Annuleren\n"
 			"  \xEE\x80\x82 Herstarten"
 		),
+		STR_KO(
+			"\xEE\x81\xB3홈으로 돌아가려 합니다.\n"
+			"  \xEE\x80\x80 이동\n"
+			"  \xEE\x80\x81 취소\n"
+			"  \xEE\x80\x82 리부팅"
+		),
 	},
 
 	[StrId_TitleSelector] =
@@ -261,6 +285,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_JP("題名セレクタ"),
 		STR_PT("Selector de Títulos"),
 		STR_NL("Titel selector"),
+		STR_KO("타이틀 선택기"),
 	},
 
 	[StrId_ErrorReadingTitleMetadata] =
@@ -276,6 +301,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_JP("題名メタデータを読み取ることができませんでした。\n%08lX%08lX@%d"),
 		STR_PT("Erro a ler os metadados do título.\n%08lX%08lX@%d"),
 		STR_NL("Fout bij het lezen van titel metadata.\n%08lX%08lX@%d"),
+		STR_KO("타이틀 메타데이터를 읽는데 실패하였습니다.\n%08lX%08lX@%d"),
 	},
 
 	[StrId_NoTitlesFound] =
@@ -288,6 +314,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_JP("題名を見つかりませんでした。"),
 		STR_PT("Nenhum título foi encontrado."),
 		STR_NL("Geen titels gevonden."),
+		STR_KO("타이틀을 찾지 못하였습니다."),
 	},
 
 	[StrId_SelectTitle] =
@@ -331,6 +358,11 @@ const char* const g_strings[StrId_Max][16] =
 			"Selecteer een titel.\n\n"
 			"  \xEE\x80\x80 Selecteer\n"
 			"  \xEE\x80\x81 Annuleren"
+		),
+		STR_KO(
+			"대상 타이틀을 선택해 주십시오.\n\n"
+			"  \xEE\x80\x80 선택\n"
+			"  \xEE\x80\x81 취소"
 		),
 	},
 
@@ -376,6 +408,11 @@ const char* const g_strings[StrId_Max][16] =
 			"voor het starten van toepassingen met de gekozen titlel.\n"
 			"Gebruik een andere exploit."
 		),
+		STR_KO(
+			"이 홈브류 익스플로잇은 해당 타이틀에서 어플리케이션을\n"
+			"실행시키는 것을 지원하지 않습니다.\n"
+			"다른 익스플로잇을 사용해 주십시오."
+		),
 	},
 
 	[StrId_MissingTargetTitle] =
@@ -412,6 +449,10 @@ const char* const g_strings[StrId_Max][16] =
 			"De toepassing die je probeert te starten\n"
 			"vereist een titel die niet geinstalleerd is."
 		),
+		STR_KO(
+			"시도한 애플리케이션의 실행에 필요한 타이틀이\n"
+			"시스템에 설치되어 있지 않습니다."
+		),
 	},
 
 	[StrId_NetLoader] =
@@ -424,6 +465,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_JP("3dslinkネットローダ"),
 		STR_PT("Carregador de programas 3dslink"),
 		STR_NL("3dslink netwerk lader"),
+		STR_KO("3dslink 넷로더"),
 	},
 
 	[StrId_NetLoaderUnavailable] =
@@ -436,6 +478,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_JP("3dslinkネットローダを利用できません。"),
 		STR_PT("O carregador de programas está de momento indisponível."),
 		STR_NL("De netwerk lader is niet beschikbaar."),
+		STR_KO("넷로더는 현재 사용이 불가능 합니다."),
 	},
 
 	[StrId_NetLoaderError] =
@@ -448,6 +491,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_JP("エラーが発生しました。\n詳細：[%s:%d]"),
 		STR_PT("Ocorreu um erro.\nDetalhes técnicos: [%s:%d]"),
 		STR_NL("Er is een fout opgetreden\nTechnische details: [%s:%d]"),
+		STR_KO("에러가 발생했습니다.\n상세: [%s:%d]"),
 	},
 
 	[StrId_NetLoaderActive] =
@@ -492,6 +536,11 @@ const char* const g_strings[StrId_Max][16] =
 			"IP Addr: %lu.%lu.%lu.%lu, Poort: %d\n\n"
 			"  \xEE\x80\x81 Annuleren"
 		),
+		STR_KO(
+			"3dslink 의 연결을 대기중…\n"
+			"IP 주소: %lu.%lu.%lu.%lu, 포트: %d\n\n"
+			"  \xEE\x80\x81 취소"
+		),
 	},
 
 	[StrId_NetLoaderTransferring] =
@@ -527,6 +576,10 @@ const char* const g_strings[StrId_Max][16] =
 		STR_NL(
 			"Overbrengen...\n"
 			"%zu van %zu KiB geschreven"
+		),
+		STR_KO(
+			"전송중…\n"
+			"%zu / %zu KiB 전송"
 		),
 	},
 };
