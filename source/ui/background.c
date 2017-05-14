@@ -67,6 +67,7 @@ static void bubbleUpdate(bubble_t* bubble)
 		bubble->fade += 10;
 
 	bubble->angle += bubble->angv;
+	bubble->angleSin = sinf(M_TAU*bubble->angle);
 }
 
 static bool checkLogoAdv(u32 down)
@@ -125,7 +126,7 @@ void bubbleDraw(bubble_t* bubble, float top, float iod)
 	if ((bubble->y+32) <= top)
 		return; // Nothing to do
 	u32 color = ((u32)bubble->fade << 24) | 0xFFFFFF;
-	float x = bubble->x + iod*(10+10*bubble->z) + 16*sinf(M_TAU*bubble->angle);
+	float x = bubble->x + iod*(10+10*bubble->z) + 16*bubble->angleSin;
 	float y = bubble->y - top;
 	if (top > 0.0f)
 		x -= (400-320)/2;

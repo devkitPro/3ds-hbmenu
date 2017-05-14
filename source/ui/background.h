@@ -7,7 +7,7 @@ typedef struct
 {
 	s32 x, y;
 	float z;
-	float angle;
+	float angle, angleSin;
 	float angv;
 	u8 fade;
 } bubble_t;
