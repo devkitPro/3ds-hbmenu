@@ -21,6 +21,12 @@ void drawingExit(void);
 void drawingFrame(void);
 void drawingSetFade(float fade);
 
+static inline u32 drawingGetFrames(void)
+{
+	extern u32 g_drawFrames;
+	return g_drawFrames;
+}
+
 void drawingEnableDepth(bool enable);
 void drawingSetMode(DrawingMode mode);
 void drawingSetZ(float z);

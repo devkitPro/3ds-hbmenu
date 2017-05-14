@@ -5,6 +5,9 @@ static u8 batteryLevel = 5;
 static u8 charging;
 static char timeString[9];
 static char versionString[64];
+#ifdef DBGSTRING
+static char dbgString[64];
+#endif
 
 #define SECONDS_IN_DAY 86400
 #define SECONDS_IN_HOUR 3600
@@ -94,7 +97,8 @@ static bool checkLogoAdv(u32 down)
 
 void backgroundUpdate(void)
 {
-	int i;
+	u32 i, j;
+	u32 frames = drawingGetFrames();
 	u32 kDown = hidKeysDown();
 
 	if(ACU_GetWifiStatus(&wifiStatus) != 0)
@@ -108,15 +112,19 @@ void backgroundUpdate(void)
 	u8 min = (dayTime % SECONDS_IN_HOUR) / SECONDS_IN_MINUTE;
 	u8 seconds = dayTime % SECONDS_IN_MINUTE;
 	sprintf(timeString, "%02d:%02d:%02d", hour, min, seconds);
+#ifdef DBGSTRING
+	sprintf(dbgString, "fs:%lu gpu: %.2f%% cpu: %.2f%%", frames, C3D_GetDrawingTime()*6, C3D_GetProcessingTime()*6);
+#endif
 
-	// Update bubble
-	for (i = 0; i < BUBBLE_COUNT; i ++)
-		bubbleUpdate(&bubbles[i]);
+	// Update bubbles
+	for (j = frames; j; j --)
+		for (i = 0; i < BUBBLE_COUNT; i ++)
+			bubbleUpdate(&bubbles[i]);
 
 	// Update logo
 	if (logoImg == imgId_logo2)
-		logoPosX += 1.0f/64;
-	logoPosY -= 1.0f/192;
+		logoPosX += frames/64.0f;
+	logoPosY -= frames/192.0f;
 	if (checkLogoAdv(kDown))
 		logoImg = imgId_logo2;
 }
@@ -157,6 +165,9 @@ void backgroundDrawTop(float iod)
 	textSetColor(0xFFFFFFFF);
 	textDrawInBox(timeString, 0, 0.5f, 0.5f, 15.0f, 0.0f, 400.0f);
 	textDrawInBox(versionString, 1, 0.5f, 0.5f, 200.0f, 80.0f, 80.0f+271-10);
+#ifdef DBGSTRING
+	textDrawInBox(dbgString, -1, 0.5f, 0.5f, 200.0f, 20.0f, 80.0f+271-10);
+#endif
 
 	float posX = 20.0f*sinf(C3D_Angle(logoPosX));
 	float posY =  6.0f*sinf(C3D_Angle(logoPosY));

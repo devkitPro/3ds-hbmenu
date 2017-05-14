@@ -6,6 +6,7 @@ shaderProgram_s g_drawProg;
 u8 uLoc_projection;
 C3D_AttrInfo g_drawAttrInfo;
 C3D_BufInfo g_drawBufInfo;
+u32 g_drawFrames = 1;
 
 // Static variables
 static DVLB_s* s_programBin;
@@ -20,6 +21,8 @@ static C3D_Tex s_imagesTex;
 static float s_screenWidth;
 static float s_brightnessLevel;
 static float s_brightnessFade = 2.5f / 60;
+static bool s_drew;
+static u32 s_lastFrame;
 
 #define CLEAR_COLOR 0x68B0D8FF
 
@@ -108,7 +111,7 @@ void drawingSetFade(float fade)
 void drawingEnableDepth(bool enable)
 {
 	// Configure depth test to overwrite pixels with the same depth (needed to draw overlapping graphics)
-	C3D_DepthTest(true, enable ? GPU_GEQUAL : GPU_ALWAYS, GPU_WRITE_ALL);
+	C3D_DepthTest(enable, enable ? GPU_GEQUAL : GPU_ALWAYS, GPU_WRITE_ALL);
 }
 
 void drawingSetMode(DrawingMode mode)
@@ -245,7 +248,7 @@ static void drawingBottomScreen(void)
 			float y = 240.0f/2 + 24*sinf(angle);
 			drawingDrawImage(imgId_loading, 0xFFFFFFFF, x-4, y-4);
 		}
-		counter += 0.5f/60;
+		counter += g_drawFrames*0.5f/60;
 
 		textSetColor(0xFF000000); // black
 		textDrawInBox(textGetString(StrId_Loading), 0, 0.5f, 0.5f, 170.f, 0.0f, 320.0f);
@@ -260,8 +263,17 @@ void drawingFrame(void)
 	float slider = osGet3DSliderState();
 	float iod = slider/3;
 
+	C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
+	u32 frame = C3D_FrameCounter(0);
+	if (s_drew)
+		g_drawFrames = frame-s_lastFrame;
+	else
+		s_drew = true;
+	s_lastFrame = frame;
+	s_drawBufferPos = 0;
+
 	// Update brightness level
-	s_brightnessLevel += s_brightnessFade;
+	s_brightnessLevel += s_brightnessFade*g_drawFrames;
 	if (s_brightnessLevel < 0.0f)
 	{
 		s_brightnessLevel = 0.0f;
@@ -271,9 +283,6 @@ void drawingFrame(void)
 		s_brightnessLevel = 1.0f;
 		s_brightnessFade = 0.0f;
 	}
-
-	C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
-	s_drawBufferPos = 0;
 
 	// Top screen
 	s_screenWidth = 400.0f;

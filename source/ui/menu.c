@@ -39,6 +39,39 @@ static float menuGetEntryPos(menu_s* menu, int order)
 	return ret;
 }
 
+static void menuUpdateAnimation(menu_s* menu, float maxScroll, float val)
+{
+	if (menu->perturbed)
+	{
+		menu->scrollTarget = menuGetEntryPos(menu, menu->curEntry) - menu->scrollLocation;
+		float borderBot = 240.0f - g_imageData[imgId_appbubble].height - 4;
+		if (menu->scrollTarget > borderBot || (maxScroll > 0.0f && menu->curEntry==(menu->nEntries-1)))
+			menu->scrollVelocity += (menu->scrollTarget - borderBot) / SCROLLING_SPEED;
+		if (menu->scrollTarget < 0.0f || (maxScroll > 0.0f && menu->curEntry==0))
+			menu->scrollVelocity += menu->scrollTarget / SCROLLING_SPEED;
+	} else if (maxScroll > 0.0f)
+	{
+		if (menu->scrollLocation >= maxScroll)
+		{
+			menu->scrollVelocity += (maxScroll - menu->scrollLocation) / SCROLLING_SPEED;
+			if (val > 0.0f) menu->scrollVelocity -= val;
+		} else if (menu->scrollLocation < 0.0f)
+		{
+			menu->scrollVelocity -= menu->scrollLocation / SCROLLING_SPEED;
+			if (val < 0.0f) menu->scrollVelocity -= val;
+		} else
+			menu->scrollVelocity -= val;
+	}
+
+	menu->scrollLocation += menu->scrollVelocity;
+	menu->scrollVelocity *= 0.75f;
+	if (fabs(menu->scrollVelocity) < (1.0f/1024))
+	{
+		menu->scrollVelocity = 0.0f;
+		menu->perturbed = false;
+	}
+}
+
 void menuUpdate(void)
 {
 	menu_s* menu = menuGetCurrent();
@@ -73,6 +106,7 @@ void menuUpdate(void)
 	}
 	else if (menu->nEntries > 0)
 	{
+		u32 i;
 		int move = 0;
 
 		float val = g_cstickPos.dy * 1.0f/64;
@@ -91,11 +125,10 @@ void menuUpdate(void)
 		} else if (held & KEY_TOUCH)
 		{
 			val += (g_touchPos.py - menu->previousTouch.py) * 16.0f/64;
-			menu->touchTimer ++;
+			menu->touchTimer += drawingGetFrames();
 		} else if ((up & KEY_TOUCH) && menu->touchTimer<30
 			&& (iabs(menu->firstTouch.px-menu->previousTouch.px)+iabs(menu->firstTouch.py-menu->previousTouch.py))<12)
 		{
-			int i;
 			menuEntry_s *me, *me_sel = NULL;
 			float location = menu->scrollLocation + menu->previousTouch.py-4;
 
@@ -130,37 +163,8 @@ void menuUpdate(void)
 			menu->perturbed = true;
 
 		menu->previousTouch = g_touchPos;
-		float maxScroll = menuGetScrollHeight(menu);
-
-		if (menu->perturbed)
-		{
-			menu->scrollTarget = menuGetEntryPos(menu, menu->curEntry) - menu->scrollLocation;
-			float borderBot = 240.0f - g_imageData[imgId_appbubble].height - 4;
-			if (menu->scrollTarget > borderBot || (maxScroll > 0.0f && menu->curEntry==(menu->nEntries-1)))
-				menu->scrollVelocity += (menu->scrollTarget - borderBot) / SCROLLING_SPEED;
-			if (menu->scrollTarget < 0.0f || (maxScroll > 0.0f && menu->curEntry==0))
-				menu->scrollVelocity += menu->scrollTarget / SCROLLING_SPEED;
-		} else if (maxScroll > 0.0f)
-		{
-			if (menu->scrollLocation >= maxScroll)
-			{
-				menu->scrollVelocity += (maxScroll - menu->scrollLocation) / SCROLLING_SPEED;
-				if (val > 0.0f) menu->scrollVelocity -= val;
-			} else if (menu->scrollLocation < 0.0f)
-			{
-				menu->scrollVelocity -= menu->scrollLocation / SCROLLING_SPEED;
-				if (val < 0.0f) menu->scrollVelocity -= val;
-			} else
-				menu->scrollVelocity -= val;
-		}
-
-		menu->scrollLocation += menu->scrollVelocity;
-		menu->scrollVelocity *= 0.75f;
-		if (fabs(menu->scrollVelocity) < (1.0f/1024))
-		{
-			menu->scrollVelocity = 0.0f;
-			menu->perturbed = false;
-		}
+		for (i = drawingGetFrames(); i; i --)
+			menuUpdateAnimation(menu, menuGetScrollHeight(menu), val);
 	}
 }
 
