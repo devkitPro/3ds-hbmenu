@@ -35,7 +35,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_DE("Verzeichnis"),
 		STR_FR("Dossier"),
 		STR_IT("Cartella"),
-		STR_JP("ディレクトリ"),
+		STR_JP("フォルダ"),
 		STR_PT("Directório"),
 		STR_NL("Map"),
 		STR_KO("디렉토리"),
@@ -44,7 +44,7 @@ const char* const g_strings[StrId_Max][16] =
 	[StrId_DefaultLongTitle] =
 	{
 		STR_EN("Homebrew application"),
-		STR_ES("Aplicación casera"),
+		STR_ES("Aplicación homebrew"),
 		STR_DE("Homebrew-Anwendung"),
 		STR_FR("Application homebrew"),
 		STR_IT("Applicazione homebrew"),
@@ -74,7 +74,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_DE("IO-Fehler"),
 		STR_FR("Erreur d'E/S"),
 		STR_IT("Errore di I/O"),
-		STR_JP("I／Oエラー"),
+		STR_JP("入出力エラー"),
 		STR_PT("Erro de E/S"),
 		STR_NL("I/O Fout"),
 		STR_KO("I/O 에러"),
@@ -84,7 +84,7 @@ const char* const g_strings[StrId_Max][16] =
 	{
 		STR_EN("Could not open file:\n%s"),
 		STR_ES("No se pudo abrir el archivo:\n%s"),
-		STR_DE("Konnte Datei \"%s\" nicht öffnen."),
+		STR_DE("Konnte Datei nicht öffnen:\n%s"),
 		STR_FR("Impossible d'ouvrir le fichier :\n%s"),
 		STR_IT("Impossibile aprire il file:\n%s"),
 		STR_JP("ファイルを開くことができませんでした：\n%s"),
@@ -100,7 +100,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_DE("Keine Anwendungen gefunden"),
 		STR_FR("Aucune application trouvée"),
 		STR_IT("Nessun'applicazione trovata"),
-		STR_JP("アプリを見つかりませんでした"),
+		STR_JP("アプリが見つかりませんでした"),
 		STR_PT("Não foram encontradas aplicações"),
 		STR_NL("Geen toepassingen gevonden"),
 		STR_KO("애플리케이션을 찾을 수 없습니다"),
@@ -138,12 +138,14 @@ const char* const g_strings[StrId_Max][16] =
 		),
 		STR_JP(
 			"SDカードにアプリケーションが見つかりませんでした。\n"
-			"SDカードのルートに /3ds という名前のフォルダを作成してください。"
+			"SDカードのルートに「/3ds」という名前のフォルダを\n"
+			"作成してください。"
 		),
 		STR_PT(
 			"Nenhuma aplicação foi encontrada no cartão SD.\n"
-			"Certifique-se que uma pasta com o nome /3ds existe\n"
-			"na raiz do cartão SD e que contêm aplicações"
+			"Certifique-se que uma pasta com o nome /3ds\n"
+			"existe na raiz do cartão SD e que contêm\n"
+			"aplicações."
 		),
 		STR_NL(
 			"Geen toepassingen gevonden op de SD kaart.\n"
@@ -193,19 +195,19 @@ const char* const g_strings[StrId_Max][16] =
 		),
 		STR_JP(
 			"\xEE\x81\xB3HOMEに戻ることはできません。\n"
-			"コンソールが今すぐ再起動する。\n"
+			"コンソールが今すぐ再起動する。\n\n"
 			"  \xEE\x80\x80 再起動\n"
-			"  \xEE\x80\x81 中止する"
+			"  \xEE\x80\x81 キャンセル"
 		),
 		STR_PT(
-			"Regressar para \xEE\x81\xB3HOME não está disponível.\n"
-			"Está a reiniciar a sua consola.\n\n"
+			"Regressar para \xEE\x81\xB3HOME não está\n"
+			"disponível. Está a reiniciar a sua consola.\n\n"
 			"  \xEE\x80\x80 Reiniciar\n"
 			"  \xEE\x80\x81 Cancelar"
 		),
 		STR_NL(
-			"Terugkeren naar \xEE\x81\xB3HOME is niet beschikbaar.\n"
-			"Wil je de console herstarten?.\n\n"
+			"Terugkeren naar \xEE\x81\xB3HOME is niet\n"
+			"beschikbaar.Wil je de console herstarten?\n\n"
 			"  \xEE\x80\x80 Herstarten\n"
 			"  \xEE\x80\x81 Annuleren"
 		),
@@ -250,9 +252,9 @@ const char* const g_strings[StrId_Max][16] =
 			"  \xEE\x80\x82 Riavvia"
 		),
 		STR_JP(
-			"あなたは今すぐ\xEE\x81\xB3HOMEに戻されます。\n"
-			"  \xEE\x80\x80 赴く\n"
-			"  \xEE\x80\x81 中止する\n"
+			"あなたは今すぐ\xEE\x81\xB3HOMEに戻されます。\n\n"
+			"  \xEE\x80\x80 戻る\n"
+			"  \xEE\x80\x81 キャンセル\n"
 			"  \xEE\x80\x82 再起動"
 		),
 		STR_PT(
@@ -268,7 +270,7 @@ const char* const g_strings[StrId_Max][16] =
 			"  \xEE\x80\x82 Herstarten"
 		),
 		STR_KO(
-			"\xEE\x81\xB3홈으로 돌아가려 합니다.\n"
+			"\xEE\x81\xB3홈으로 돌아가려 합니다.\n\n"
 			"  \xEE\x80\x80 이동\n"
 			"  \xEE\x80\x81 취소\n"
 			"  \xEE\x80\x82 리부팅"
@@ -282,7 +284,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_DE("Titel-Selektor"),
 		STR_FR("Sélecteur de titre"),
 		STR_IT("Selettore del titolo"),
-		STR_JP("題名セレクタ"),
+		STR_JP("タイトルセレクタ"),
 		STR_PT("Selector de Títulos"),
 		STR_NL("Titel selector"),
 		STR_KO("타이틀 선택기"),
@@ -298,7 +300,7 @@ const char* const g_strings[StrId_Max][16] =
 			"de titre.\n%08lX%08lX@%d"
 		),
 		STR_IT("Errore nella lettura dei metadata dei titoli.\n%08lX%08lX@%d"),
-		STR_JP("題名メタデータを読み取ることができませんでした。\n%08lX%08lX@%d"),
+		STR_JP("タイトルメタデータを読み取ることができませんでした。\n%08lX%08lX@%d"),
 		STR_PT("Erro a ler os metadados do título.\n%08lX%08lX@%d"),
 		STR_NL("Fout bij het lezen van titel metadata.\n%08lX%08lX@%d"),
 		STR_KO("타이틀 메타데이터를 읽는데 실패하였습니다.\n%08lX%08lX@%d"),
@@ -311,7 +313,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_DE("Keine Titel gefunden."),
 		STR_FR("Aucun titre trouvé."),
 		STR_IT("Nessun titolo trovato."),
-		STR_JP("題名を見つかりませんでした。"),
+		STR_JP("タイトルが見つかりませんでした。"),
 		STR_PT("Nenhum título foi encontrado."),
 		STR_NL("Geen titels gevonden."),
 		STR_KO("타이틀을 찾지 못하였습니다."),
@@ -345,9 +347,9 @@ const char* const g_strings[StrId_Max][16] =
 			"  \xEE\x80\x81 Annulla"
 		),
 		STR_JP(
-			"有効な題名を選択してください。\n\n"
-			"  \xEE\x80\x80 選ぶ\n"
-			"  \xEE\x80\x81 中止する"
+			"ターゲットタイトルを選択してください。\n\n"
+			"  \xEE\x80\x80 選択\n"
+			"  \xEE\x80\x81 キャンセル"
 		),
 		STR_PT(
 			"Por favor escolha um título alvo.\n\n"
@@ -394,9 +396,9 @@ const char* const g_strings[StrId_Max][16] =
 			"Utilizza un exploit diverso."
 		),
 		STR_JP(
-			"この自家製の搾取は、ターゲットタイトルの下で\n"
-			"アプリを起動するためのサポートを持っていません。\n"
-			"別の自家製の搾取を使用してください。"
+			"この自家製のエクスプロイトは、ターゲットタイトルの\n"
+			"下でアプリを起動することができません。\n"
+			"別のエクスプロイトを使用してください。"
 		),
 		STR_PT(
 			"Este exploit homebrew não têm suporte\n"
@@ -488,7 +490,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_DE("Ein Fehler ist aufgetreten\nTechnische Details: [%s:%d]"),
 		STR_FR("Une erreur s'est produite.\nDétails techniques : [%s:%d]"),
 		STR_IT("Si è verificato un errore.\nDettagli tecnici : [%s:%d]"),
-		STR_JP("エラーが発生しました。\n詳細：[%s:%d]"),
+		STR_JP("エラーが発生しました。\n技術的な詳細：[%s:%d]"),
 		STR_PT("Ocorreu um erro.\nDetalhes técnicos: [%s:%d]"),
 		STR_NL("Er is een fout opgetreden\nTechnische details: [%s:%d]"),
 		STR_KO("에러가 발생했습니다.\n상세: [%s:%d]"),
@@ -523,8 +525,8 @@ const char* const g_strings[StrId_Max][16] =
 		),
 		STR_JP(
 			"3dslinkが接続するのを待っている…\n"
-			"IPアドレス： %lu.%lu.%lu.%lu, ポート：  %d\n\n"
-			"  \xEE\x80\x81 中止する"
+			"IPアドレス：%lu.%lu.%lu.%lu, ポート番号：%d\n\n"
+			"  \xEE\x80\x81 キャンセル"
 		),
 		STR_PT(
 			"A aguardar pela conexão do 3dslink…\n"
@@ -567,7 +569,7 @@ const char* const g_strings[StrId_Max][16] =
 		),
 		STR_JP(
 			"データが転送されます…\n"
-			"%zu / %zu KiB書かれた"
+			"%zu / %zu KiB 書かれた"
 		),
 		STR_PT(
 			"A transferir…\n"
