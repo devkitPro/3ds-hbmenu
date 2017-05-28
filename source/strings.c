@@ -75,7 +75,7 @@ const char* const g_strings[StrId_Max][16] =
 	{
 		STR_EN("I/O Error"),
 		STR_ES("Error de E/S"),
-		STR_DE("IO-Fehler"),
+		STR_DE("E/A-Fehler"),
 		STR_FR("Erreur d'E/S"),
 		STR_IT("Errore di I/O"),
 		STR_JP("入出力エラー"),
@@ -128,7 +128,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_DE(
 			"Auf der SD-Karte wurden keine Anwendungen\n"
 			"gefunden. Stelle sicher, dass ein Verzeichnis\n"
-			"names /3ds im Wurzelverzeichnis der SD-Karte\n"
+			"namens /3ds im Wurzelverzeichnis der SD-Karte\n"
 			"existiert und Anwendungen enthält!"
 		),
 		STR_FR(
@@ -412,8 +412,8 @@ const char* const g_strings[StrId_Max][16] =
 			"ejecutar aplicaciones bajo títulos de destino.\n"
 			"Use otro exploit diferente."
 		),
-	 	STR_DE(
-			"Dieser Homebrew-Exploit unterstützt das starten\n"
+		STR_DE(
+			"Dieser Homebrew-Exploit unterstützt das Starten\n"
 			"von Anwendungen unter Ziel-Titeln nicht.\n"
 			"Bitte verwende einen anderen Exploit."
 		),
@@ -578,7 +578,7 @@ const char* const g_strings[StrId_Max][16] =
 			"  \xEE\x80\x81 Cancelar"
 		),
 		STR_NL(
-			"Wachten op 3dslink verbinding...\n"
+			"Wachten op 3dslink verbinding…\n"
 			"IP Addr: %lu.%lu.%lu.%lu, Poort: %d\n\n"
 			"  \xEE\x80\x81 Annuleren"
 		),
@@ -625,7 +625,7 @@ const char* const g_strings[StrId_Max][16] =
 			"%zu de %zu KiB escritos"
 		),
 		STR_NL(
-			"Overbrengen...\n"
+			"Overbrengen…\n"
 			"%zu van %zu KiB geschreven"
 		),
 		STR_KO(
