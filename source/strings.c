@@ -26,6 +26,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_PT("Carregando…"),
 		STR_NL("Laden…"),
 		STR_KO("로딩중…"),
+		STR_RU("загрузка…"),
 	},
 
 	[StrId_Directory] =
@@ -39,6 +40,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_PT("Directório"),
 		STR_NL("Map"),
 		STR_KO("디렉토리"),
+		STR_RU("каталог"),
 	},
 
 	[StrId_DefaultLongTitle] =
@@ -52,6 +54,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_PT("Aplicação Homebrew"),
 		STR_NL("Homebrew toepassing"),
 		STR_KO("홈브류 애플리케이션"),
+		STR_RU("приложение хомебреw"),
 	},
 
 	[StrId_DefaultPublisher] =
@@ -65,6 +68,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_PT("Autor Desconhecido"),
 		STR_NL("Auteur onbekend"),
 		STR_KO("작자미상"),
+		STR_RU("неизвестный автор"),
 	},
 
 	[StrId_IOError] =
@@ -78,6 +82,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_PT("Erro de E/S"),
 		STR_NL("I/O Fout"),
 		STR_KO("I/O 에러"),
+		STR_RU("I/O-ошибка"),
 	},
 
 	[StrId_CouldNotOpenFile] =
@@ -91,6 +96,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_PT("Não foi possível abrir o ficheiro:\n%s"),
 		STR_NL("Kan bestand niet openen:\n%s"),
 		STR_KO("파일을 열 수 없습니다:\n%s"),
+		STR_RU("Не могу открыть файл:\n%s"),
 	},
 
 	[StrId_NoAppsFound_Title] =
@@ -104,6 +110,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_PT("Não foram encontradas aplicações"),
 		STR_NL("Geen toepassingen gevonden"),
 		STR_KO("애플리케이션을 찾을 수 없습니다"),
+		STR_RU("приложение не найдено"),
 	},
 
 	[StrId_NoAppsFound_Msg] =
@@ -157,6 +164,11 @@ const char* const g_strings[StrId_Max][16] =
 			"애플리케이션을 SD 카드에서 찾을 수 없습니다.\n"
 			"SD 카드 최상단에 /3ds 라는 이름의 폴더가 있는지,\n"
 			"애플리케이션을 포함하고 있는지 확인해 주십시오."
+		),
+		STR_RU(
+			"На SD-карте нет приложений.\n"
+			"Убедитесь, что на карте SD есть каталог с\n"
+			"названием 3ds и она содержит приложения."
 		),
 	},
 
@@ -217,6 +229,12 @@ const char* const g_strings[StrId_Max][16] =
 			"  \xEE\x80\x80 리부팅\n"
 			"  \xEE\x80\x81 취소"
 		),
+		STR_RU(
+			"Возврат к \xEE\x81\xB3HOME недоступен.\n"
+			"Вы собираетесь перезагрузить консоль.\n\n"
+			"  \xEE\x80\x80 Перезагрузите\n"
+			"  \xEE\x80\x81 Отмена"
+		)
 	},
 
 	[StrId_ReturnToHome] =
@@ -233,7 +251,7 @@ const char* const g_strings[StrId_Max][16] =
 			"  \xEE\x80\x81 Cancelar\n"
 			"  \xEE\x80\x82 Reiniciar"
 		),
-	 	STR_DE(
+		STR_DE(
 			"Rückkehr zum \xEE\x81\xB3HOME-Menü.\n\n"
 			"  \xEE\x80\x80 Fortfahren\n"
 			"  \xEE\x80\x81 Abbrechen\n"
@@ -275,6 +293,12 @@ const char* const g_strings[StrId_Max][16] =
 			"  \xEE\x80\x81 취소\n"
 			"  \xEE\x80\x82 리부팅"
 		),
+		STR_RU(
+			"Вы возвращаетесь в \xEE\x81\xB3HOME.\n\n"
+			"  \xEE\x80\x80 Вернуть\n"
+			"  \xEE\x80\x81 Отмена\n"
+			"  \xEE\x80\x82 Перезагрузите"
+		),
 	},
 
 	[StrId_TitleSelector] =
@@ -288,6 +312,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_PT("Selector de Títulos"),
 		STR_NL("Titel selector"),
 		STR_KO("타이틀 선택기"),
+		STR_RU("Селектор заголовков"),
 	},
 
 	[StrId_ErrorReadingTitleMetadata] =
@@ -304,6 +329,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_PT("Erro a ler os metadados do título.\n%08lX%08lX@%d"),
 		STR_NL("Fout bij het lezen van titel metadata.\n%08lX%08lX@%d"),
 		STR_KO("타이틀 메타데이터를 읽는데 실패하였습니다.\n%08lX%08lX@%d"),
+		STR_RU("Ошибка чтения метаданных заголовка\n.%08lX%08lX@%d"),
 	},
 
 	[StrId_NoTitlesFound] =
@@ -317,6 +343,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_PT("Nenhum título foi encontrado."),
 		STR_NL("Geen titels gevonden."),
 		STR_KO("타이틀을 찾지 못하였습니다."),
+		STR_RU("Заголовки не обнаружены"),
 	},
 
 	[StrId_SelectTitle] =
@@ -365,6 +392,11 @@ const char* const g_strings[StrId_Max][16] =
 			"대상 타이틀을 선택해 주십시오.\n\n"
 			"  \xEE\x80\x80 선택\n"
 			"  \xEE\x80\x81 취소"
+		),
+		STR_RU(
+			"Выберите целевой заголовок.\n\n"
+			"  \xEE\x80\x80 Выберите\n"
+			"  \xEE\x80\x81 Отмена"
 		),
 	},
 
@@ -415,6 +447,11 @@ const char* const g_strings[StrId_Max][16] =
 			"실행시키는 것을 지원하지 않습니다.\n"
 			"다른 익스플로잇을 사용해 주십시오."
 		),
+		STR_RU(
+			"Этот эксплойт homebrew не поддерживает запуск\n"
+			"приложений под целевыми заголовками.\n"
+			"Пожалуйста, используйте другой эксплойт."
+		),
 	},
 
 	[StrId_MissingTargetTitle] =
@@ -455,6 +492,10 @@ const char* const g_strings[StrId_Max][16] =
 			"시도한 애플리케이션의 실행에 필요한 타이틀이\n"
 			"시스템에 설치되어 있지 않습니다."
 		),
+		STR_RU(
+			"Для приложения требуется зависимость,\n"
+			"которая не установлена."
+		),
 	},
 
 	[StrId_NetLoader] =
@@ -468,6 +509,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_PT("Carregador de programas 3dslink"),
 		STR_NL("3dslink netwerk lader"),
 		STR_KO("3dslink 넷로더"),
+		STR_RU("Загрузчик 3dslink"),
 	},
 
 	[StrId_NetLoaderUnavailable] =
@@ -481,6 +523,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_PT("O carregador de programas está de momento indisponível."),
 		STR_NL("De netwerk lader is niet beschikbaar."),
 		STR_KO("넷로더는 현재 사용이 불가능 합니다."),
+		STR_RU("Загрузчик в настоящее время недоступен."),
 	},
 
 	[StrId_NetLoaderError] =
@@ -494,6 +537,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_PT("Ocorreu um erro.\nDetalhes técnicos: [%s:%d]"),
 		STR_NL("Er is een fout opgetreden\nTechnische details: [%s:%d]"),
 		STR_KO("에러가 발생했습니다.\n상세: [%s:%d]"),
+		STR_RU("Произошла ошибка.\nТехнические подробности: [%s:%d]"),
 	},
 
 	[StrId_NetLoaderActive] =
@@ -543,6 +587,11 @@ const char* const g_strings[StrId_Max][16] =
 			"IP 주소: %lu.%lu.%lu.%lu, 포트: %d\n\n"
 			"  \xEE\x80\x81 취소"
 		),
+		STR_RU(
+			"Ожидание подключения 3dslink…\n"
+			"айпи адрес: %lu.%lu.%lu.%lu, Порт: %d\n\n"
+			"  \xEE\x80\x81 Отмена"
+		)
 	},
 
 	[StrId_NetLoaderTransferring] =
@@ -582,6 +631,10 @@ const char* const g_strings[StrId_Max][16] =
 		STR_KO(
 			"전송중…\n"
 			"%zu / %zu KiB 전송"
+		),
+		STR_RU(
+			"Передача…\n"
+			"%zu из %zu КИБ написано"
 		),
 	},
 };
