@@ -26,7 +26,7 @@ void textInit(void)
 		tex->lodParam = 0;
 	}
 
-	FILE* f = fopen("sdmc:/3ds/locale.bin", 'rb');
+	FILE* f = fopen("sdmc:/3ds/locale.bin", "rb");
 	if (f) {
 		u8 c;
 		if (fread(&c, sizeof(c), 1, f) == 1) {
