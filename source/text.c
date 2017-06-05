@@ -26,6 +26,16 @@ void textInit(void)
 		tex->lodParam = 0;
 	}
 
+	FILE* f = fopen("sdmc:/3ds/locale.bin", 'rb');
+	if (f) {
+		u8 c;
+		if (fread(&c, sizeof(c), 1, f) == 1) {
+			s_textLang = c;
+		}
+		fclose(f);
+		return ;
+	}
+
 	Result res = cfguInit();
 	if (R_SUCCEEDED(res))
 	{
