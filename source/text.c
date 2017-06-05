@@ -30,10 +30,23 @@ void textInit(void)
 	if (f) {
 		u8 c;
 		if (fread(&c, sizeof(c), 1, f) == 1) {
+			// Support normal text editor
+			if (c >= '0' && c <= '9') {
+				c -= '0';
+			} else if (c >= 'a' && c <= 'z') {
+				c = c - 'a' + 0xa;
+			} else if (c >= 'A' && c <= 'Z') {
+				c = c - 'A' + 0xa;
+			}
+
 			s_textLang = c;
 		}
 		fclose(f);
-		return ;
+
+		// If the language id is invalid, fall back to system locale.
+		if (c >= 0 && c <= 11) {
+			return ;
+		}
 	}
 
 	Result res = cfguInit();
