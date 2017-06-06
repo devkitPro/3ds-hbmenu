@@ -260,13 +260,13 @@ const char* const g_strings[StrId_Max][16] =
 			"  \xEE\x80\x81 Отмена"
 		),
 		STR_ZH(
-			"无法返回至系统的 \xEE\x81\xB3HOME 菜单。\n"
+			"无法返回至主机的 \xEE\x81\xB3HOME 菜单。\n"
 			"您需要重新启动您的 3DS 设备。\n\n"
 			"  \xEE\x80\x80 重启设备\n"
 			"  \xEE\x80\x81 取消操作"
 		),
 		STR_TW(
-			"無法回到 \xEE\x81\xB3HOME 選單。\n"
+			"無法返回至主機的 \xEE\x81\xB3HOME 選單。\n"
 			"您需要重新啓動您的 3DS 設備。\n\n"
 			"  \xEE\x80\x80 重啓設備\n"
 			"  \xEE\x80\x81 取消操作"
@@ -336,13 +336,13 @@ const char* const g_strings[StrId_Max][16] =
 			"  \xEE\x80\x82 Перезагрузите"
 		),
 		STR_ZH(
-			"您即将返回到系统的 \xEE\x81\xB3HOME 菜单。\n\n"
+			"您即将返回到主機的 \xEE\x81\xB3HOME 菜单。\n\n"
 			"  \xEE\x80\x80 确认返回\n"
 			"  \xEE\x80\x81 取消操作\n"
 			"  \xEE\x80\x82 重启设备"
 		),
 		STR_TW(
-			"您即將返回到 \xEE\x81\xB3HOME 選單。\n\n"
+			"您即將返回到主機的 \xEE\x81\xB3HOME 選單。\n\n"
 			"  \xEE\x80\x80 確認返回\n"
 			"  \xEE\x80\x81 取消操作\n"
 			"  \xEE\x80\x82 重啓設備"
@@ -396,8 +396,8 @@ const char* const g_strings[StrId_Max][16] =
 		STR_NL("Geen titels gevonden."),
 		STR_KO("타이틀을 찾지 못하였습니다."),
 		STR_RU("Заголовки не обнаружены"),
-		STR_ZH("系统中找不到任何软件。"),
-		STR_TW("操作系统内找不到任何軟體。"),
+		STR_ZH("主机内找不到任何软件。"),
+		STR_TW("主機内找不到任何軟體。"),
 	},
 
 	[StrId_SelectTitle] =
@@ -571,11 +571,11 @@ const char* const g_strings[StrId_Max][16] =
 			"которая не установлена."
 		),
 		STR_ZH(
-			"系统内找不到该应用程序\n"
+			"主机找不到该应用程序\n"
 			"所需求的软件。"
 		),
 		STR_TW(
-			"系統找不到該應用程式\n"
+			"主機找不到該應用程式\n"
 			"所需求的軟體。"
 		),
 	},
