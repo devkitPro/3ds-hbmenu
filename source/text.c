@@ -26,31 +26,6 @@ void textInit(void)
 		tex->lodParam = 0;
 	}
 
-	FILE* f = fopen("sdmc:/3ds/locale.bin", "rb");
-	if (f) {
-		// File opened, read its content.
-		u8 c = 0xFF;
-		u8 readSuccess = fread(&c, sizeof(c), 1, f) == 1;
-		fclose(f);
-
-		if (readSuccess) {
-			// Allow user to edit this file without hex editor.
-			if (c >= '0' && c <= '9') {
-				c = c - '0';
-			} else if (c >= 'a' && c <= 'z') {
-				c = c - 'a' + 0xa;
-			} else if (c >= 'A' && c <= 'Z') {
-				c = c - 'A' + 0xa;
-			}
-
-			// If the language id is valid, skip get system language.
-			if (c >= 0 && c <= 11) {
-				s_textLang = c;
-				return ;
-			}
-		}
-	}
-
 	Result res = cfguInit();
 	if (R_SUCCEEDED(res))
 	{
