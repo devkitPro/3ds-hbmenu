@@ -27,6 +27,8 @@ const char* const g_strings[StrId_Max][16] =
 		STR_NL("Laden…"),
 		STR_KO("로딩중…"),
 		STR_RU("загрузка…"),
+		STR_ZH("加载中…"),
+		STR_TW("加載中…"),
 	},
 
 	[StrId_Directory] =
@@ -41,6 +43,8 @@ const char* const g_strings[StrId_Max][16] =
 		STR_NL("Map"),
 		STR_KO("디렉토리"),
 		STR_RU("каталог"),
+		STR_ZH("目录"),
+		STR_TW("資料夾"),
 	},
 
 	[StrId_DefaultLongTitle] =
@@ -55,6 +59,8 @@ const char* const g_strings[StrId_Max][16] =
 		STR_NL("Homebrew toepassing"),
 		STR_KO("홈브류 애플리케이션"),
 		STR_RU("приложение хомебреw"),
+		STR_ZH("自制应用程序"),
+		STR_TW("自製程式"),
 	},
 
 	[StrId_DefaultPublisher] =
@@ -69,6 +75,8 @@ const char* const g_strings[StrId_Max][16] =
 		STR_NL("Auteur onbekend"),
 		STR_KO("작자미상"),
 		STR_RU("неизвестный автор"),
+		STR_ZH("未知作者"),
+		STR_TW("未知作者"),
 	},
 
 	[StrId_IOError] =
@@ -83,6 +91,8 @@ const char* const g_strings[StrId_Max][16] =
 		STR_NL("I/O Fout"),
 		STR_KO("I/O 에러"),
 		STR_RU("I/O-ошибка"),
+		STR_ZH("读写出错"),
+		STR_TW("讀寫錯誤"),
 	},
 
 	[StrId_CouldNotOpenFile] =
@@ -97,6 +107,8 @@ const char* const g_strings[StrId_Max][16] =
 		STR_NL("Kan bestand niet openen:\n%s"),
 		STR_KO("파일을 열 수 없습니다:\n%s"),
 		STR_RU("Не могу открыть файл:\n%s"),
+		STR_ZH("无法打开文件:\n%s"),
+		STR_TW("開啓檔案失敗:\n%s"),
 	},
 
 	[StrId_NoAppsFound_Title] =
@@ -111,6 +123,8 @@ const char* const g_strings[StrId_Max][16] =
 		STR_NL("Geen toepassingen gevonden"),
 		STR_KO("애플리케이션을 찾을 수 없습니다"),
 		STR_RU("приложение не найдено"),
+		STR_ZH("找不到可执行的自制程序"),
+		STR_TW("未能找到可執行的自製程式"),
 	},
 
 	[StrId_NoAppsFound_Msg] =
@@ -169,6 +183,16 @@ const char* const g_strings[StrId_Max][16] =
 			"На SD-карте нет приложений.\n"
 			"Убедитесь, что на карте SD есть каталог с\n"
 			"названием 3ds и она содержит приложения."
+		),
+		STR_ZH(
+			"内存卡找不到任何可执行的应用程序。\n"
+			"请在内存卡的根目录建立「3ds」子目录，\n"
+			"并存放自制应用软件至该目录。"
+		),
+		STR_TW(
+			"記憶體找不到任何可執行的應用程式。\n"
+			"請在記憶體建立「3ds」資料夾，\n"
+			"然後儲存自製軟體到此處。"
 		),
 	},
 
@@ -234,7 +258,19 @@ const char* const g_strings[StrId_Max][16] =
 			"Вы собираетесь перезагрузить консоль.\n\n"
 			"  \xEE\x80\x80 Перезагрузите\n"
 			"  \xEE\x80\x81 Отмена"
-		)
+		),
+		STR_ZH(
+			"无法返回至主机的 \xEE\x81\xB3HOME 菜单。\n"
+			"您需要重新启动您的 3DS 设备。\n\n"
+			"  \xEE\x80\x80 重启设备\n"
+			"  \xEE\x80\x81 取消操作"
+		),
+		STR_TW(
+			"無法返回至主機的 \xEE\x81\xB3HOME 選單。\n"
+			"您需要重新啓動您的 3DS 設備。\n\n"
+			"  \xEE\x80\x80 重啓設備\n"
+			"  \xEE\x80\x81 取消操作"
+		),
 	},
 
 	[StrId_ReturnToHome] =
@@ -299,6 +335,18 @@ const char* const g_strings[StrId_Max][16] =
 			"  \xEE\x80\x81 Отмена\n"
 			"  \xEE\x80\x82 Перезагрузите"
 		),
+		STR_ZH(
+			"您即将返回到主機的 \xEE\x81\xB3HOME 菜单。\n\n"
+			"  \xEE\x80\x80 确认返回\n"
+			"  \xEE\x80\x81 取消操作\n"
+			"  \xEE\x80\x82 重启设备"
+		),
+		STR_TW(
+			"您即將返回到主機的 \xEE\x81\xB3HOME 選單。\n\n"
+			"  \xEE\x80\x80 確認返回\n"
+			"  \xEE\x80\x81 取消操作\n"
+			"  \xEE\x80\x82 重啓設備"
+		),
 	},
 
 	[StrId_TitleSelector] =
@@ -313,6 +361,8 @@ const char* const g_strings[StrId_Max][16] =
 		STR_NL("Titel selector"),
 		STR_KO("타이틀 선택기"),
 		STR_RU("Селектор заголовков"),
+		STR_ZH("应用启动器"),
+		STR_TW("自製程式啓動器"),
 	},
 
 	[StrId_ErrorReadingTitleMetadata] =
@@ -330,6 +380,8 @@ const char* const g_strings[StrId_Max][16] =
 		STR_NL("Fout bij het lezen van titel metadata.\n%08lX%08lX@%d"),
 		STR_KO("타이틀 메타데이터를 읽는데 실패하였습니다.\n%08lX%08lX@%d"),
 		STR_RU("Ошибка чтения метаданных заголовка\n.%08lX%08lX@%d"),
+		STR_ZH("读取软件相关信息时发生错误：\n%08lX%08lX@%d"),
+		STR_TW("讀取軟體相關數據時發生錯誤：\n%08lX%08lX@%d"),
 	},
 
 	[StrId_NoTitlesFound] =
@@ -344,6 +396,8 @@ const char* const g_strings[StrId_Max][16] =
 		STR_NL("Geen titels gevonden."),
 		STR_KO("타이틀을 찾지 못하였습니다."),
 		STR_RU("Заголовки не обнаружены"),
+		STR_ZH("主机内找不到任何软件。"),
+		STR_TW("主機内找不到任何軟體。"),
 	},
 
 	[StrId_SelectTitle] =
@@ -397,6 +451,16 @@ const char* const g_strings[StrId_Max][16] =
 			"Выберите целевой заголовок.\n\n"
 			"  \xEE\x80\x80 Выберите\n"
 			"  \xEE\x80\x81 Отмена"
+		),
+		STR_ZH(
+			"请选择一个目标软件。\n\n"
+			"  \xEE\x80\x80 确认\n"
+			"  \xEE\x80\x81 取消"
+		),
+		STR_TW(
+			"請選擇一個目標軟體。\n\n"
+			"  \xEE\x80\x80 確認\n"
+			"  \xEE\x80\x81 取消"
 		),
 	},
 
@@ -452,6 +516,16 @@ const char* const g_strings[StrId_Max][16] =
 			"приложений под целевыми заголовками.\n"
 			"Пожалуйста, используйте другой эксплойт."
 		),
+		STR_ZH(
+			"您所利用漏洞启动的「自制软件启动器」，\n"
+			"无法在当前选中的软件中启动自制软件。\n"
+			"请使用其它的漏洞来启动「自制软件启动器」。"
+		),
+		STR_TW(
+			"您所利用漏洞開啓的「自製軟體啓動器」\n"
+			"無法在當前選中的軟體啓動自製軟件。\n"
+			"請利用其它漏洞來啓動「自製軟體啓動器」。"
+		),
 	},
 
 	[StrId_MissingTargetTitle] =
@@ -496,6 +570,14 @@ const char* const g_strings[StrId_Max][16] =
 			"Для приложения требуется зависимость,\n"
 			"которая не установлена."
 		),
+		STR_ZH(
+			"主机找不到该应用程序\n"
+			"所需求的软件。"
+		),
+		STR_TW(
+			"主機找不到該應用程式\n"
+			"所需求的軟體。"
+		),
 	},
 
 	[StrId_NetLoader] =
@@ -510,6 +592,8 @@ const char* const g_strings[StrId_Max][16] =
 		STR_NL("3dslink netwerk lader"),
 		STR_KO("3dslink 넷로더"),
 		STR_RU("Загрузчик 3dslink"),
+		STR_ZH("3dslink 网络执行模块"),
+		STR_TW("3dslink 網路執行模組"),
 	},
 
 	[StrId_NetLoaderUnavailable] =
@@ -524,6 +608,8 @@ const char* const g_strings[StrId_Max][16] =
 		STR_NL("De netwerk lader is niet beschikbaar."),
 		STR_KO("넷로더는 현재 사용이 불가능 합니다."),
 		STR_RU("Загрузчик в настоящее время недоступен."),
+		STR_ZH("无法启动 3dslink 网络执行模块。"),
+		STR_TW("無法啓動 3dslink 網路執行模組。"),
 	},
 
 	[StrId_NetLoaderError] =
@@ -538,6 +624,8 @@ const char* const g_strings[StrId_Max][16] =
 		STR_NL("Er is een fout opgetreden\nTechnische details: [%s:%d]"),
 		STR_KO("에러가 발생했습니다.\n상세: [%s:%d]"),
 		STR_RU("Произошла ошибка.\nТехнические подробности: [%s:%d]"),
+		STR_ZH("发生错误。\n详细错误信息：[%s:%d]"),
+		STR_TW("發生錯誤。\n詳細錯誤資訊：[%s:%d]"),
 	},
 
 	[StrId_NetLoaderActive] =
@@ -591,7 +679,17 @@ const char* const g_strings[StrId_Max][16] =
 			"Ожидание подключения 3dslink…\n"
 			"айпи адрес: %lu.%lu.%lu.%lu, Порт: %d\n\n"
 			"  \xEE\x80\x81 Отмена"
-		)
+		),
+		STR_ZH(
+			"等待 3dslink 连接…\n"
+			"IP 地址：%lu.%lu.%lu.%lu，端口：%d\n\n"
+			"  \xEE\x80\x81 取消等待"
+		),
+		STR_TW(
+			"等待 3dslink 連接…\n"
+			"IP 位址：%lu.%lu.%lu.%lu，連接埠：%d\n\n"
+			"  \xEE\x80\x81 取消等待"
+		),
 	},
 
 	[StrId_NetLoaderTransferring] =
@@ -635,6 +733,14 @@ const char* const g_strings[StrId_Max][16] =
 		STR_RU(
 			"Передача…\n"
 			"%zu из %zu КИБ написано"
+		),
+		STR_ZH(
+			"正在传输…\n"
+			"已完成 %zu / %zu KiB"
+		),
+		STR_TW(
+			"正在傳輸…\n"
+			"已完成 %zu / %zu KiB"
 		),
 	},
 };
