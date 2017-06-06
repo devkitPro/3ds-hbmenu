@@ -1,6 +1,6 @@
 #pragma once
 #include "common.h"
-#include "strings.h"
+#include "language.h"
 
 void textInit(void);
 void textExit(void);
