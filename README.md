@@ -88,4 +88,4 @@ hbmenu is looking for contributors! We're making this repository public so that 
 - Fluto: graphics
 - Arkhandar: graphics
 - dotjasp: graphics (regionfree icon)
-- gruetzkopf, TuxSH, AuroraWright, davidosky99, SentientTurtle, Yami-chan, d3m3vilurr, daedreth: translations
+- gruetzkopf, TuxSH, AuroraWright, Soph1a7, SentientTurtle, Yami-chan, d3m3vilurr, daedreth: translations
