@@ -34,7 +34,6 @@ int main()
 	if (R_FAILED(rc))
 		svcBreak(USERBREAK_PANIC);
 
-	acInit();
 	ptmuInit();
 	uiInit();
 	drawingInit();
@@ -59,6 +58,5 @@ int main()
 	drawingExit();
 	romfsExit();
 	ptmuExit();
-	acExit();
 	return 0;
 }
