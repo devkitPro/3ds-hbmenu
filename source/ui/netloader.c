@@ -334,8 +334,8 @@ void netloaderTask(void* arg)
 
 	static menuEntry_s me;
 	menuEntryInit(&me, ENTRY_TYPE_FILE);
-	strncpy(me.path, "sdmc:/3ds/", sizeof(me.path));
-	strncat(me.path, recvbuf, sizeof(me.path));
+	strncpy(me.path, "sdmc:/3ds/", sizeof(me.path)-1);
+	strncat(me.path, recvbuf, sizeof(me.path)-1);
 	me.path[sizeof(me.path)-1] = 0;
 
 	FILE* outf = fopen(me.path, "wb");

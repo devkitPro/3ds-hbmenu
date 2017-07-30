@@ -70,15 +70,16 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut)
 	static char tempbuf[PATH_MAX+1];
 	bool isOldAppFolder = false;
 
+	tempbuf[PATH_MAX] = 0;
 	strcpy(me->name, name);
 	if (me->type == ENTRY_TYPE_FOLDER)
 	{
 		// Check for old style application folder
-		snprintf(tempbuf, sizeof(tempbuf), "%s/boot.3dsx", me->path);
+		snprintf(tempbuf, sizeof(tempbuf)-1, "%.*s/boot.3dsx", sizeof(tempbuf)-12, me->path);
 		bool found = fileExists(tempbuf);
 		if (!found)
 		{
-			snprintf(tempbuf, sizeof(tempbuf), "%s/%s.3dsx", me->path, name);
+			snprintf(tempbuf, sizeof(tempbuf)-1, "%.*s/%.*s.3dsx", sizeof(tempbuf)/2, me->path, sizeof(tempbuf)/2-7, name);
 			found = fileExists(tempbuf);
 		}
 
