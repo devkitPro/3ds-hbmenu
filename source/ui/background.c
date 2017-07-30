@@ -27,6 +27,14 @@ static const ImageId batteryLevels[] =
 	imgId_battery4,
 };
 
+static const ImageId wifiLevels[] =
+{
+	imgId_wifiNull,
+	imgId_wifi1,
+	imgId_wifi2,
+	imgId_wifi3,
+};
+
 static float randf()
 {
 	return (float)rand()/(float)RAND_MAX;
@@ -101,8 +109,7 @@ void backgroundUpdate(void)
 	u32 frames = drawingGetFrames();
 	u32 kDown = hidKeysDown();
 
-	if(ACU_GetWifiStatus(&wifiStatus) != 0)
-		wifiStatus = 0;
+	wifiStatus = osGetWifiStrength();
 	PTMU_GetBatteryLevel(&batteryLevel);
 	PTMU_GetBatteryChargeState(&charging);
 
@@ -172,7 +179,7 @@ void backgroundDrawTop(float iod)
 	float posX = 20.0f*sinf(C3D_Angle(logoPosX));
 	float posY =  6.0f*sinf(C3D_Angle(logoPosY));
 	drawingDrawImage(logoImg, 0xFFFFFFFF, 80.0f+posX+iod*8, 63.0f+posY);
-	drawingDrawImage(wifiStatus ? imgId_wifi3 : imgId_wifiNull, 0xFFFFFFFF, 0.0f, 0.0f);
+	drawingDrawImage(wifiLevels[wifiStatus], 0xFFFFFFFF, 0.0f, 0.0f);
 	drawingDrawImage(charging ? imgId_batteryCharge : batteryLevels[batteryLevel], 0xFFFFFFFF, 400.0f-27, 0.0f);
 }
 
