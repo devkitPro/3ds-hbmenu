@@ -4,7 +4,9 @@ static Handle hbldrHandle;
 
 static bool init(void)
 {
-	return R_SUCCEEDED(svcConnectToPort(&hbldrHandle, "hb:ldr"));
+	Result res = svcConnectToPort(&hbldrHandle, "hb:ldr");
+	if (R_FAILED(res)) return res;
+	return R_SUCCEEDED(amInit());
 }
 
 static Result HBLDR_SetTarget(const char* path)
@@ -34,8 +36,23 @@ static Result HBLDR_SetArgv(const void* buffer, u32 size)
 	return rc;
 }
 
+static Result HBLDR_SetTitle(u64 titleid,u8 mediatype)
+{
+	u32* cmdbuf = getThreadCommandBuffer();
+
+	cmdbuf[0] = IPC_MakeHeader(7, 3, 0);
+	cmdbuf[1] = titleid;
+	cmdbuf[2] = titleid >> 32;
+	cmdbuf[3] = mediatype;
+
+	Result rc = svcSendSyncRequest(hbldrHandle);
+	if (R_SUCCEEDED(rc)) rc = cmdbuf[1];
+	return rc;
+}
+
 static void deinit(void)
 {
+	amExit();
 	svcCloseHandle(hbldrHandle);
 }
 
@@ -48,10 +65,17 @@ static void launchFile(const char* path, argData_s* args, executableMetadata_s* 
 	uiExitLoop();
 }
 
+static void useTitle(u64 tid, u8 mediatype)
+{
+	HBLDR_SetTitle(tid,mediatype);
+	aptSetChainloader(tid,mediatype);
+}
+
 const loaderFuncs_s loader_Rosalina =
 {
 	.name = "Rosalina",
 	.init = init,
 	.deinit = deinit,
 	.launchFile = launchFile,
+	.useTitle = useTitle,
 };
