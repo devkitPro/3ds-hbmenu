@@ -106,9 +106,8 @@ int menuScan(const char* target)
 		FS_DirectoryEntry* entry = &dirSt->entry_data[dirSt->index];
 		menuEntry_s* me = NULL;
 		bool shortcut = false;
-		if (entry->attributes & FS_ATTRIBUTE_HIDDEN) {
+		if (entry->attributes & FS_ATTRIBUTE_HIDDEN) 
 			continue;
-		}
 
 		if (entry->attributes & FS_ATTRIBUTE_DIRECTORY)
 			me = menuCreateEntry(ENTRY_TYPE_FOLDER);
