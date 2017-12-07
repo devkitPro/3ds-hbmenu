@@ -390,6 +390,11 @@ void netloaderUpdate(void)
 		wantExit = true;
 }
 
+void netloaderExit(void)
+{
+	wantExit = true;
+}
+
 void netloaderDrawBot(void)
 {
 	drawingSetMode(DRAW_MODE_DRAWING);

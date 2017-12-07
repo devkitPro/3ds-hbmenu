@@ -52,6 +52,7 @@ int main()
 		drawingFrame();
 	}
 
+	netloaderExit();
 	launchExit();
 	workerExit();
 	textExit();
