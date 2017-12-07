@@ -77,7 +77,15 @@ static bool netloaderActivate(void)
 {
 	struct sockaddr_in serv_addr;
 	// create udp socket for broadcast ping
-	udpfd = socket(AF_INET, SOCK_DGRAM, 0);
+	while (true)
+	{
+		udpfd = socket(AF_INET, SOCK_DGRAM, 0);
+		if (!(udpfd < 0 && errno == -ENETDOWN))
+			break;
+		svcSleepThread(16666666ULL);
+		if (wantExit)
+			return false;
+	}
 	if (udpfd < 0)
 	{
 		netloaderError("udp socket", errno);
@@ -265,10 +273,15 @@ void netloaderTask(void* arg)
 		errorScreen(textGetString(StrId_NetLoader), textGetString(StrId_NetLoaderUnavailable));
 		return;
 	}
-	if (!netloaderActivate())
-		return;
 
 	uiEnterState(UI_STATE_NETLOADER);
+
+	if (!netloaderActivate())
+	{
+		netloaderDeactivate();
+		uiExitState();
+		return;
+	}
 
 	while (datafd < 0)
 	{
@@ -411,7 +424,9 @@ void netloaderDrawBot(void)
 	const char* text = buf;
 	u32 ip = gethostid();
 
-	if (datafd < 0)
+	if (ip == 0)
+		snprintf(buf, sizeof(buf), textGetString(StrId_NetLoaderOffline));
+	else if (datafd < 0)
 		snprintf(buf, sizeof(buf), textGetString(StrId_NetLoaderActive), ip&0xFF, (ip>>8)&0xFF, (ip>>16)&0xFF, (ip>>24)&0xFF, NETLOADER_PORT);
 	else
 		snprintf(buf, sizeof(buf), textGetString(StrId_NetLoaderTransferring), filetotal/1024, filelen/1024);

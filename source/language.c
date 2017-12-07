@@ -628,6 +628,11 @@ const char* const g_strings[StrId_Max][16] =
 		STR_TW("發生錯誤。\n詳細錯誤資訊：[%s:%d]"),
 	},
 
+	[StrId_NetLoaderOffline] =
+	{
+		STR_EN("Offline, waiting for network…\n\n\n  \xEE\x80\x81 Cancel"),
+	},
+
 	[StrId_NetLoaderActive] =
 	{
 		STR_EN(

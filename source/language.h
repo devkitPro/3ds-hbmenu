@@ -26,6 +26,7 @@ typedef enum
 
 	StrId_NetLoader,
 	StrId_NetLoaderUnavailable,
+	StrId_NetLoaderOffline,
 	StrId_NetLoaderError,
 	StrId_NetLoaderActive,
 	StrId_NetLoaderTransferring,
