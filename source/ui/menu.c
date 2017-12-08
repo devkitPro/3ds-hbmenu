@@ -93,12 +93,17 @@ void menuUpdate(void)
 	{
 		workerSchedule(changeDirTask, "..");
 	}
-	else if ((down & KEY_START) || pressedSettings)
+	else if (down & KEY_START)
 	{
 		if (loaderHasFlag(LOADER_SHOW_REBOOT))
 			uiEnterState(UI_STATE_REBOOT);
 		else
 			showingHomeIcon = true;
+	}
+	else if (pressedSettings)
+	{
+		if (loaderHasFlag(LOADER_SHOW_REBOOT))
+			uiEnterState(UI_STATE_REBOOT);
 	}
 	else if (down & KEY_Y)
 	{
@@ -261,7 +266,8 @@ void menuDrawBot(void)
 		drawingDrawImage(imgId_scrollbarKnob,  0xFFFFFFFF, 308.0f, calcScrollbarKnobPos(menu, y));
 	}
 
-	drawingDrawImage(imgId_settings, 0xFFFFFFFF, 320.0f-g_imageData[imgId_settings].width, 240.0f-g_imageData[imgId_settings].height);
+	if (loaderHasFlag(LOADER_SHOW_REBOOT))
+		drawingDrawImage(imgId_settings, 0xFFFFFFFF, 320.0f-g_imageData[imgId_settings].width, 240.0f-g_imageData[imgId_settings].height);
 
 	if (showingHomeIcon)
 	{
