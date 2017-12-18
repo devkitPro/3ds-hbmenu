@@ -633,6 +633,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_EN("Offline, waiting for network…\n\n\n  \xEE\x80\x81 Cancel"),
 		STR_ZH("无法连接网络，等待网络连接…\n\n\n  \xEE\x80\x81 取消"),
 		STR_TW("當前離線，等待網路連線…\n\n\n  \xEE\x80\x81 取消"),
+		STR_IT("Disconnesso, in attesa della connessione…\n\n\n  \xEE\x80\x81 Annullare"),
 	},
 
 	[StrId_NetLoaderActive] =
