@@ -1,6 +1,7 @@
 #include "text.h"
 
 static C3D_Tex* s_glyphSheets;
+static float s_textScale;
 static int s_textLang = CFG_LANGUAGE_EN;
 
 void textInit(void)
@@ -12,6 +13,7 @@ void textInit(void)
 	int i;
 	TGLP_s* glyphInfo = fontGetGlyphInfo();
 	s_glyphSheets = malloc(sizeof(C3D_Tex)*glyphInfo->nSheets);
+	s_textScale = 25.0f / glyphInfo->baselinePos;
 	for (i = 0; i < glyphInfo->nSheets; i ++)
 	{
 		C3D_Tex* tex = &s_glyphSheets[i];
@@ -59,7 +61,6 @@ void textSetColor(u32 color)
 	C3D_TexEnv* env = C3D_GetTexEnv(0);
 	C3D_TexEnvSrc(env, C3D_RGB, GPU_CONSTANT, 0, 0);
 	C3D_TexEnvSrc(env, C3D_Alpha, GPU_TEXTURE0, GPU_CONSTANT, 0);
-	C3D_TexEnvOp(env, C3D_Both, 0, 0, 0);
 	C3D_TexEnvFunc(env, C3D_RGB, GPU_REPLACE);
 	C3D_TexEnvFunc(env, C3D_Alpha, GPU_MODULATE);
 	C3D_TexEnvColor(env, color);
@@ -99,7 +100,7 @@ float textCalcWidth(const char* text)
 			width += cwi->charWidth;
 		}
 	} while (code > 0);
-	return maxf(width, maxWidth);
+	return s_textScale*maxf(width, maxWidth);
 }
 
 void textDraw(float x, float y, float scaleX, float scaleY, bool baseline, const char* text)
@@ -110,6 +111,8 @@ void textDraw(float x, float y, float scaleX, float scaleY, bool baseline, const
 	const uint8_t* p = (const uint8_t*)text;
 	float firstX = x;
 	u32 flags = GLYPH_POS_CALC_VTXCOORD | (baseline ? GLYPH_POS_AT_BASELINE : 0);
+	scaleX *= s_textScale;
+	scaleY *= s_textScale;
 	do
 	{
 		if (!*p) break;
