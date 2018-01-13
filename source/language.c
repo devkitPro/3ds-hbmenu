@@ -630,10 +630,54 @@ const char* const g_strings[StrId_Max][16] =
 
 	[StrId_NetLoaderOffline] =
 	{
-		STR_EN("Offline, waiting for network…\n\n\n  \xEE\x80\x81 Cancel"),
-		STR_ZH("无法连接网络，等待网络连接…\n\n\n  \xEE\x80\x81 取消"),
-		STR_TW("當前離線，等待網路連線…\n\n\n  \xEE\x80\x81 取消"),
-		STR_IT("Disconnesso, in attesa della connessione…\n\n\n  \xEE\x80\x81 Annullare"),
+		STR_EN(
+			"Offline, waiting for network…\n\n"
+			"  \xEE\x80\x81 Cancel"
+		),
+		STR_ES(
+			"Sin conexión, esperando a la red…\n\n"
+			"  \xEE\x80\x81 Cancelar"
+		),
+		STR_DE(
+			"Offline, warte auf Netzwerkverbindung…\n\n"
+			"  \xEE\x80\x81 Abbrechen"
+		),
+		STR_FR(
+			"Hors-ligne, en attente de connexion réseau…\n\n"
+			"  \xEE\x80\x81 Annuler"
+		),
+		STR_IT(
+			"Disconnesso, in attesa della connessione…\n\n"
+			"  \xEE\x80\x81 Annulla"
+		),
+		STR_JP(
+			"オフライン、ネット接続を待っています…\n\n"
+			"  \xEE\x80\x81 キャンセル"
+		),
+		STR_PT(
+			"[[Offline, waiting for network]]…\n\n"
+			"  \xEE\x80\x81 Cancelar"
+		),
+		STR_NL(
+			"[[Offline, waiting for network]]…\n\n"
+			"  \xEE\x80\x81 Annuleren"
+		),
+		STR_KO(
+			"[[Offline, waiting for network]]…\n\n"
+			"  \xEE\x80\x81 취소"
+		),
+		STR_RU(
+			"[[Offline, waiting for network]]…\n\n"
+			"  \xEE\x80\x81 Отмена"
+		),
+		STR_ZH(
+			"无法连接网络，等待网络连接…\n\n"
+			"  \xEE\x80\x81 取消等待"
+		),
+		STR_TW(
+			"當前離線，等待網路連線…\n\n"
+			"  \xEE\x80\x81 取消等待"
+		),
 	},
 
 	[StrId_NetLoaderActive] =
@@ -661,7 +705,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_IT(
 			"In attesa della connessione di 3dslink…\n"
 			"Ind. IP : %lu.%lu.%lu.%lu, Porta : %d\n\n"
-			"  \xEE\x80\x81 Annullare"
+			"  \xEE\x80\x81 Annulla"
 		),
 		STR_JP(
 			"3dslinkが接続するのを待っている…\n"
