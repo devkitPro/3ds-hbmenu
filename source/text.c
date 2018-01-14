@@ -13,7 +13,7 @@ void textInit(void)
 	int i;
 	TGLP_s* glyphInfo = fontGetGlyphInfo();
 	s_glyphSheets = malloc(sizeof(C3D_Tex)*glyphInfo->nSheets);
-	s_textScale = 25.0f / glyphInfo->baselinePos;
+	s_textScale = 30.0f / glyphInfo->cellHeight;
 	for (i = 0; i < glyphInfo->nSheets; i ++)
 	{
 		C3D_Tex* tex = &s_glyphSheets[i];
