@@ -70,7 +70,13 @@ setting the current working directory if you already have data files in a partic
 
 #### Building
 
-3dslink uses zlib for compression and tinyxml2 for XML parsing so you'll need to compile and install both for 3DS. devkitPro provides a [3ds_portlibs](https://github.com/devkitPro/3ds_portlibs) repository which can be used to download, build and install these two libraries from source.
+3dslink uses zlib for compression and tinyxml2 for XML parsing. These libraries are provided by devkitPro through the portlibs mechanism. In order to install them, use the following command:
+
+```shell
+    pacman -S 3ds-zlib 3ds-tinyxml2
+```
+
+(Note that `dkp-pacman` is used instead on systems that do not already have pacman, such as macOS or non-Arch-based Linux distros)
 
 Binaries of hbmenu can be downloaded from the [Releases](https://github.com/fincs/new-hbmenu/releases) page.
 
