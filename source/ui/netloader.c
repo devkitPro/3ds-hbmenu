@@ -77,7 +77,7 @@ static bool netloaderActivate(void)
 {
 	struct sockaddr_in serv_addr;
 	// create udp socket for broadcast ping
-	while (true)
+	for (;;)
 	{
 		udpfd = socket(AF_INET, SOCK_DGRAM, 0);
 		if (!(udpfd < 0 && errno == -ENETDOWN))
@@ -172,7 +172,7 @@ void netloaderError(const char* func, int err)
 	errorScreen(textGetString(StrId_NetLoader), textGetString(StrId_NetLoaderError), func, err);
 }
 
-static int decompress(int sock, FILE* fh, size_t filesize)
+static int receiveAndDecompress(int sock, FILE* fh, size_t filesize)
 {
 	static unsigned char in[ZLIB_CHUNK];
 	static unsigned char out[ZLIB_CHUNK];
@@ -364,7 +364,7 @@ void netloaderTask(void* arg)
 
 	static char fbuf[64*1024];
 	setvbuf(outf, fbuf, _IOFBF, sizeof(fbuf));
-	len = decompress(datafd, outf, filelen);
+	len = receiveAndDecompress(datafd, outf, filelen);
 	fclose(outf);
 
 	if (len != Z_OK)
