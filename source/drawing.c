@@ -146,7 +146,6 @@ void drawingWithColor(u32 color)
 {
 	C3D_TexEnv* env = C3D_GetTexEnv(0);
 	C3D_TexEnvSrc(env, C3D_Both, GPU_CONSTANT, 0, 0);
-	C3D_TexEnvOp(env, C3D_Both, 0, 0, 0);
 	C3D_TexEnvFunc(env, C3D_Both, GPU_REPLACE);
 	C3D_TexEnvColor(env, color);
 }
@@ -156,7 +155,6 @@ void drawingWithTex(C3D_Tex* tex, u32 color)
 	drawingSetTex(tex);
 	C3D_TexEnv* env = C3D_GetTexEnv(0);
 	C3D_TexEnvSrc(env, C3D_Both, GPU_TEXTURE0, GPU_CONSTANT, 0);
-	C3D_TexEnvOp(env, C3D_Both, 0, 0, 0);
 	C3D_TexEnvFunc(env, C3D_Both, GPU_MODULATE);
 	C3D_TexEnvColor(env, color);
 }
