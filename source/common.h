@@ -13,6 +13,7 @@
 // 3DS includes
 #include <3ds.h>
 #include <citro3d.h>
+#include <tex3ds.h>
 
 // hbmenu includes
 #include "ui.h"

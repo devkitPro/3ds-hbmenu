@@ -1,0 +1,23 @@
+--atlas -f rgba8888 -z auto
+
+appbubble.png
+battery0.png
+battery1.png
+battery2.png
+battery3.png
+battery4.png
+batteryCharge.png
+bubble.png
+defaultIcon.png
+folderIcon.png
+loading.png
+logo.png
+logo2.png
+scrollbarKnob.png
+scrollbarTrack.png
+settings.png
+wifi0.png
+wifi1.png
+wifi2.png
+wifi3.png
+wifiNull.png

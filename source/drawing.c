@@ -2,6 +2,7 @@
 #include "program_shbin.h"
 
 // Global variables
+imageInfo_s* g_imageData;
 shaderProgram_s g_drawProg;
 u8 uLoc_projection;
 C3D_AttrInfo g_drawAttrInfo;
@@ -18,6 +19,7 @@ static int s_drawBufferPos;
 static float s_drawBufferZ = 0.5;
 static C3D_Tex* s_curTex;
 static C3D_Tex s_imagesTex;
+static Tex3DS_Texture s_imagesTexInfo;
 static float s_screenWidth;
 static float s_brightnessLevel;
 static float s_brightnessFade = 2.5f / 60;
@@ -35,17 +37,22 @@ void lzssDecompress(const void *in, void *out, u32 size);
 
 static void loadImages(void)
 {
-	FILE* f = fopen("romfs:/images.lz", "rb");
-	fseek(f, 0, SEEK_END);
-	size_t size = ftell(f);
-	rewind(f);
-
-	void* temp = malloc(size);
-	fread(temp, 1, size, f);
+	FILE* f = fopen("romfs:/gfx/images.t3x", "rb");
+	if (!f) svcBreak(USERBREAK_PANIC);
+	s_imagesTexInfo = Tex3DS_TextureImportStdio(f, &s_imagesTex, NULL, false);
 	fclose(f);
+	if (!s_imagesTexInfo) svcBreak(USERBREAK_PANIC);
 
-	C3D_TexInit(&s_imagesTex, 512, 512, GPU_RGBA8);
-	lzssDecompress((char*)temp+4, s_imagesTex.data, s_imagesTex.size);
+	size_t numSubTex = Tex3DS_GetNumSubTextures(s_imagesTexInfo);
+	g_imageData = (imageInfo_s*)malloc(numSubTex*sizeof(imageInfo_s));
+	if (!g_imageData) svcBreak(USERBREAK_PANIC);
+
+	for (size_t i = 0; i < numSubTex; i ++)
+	{
+		const Tex3DS_SubTexture* subtex = Tex3DS_GetSubTexture(s_imagesTexInfo, i);
+		g_imageData[i].width = subtex->width;
+		g_imageData[i].height = subtex->height;
+	}
 }
 
 void drawingInit(void)
@@ -91,7 +98,9 @@ void drawingInit(void)
 void drawingExit(void)
 {
 	// Free the images
+	free(g_imageData);
 	C3D_TexDelete(&s_imagesTex);
+	Tex3DS_TextureFree(s_imagesTexInfo);
 
 	// Free the shader programs
 	shaderProgramFree(&g_drawProg);
@@ -244,7 +253,7 @@ static void drawingBottomScreen(void)
 			float angle = ((float)i/8.0f + counter)*M_TAU;
 			float x = 320.0f/2 + 24*cosf(angle);
 			float y = 240.0f/2 + 24*sinf(angle);
-			drawingDrawImage(imgId_loading, 0xFFFFFFFF, x-4, y-4);
+			drawingDrawImage(images_loading_idx, 0xFFFFFFFF, x-4, y-4);
 		}
 		counter += g_drawFrames*0.5f/60;
 
@@ -313,9 +322,18 @@ void drawingDrawImage(ImageId id, u32 color, float x, float y)
 {
 	const imageInfo_s* p = &g_imageData[id];
 	drawingWithTex(&s_imagesTex, color);
-	drawingAddVertex(x,          y+p->height, p->texcoord.left,  p->texcoord.bottom);
-	drawingAddVertex(x+p->width, y+p->height, p->texcoord.right, p->texcoord.bottom);
-	drawingAddVertex(x,          y,           p->texcoord.left , p->texcoord.top);
-	drawingAddVertex(x+p->width, y,           p->texcoord.right, p->texcoord.top);
+
+	// Calculate texcoords
+	float tcTopLeft[2], tcTopRight[2], tcBotLeft[2], tcBotRight[2];
+	const Tex3DS_SubTexture* subtex = Tex3DS_GetSubTexture(s_imagesTexInfo, id);
+	Tex3DS_SubTextureBottomLeft (subtex, &tcBotLeft[0],  &tcBotLeft[1]);
+	Tex3DS_SubTextureBottomRight(subtex, &tcBotRight[0], &tcBotRight[1]);
+	Tex3DS_SubTextureTopLeft    (subtex, &tcTopLeft[0],  &tcTopLeft[1]);
+	Tex3DS_SubTextureTopRight   (subtex, &tcTopRight[0], &tcTopRight[1]);
+
+	drawingAddVertex(x,          y+p->height, tcBotLeft[0], tcBotLeft[1]);
+	drawingAddVertex(x+p->width, y+p->height, tcBotRight[0], tcBotRight[1]);
+	drawingAddVertex(x,          y,           tcTopLeft[0], tcTopLeft[1]);
+	drawingAddVertex(x+p->width, y,           tcTopRight[0], tcTopRight[1]);
 	drawingSubmitPrim(GPU_TRIANGLE_STRIP, 4);
 }

@@ -21,7 +21,7 @@ static void launchMenuEntryTask(void* arg)
 
 static float menuGetScrollHeight(menu_s* menu)
 {
-	float ret = 4.0f + menu->nEntries*(4.0f+g_imageData[imgId_appbubble].height) - 240.0f;
+	float ret = 4.0f + menu->nEntries*(4.0f+g_imageData[images_appbubble_idx].height) - 240.0f;
 	if (ret < 0.0f) ret = 0.0f;
 	return ret;
 }
@@ -33,7 +33,7 @@ static int iabs(int x)
 
 static float menuGetEntryPos(menu_s* menu, int order)
 {
-	float ret = order*(4.0f+g_imageData[imgId_appbubble].height);
+	float ret = order*(4.0f+g_imageData[images_appbubble_idx].height);
 	if (order > menu->curEntry)
 		ret += 4.0f;
 	return ret;
@@ -44,7 +44,7 @@ static void menuUpdateAnimation(menu_s* menu, float maxScroll, float val)
 	if (menu->perturbed)
 	{
 		menu->scrollTarget = menuGetEntryPos(menu, menu->curEntry) - menu->scrollLocation;
-		float borderBot = 240.0f - g_imageData[imgId_appbubble].height - 4;
+		float borderBot = 240.0f - g_imageData[images_appbubble_idx].height - 4;
 		if (menu->scrollTarget > borderBot || (maxScroll > 0.0f && menu->curEntry==(menu->nEntries-1)))
 			menu->scrollVelocity += (menu->scrollTarget - borderBot) / SCROLLING_SPEED;
 		if (menu->scrollTarget < 0.0f || (maxScroll > 0.0f && menu->curEntry==0))
@@ -78,7 +78,7 @@ void menuUpdate(void)
 	u32 down = hidKeysDown();
 	u32 held = hidKeysHeld();
 	u32 up   = hidKeysUp();
-	bool pressedSettings = (down & KEY_TOUCH) && g_touchPos.px >= (320-g_imageData[imgId_settings].width) && g_touchPos.py >= (240-g_imageData[imgId_settings].height);
+	bool pressedSettings = (down & KEY_TOUCH) && g_touchPos.px >= (320-g_imageData[images_settings_idx].width) && g_touchPos.py >= (240-g_imageData[images_settings_idx].height);
 	if (down & KEY_A)
 	{
 		if (menu->nEntries > 0)
@@ -185,8 +185,8 @@ void menuDrawTop(float iod)
 
 float menuDrawEntry(menuEntry_s* me, float x, float y, bool selected)
 {
-	float bubbleWidth = g_imageData[imgId_appbubble].width;
-	float bubbleHeight = g_imageData[imgId_appbubble].height;
+	float bubbleWidth = g_imageData[images_appbubble_idx].width;
+	float bubbleHeight = g_imageData[images_appbubble_idx].height;
 
 	float height = bubbleHeight + 4.0f;
 	if (selected)
@@ -199,17 +199,17 @@ float menuDrawEntry(menuEntry_s* me, float x, float y, bool selected)
 		return height;
 
 	if (selected)
-		drawingDrawImage(imgId_appbubble, 0x80808080, x, y+4);
-	drawingDrawImage(imgId_appbubble, 0xFFFFFFFF, x, y);
+		drawingDrawImage(images_appbubble_idx, 0x80808080, x, y+4);
+	drawingDrawImage(images_appbubble_idx, 0xFFFFFFFF, x, y);
 
 	if (me->icon)
 	{
 		drawingWithTex(me->icon, 0xFFFFFFFF);
 		drawingDrawQuad(x+8, y+8, 48, 48);
 	} else if (me->type == ENTRY_TYPE_FOLDER)
-		drawingDrawImage(imgId_folderIcon, 0xFFFFFFFF, x+8, y+8);
+		drawingDrawImage(images_folderIcon_idx, 0xFFFFFFFF, x+8, y+8);
 	else
-		drawingDrawImage(imgId_defaultIcon, 0xFFFFFFFF, x+8, y+8);
+		drawingDrawImage(images_defaultIcon_idx, 0xFFFFFFFF, x+8, y+8);
 
 	textSetColor(0xFF545454);
 	textDrawInBox(me->name, -1, 0.5f, 0.5f, y+20, x+66, x+bubbleWidth-8);
@@ -223,7 +223,7 @@ static float calcScrollbarKnobPos(menu_s* menu, float totalHeight)
 {
 	totalHeight -= 240.0f;
 	if (totalHeight < 0.0f) return 5.0f;
-	float trackHeight = g_imageData[imgId_scrollbarTrack].height-g_imageData[imgId_scrollbarKnob].height;
+	float trackHeight = g_imageData[images_scrollbarTrack_idx].height-g_imageData[images_scrollbarKnob_idx].height;
 	float curPos = menu->scrollLocation;
 	if (curPos < 0.0f) curPos = 0.0f;
 	else if (curPos >= totalHeight) curPos = totalHeight;
@@ -257,11 +257,11 @@ void menuDrawBot(void)
 			y += menuDrawEntry(me, 9.0f, 4+y-loc, i==menu->curEntry);
 
 		// Draw scrollbar
-		drawingDrawImage(imgId_scrollbarTrack, 0xFFFFFFFF, 308.0f, 5.0f);
-		drawingDrawImage(imgId_scrollbarKnob,  0xFFFFFFFF, 308.0f, calcScrollbarKnobPos(menu, y));
+		drawingDrawImage(images_scrollbarTrack_idx, 0xFFFFFFFF, 308.0f, 5.0f);
+		drawingDrawImage(images_scrollbarKnob_idx,  0xFFFFFFFF, 308.0f, calcScrollbarKnobPos(menu, y));
 	}
 
-	drawingDrawImage(imgId_settings, 0xFFFFFFFF, 320.0f-g_imageData[imgId_settings].width, 240.0f-g_imageData[imgId_settings].height);
+	drawingDrawImage(images_settings_idx, 0xFFFFFFFF, 320.0f-g_imageData[images_settings_idx].width, 240.0f-g_imageData[images_settings_idx].height);
 
 	if (showingHomeIcon)
 	{

@@ -15,24 +15,24 @@ static char dbgString[64];
 
 static bubble_t bubbles[BUBBLE_COUNT];
 static float logoPosX, logoPosY;
-static ImageId logoImg = imgId_logo;
+static ImageId logoImg = images_logo_idx;
 
 static const ImageId batteryLevels[] =
 {
-	imgId_battery0,
-	imgId_battery0,
-	imgId_battery1,
-	imgId_battery2,
-	imgId_battery3,
-	imgId_battery4,
+	images_battery0_idx,
+	images_battery0_idx,
+	images_battery1_idx,
+	images_battery2_idx,
+	images_battery3_idx,
+	images_battery4_idx,
 };
 
 static const ImageId wifiLevels[] =
 {
-	imgId_wifiNull,
-	imgId_wifi1,
-	imgId_wifi2,
-	imgId_wifi3,
+	images_wifiNull_idx,
+	images_wifi1_idx,
+	images_wifi2_idx,
+	images_wifi3_idx,
 };
 
 static float randf()
@@ -129,11 +129,11 @@ void backgroundUpdate(void)
 			bubbleUpdate(&bubbles[i]);
 
 	// Update logo
-	if (logoImg == imgId_logo2)
+	if (logoImg == images_logo2_idx)
 		logoPosX += frames/64.0f;
 	logoPosY -= frames/192.0f;
 	if (checkLogoAdv(kDown))
-		logoImg = imgId_logo2;
+		logoImg = images_logo2_idx;
 }
 
 void bubbleDraw(bubble_t* bubble, float top, float iod)
@@ -145,7 +145,7 @@ void bubbleDraw(bubble_t* bubble, float top, float iod)
 	float y = bubble->y - top;
 	if (top > 0.0f)
 		x -= (400-320)/2;
-	drawingDrawImage(imgId_bubble, color, x, y);
+	drawingDrawImage(images_bubble_idx, color, x, y);
 }
 
 void backgroundDrawTop(float iod)
@@ -180,7 +180,7 @@ void backgroundDrawTop(float iod)
 	float posY =  6.0f*sinf(C3D_Angle(logoPosY));
 	drawingDrawImage(logoImg, 0xFFFFFFFF, 80.0f+posX+iod*8, 63.0f+posY);
 	drawingDrawImage(wifiLevels[wifiStatus], 0xFFFFFFFF, 0.0f, 0.0f);
-	drawingDrawImage(charging ? imgId_batteryCharge : batteryLevels[batteryLevel], 0xFFFFFFFF, 400.0f-27, 0.0f);
+	drawingDrawImage(charging ? images_batteryCharge_idx : batteryLevels[batteryLevel], 0xFFFFFFFF, 400.0f-27, 0.0f);
 }
 
 void backgroundDrawBot(void)

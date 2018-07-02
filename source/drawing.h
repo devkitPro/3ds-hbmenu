@@ -1,6 +1,15 @@
 #pragma once
 #include "common.h"
-#include "imagemap.h"
+#include "images.h"
+
+typedef int ImageId;
+
+typedef struct
+{
+	float width, height;
+} imageInfo_s;
+
+extern imageInfo_s* g_imageData;
 
 #define DRAWING_MAX_VERTICES 8192
 

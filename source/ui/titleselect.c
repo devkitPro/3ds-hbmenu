@@ -128,7 +128,7 @@ void titleSelectDrawBot(void)
 
 	if (s_iconReady)
 	{
-		float x = (320.0f-g_imageData[imgId_appbubble].width)/2+4;
+		float x = (320.0f-g_imageData[images_appbubble_idx].width)/2+4;
 		menuDrawEntry(&s_iconEntry, x, 150.0f-4, true);
 	}
 }
