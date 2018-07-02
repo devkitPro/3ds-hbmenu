@@ -95,10 +95,13 @@ void descriptorLoad(descriptor_s* d, const char* path)
 			{
 				if(!strcmp(child->Name(), "request"))
 				{
-					// 1 (highest) is default priority
-					if(child->QueryIntAttribute("priority", &d->requestedServices[d->numRequestedServices].priority))d->requestedServices[d->numRequestedServices].priority = 1;
+					serviceRequest_s* req = &d->requestedServices[d->numRequestedServices];
 
-					strncpy(d->requestedServices[d->numRequestedServices].name, child->GetText(), 9);
+					// 1 (highest) is default priority
+					if(child->QueryIntAttribute("priority", &req->priority)) req->priority = 1;
+
+					strncpy(req->name, child->GetText(), 8);
+					req->name[8] = 0;
 
 					d->numRequestedServices++;
 				}
