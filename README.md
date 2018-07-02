@@ -70,13 +70,13 @@ setting the current working directory if you already have data files in a partic
 
 #### Building
 
-3dslink uses zlib for compression and tinyxml2 for XML parsing. These libraries are provided by devkitPro through the portlibs mechanism. In order to install them, use the following command:
+hbmenu uses zlib for compression and tinyxml2 for XML parsing. These libraries are provided by devkitPro through the portlibs mechanism. In order to install them, use the following command:
 
 ```shell
     pacman -S 3ds-zlib 3ds-tinyxml2
 ```
 
-(Note that `dkp-pacman` is used instead on systems that do not already have pacman, such as macOS or non-Arch-based Linux distros)
+(Note that `dkp-pacman` is used instead on systems that do not distribute pacman, such as macOS or Debian-based Linux distros)
 
 Binaries of hbmenu can be downloaded from the [Releases](https://github.com/fincs/new-hbmenu/releases) page.
 
@@ -94,4 +94,4 @@ hbmenu is looking for contributors! We're making this repository public so that 
 - Fluto: graphics
 - Arkhandar: graphics
 - dotjasp: graphics (regionfree icon)
-- gruetzkopf, TuxSH, AuroraWright, Soph1a7, SentientTurtle, Yami-chan, d3m3vilurr, daedreth, JixunMoe: translations
+- gruetzkopf, TuxSH, AuroraWright, Soph1a7, SentientTurtle, Yami-chan, d3m3vilurr, daedreth, JixunMoe, yy-codes, MCPE-PC: translations
