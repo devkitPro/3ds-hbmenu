@@ -31,6 +31,13 @@ typedef enum
 	StrId_NetLoaderActive,
 	StrId_NetLoaderTransferring,
 
+	// StrId_NetSender,
+	// StrId_NetSenderUnavailable,
+	// StrId_NetSenderOffline,
+	// StrId_NetSenderError,
+	// StrId_NetSenderActive,
+	// StrId_NetSenderTransferring,
+
 	StrId_Max,
 } StrId;
 
