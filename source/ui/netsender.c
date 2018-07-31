@@ -58,15 +58,15 @@ int sendData(int sock, int sendsize, char *buffer)
 	while(sendsize)
 	{
 		int len = send(sock, buffer, sendsize, 0);
-		if(len == 0) break;
-		if(len != -1)
+		if (len == 0) break;
+		if (len != -1)
 		{
 			sendsize -= len;
 			buffer += len;
 		}
 		else
 		{
-			if(errno != EWOULDBLOCK && errno != EAGAIN)
+			if (errno != EWOULDBLOCK && errno != EAGAIN)
 			{
 				perror(NULL);
 				break;
@@ -90,7 +90,7 @@ int recvData(int sock, char *buffer, int size, int flags)
 			sizeleft -=len;
 			buffer +=len;
 		} else {
-			if ( errno != EWOULDBLOCK && errno != EAGAIN) {
+			if (errno != EWOULDBLOCK && errno != EAGAIN) {
 				perror(NULL);
 				break;
 			}
@@ -115,7 +115,7 @@ static int recvInt32LE(int socket, s32 *data)
 	char intbuf[4];
 	int len = recvData(socket,intbuf,4,0);
 
-	if(len == 4)
+	if (len == 4)
 	{
 		*data = (intbuf[0] & 0xff) | (intbuf[1] <<  8) | (intbuf[2] <<  16) | (intbuf[3] <<  24);
 		return 0;
@@ -138,10 +138,10 @@ static void send3DSXFile(in_addr_t dsaddr, char *name, FILE *fh)
 	strm.zfree = Z_NULL;
 	strm.opaque = Z_NULL;
 	ret = deflateInit(&strm, Z_DEFAULT_COMPRESSION);
-	if(ret != Z_OK) return;
+	if (ret != Z_OK) return;
 
 	datafd = socket(AF_INET,SOCK_STREAM,0);
-	if(datafd < 0)
+	if (datafd < 0)
 	{
 		return;
 	}
@@ -152,7 +152,7 @@ static void send3DSXFile(in_addr_t dsaddr, char *name, FILE *fh)
 	s.sin_port = htons(NETSENDER_PORT);
 	s.sin_addr.s_addr = dsaddr;
 
-	if(connect(datafd, (struct sockaddr *)&s, sizeof(s)) < 0 )
+	if (connect(datafd, (struct sockaddr *)&s, sizeof(s)) < 0 )
 	{
 		struct in_addr address;
 		address.s_addr = dsaddr;
@@ -162,34 +162,34 @@ static void send3DSXFile(in_addr_t dsaddr, char *name, FILE *fh)
 
 	int namelen = strlen(name);
 
-	if(sendInt32LE(datafd, namelen))
+	if (sendInt32LE(datafd, namelen))
 	{
 		fprintf(stderr,"Failed sending filename length\n");
 		close(datafd);
 		return;
 	}
 
-	if(sendData(datafd, namelen, name))
+	if (sendData(datafd, namelen, name))
 	{
 		fprintf(stderr,"Failed sending filename\n");
 		close(datafd);
 		return;
 	}
 
-	if(sendInt32LE(datafd, filelen))
+	if (sendInt32LE(datafd, filelen))
 	{
 		close(datafd);
 		return;
 	}
 
 	s32 response;
-	if(recvInt32LE(datafd, &response) != 0)
+	if (recvInt32LE(datafd, &response) != 0)
 	{
 		close(datafd);
 		return;
 	}
 
-	if(response != 0)
+	if (response != 0)
 	{
 		close(datafd);
 		return;
@@ -216,14 +216,14 @@ static void send3DSXFile(in_addr_t dsaddr, char *name, FILE *fh)
 
 			if (have != 0)
 			{
-				if(sendInt32LE(datafd,have))
+				if (sendInt32LE(datafd,have))
 				{
 					fprintf(stderr,"Failed sending chunk size\n");
 					close(datafd);
 					return;
 				}
 
-				if(sendData(datafd, have, (char*)out))
+				if (sendData(datafd, have, (char*)out))
 				{
 					fprintf(stderr,"Failed sending %s\n", name);
 					(void)deflateEnd(&strm);
@@ -239,7 +239,7 @@ static void send3DSXFile(in_addr_t dsaddr, char *name, FILE *fh)
 	} while (flush != Z_FINISH);
 	(void)deflateEnd(&strm);
 
-	if(recvInt32LE(datafd,&response)!=0)
+	if (recvInt32LE(datafd,&response)!=0)
 	{
 		close(datafd);
 		return;
@@ -255,7 +255,7 @@ static void send3DSXFile(in_addr_t dsaddr, char *name, FILE *fh)
 	cmdbuf[2] = (cmdlen>>16) & 0xff;
 	cmdbuf[3] = (cmdlen>>24) & 0xff;
 
-	if(sendData(datafd,cmdlen+4,cmdbuf))
+	if (sendData(datafd,cmdlen+4,cmdbuf))
 	{
 		close(datafd);
 		return;
@@ -293,9 +293,14 @@ void netsenderTask(void* arg)
 		dsaddr = ((struct sockaddr_in*)info->ai_addr)->sin_addr;
 		freeaddrinfo(info);
 	}
-	
-	if(dsaddr.s_addr == INADDR_NONE)
+
+	if (dsaddr.s_addr == INADDR_NONE)
 	{
+		fclose(inf);
+		free(filename);
+
+		netsenderDeactivate();
+		uiExitState();
 		return;
 	}
 	
