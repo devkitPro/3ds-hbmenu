@@ -14,9 +14,13 @@
 
 typedef u32 in_addr_t;
 
-static int datafd   = -1;
+static int datafd = -1;
 static volatile size_t filelen, filetotal;
 static volatile bool wantExit = false;
+static volatile bool inputIp = false;
+#define RECEIVER_IP_LENGTH 15
+static char receiverIp[RECEIVER_IP_LENGTH+1];
+static int ipNumberSelector = 0;
 
 static void netsenderError(const char* func, int err);
 
@@ -50,7 +54,7 @@ void netsenderError(const char* func, int err)
 	netsenderDeactivate();
 	if (uiGetStateInfo()->update == netsenderUpdate)
 		uiExitState();
-	errorScreen(textGetString(StrId_NetLoader), textGetString(StrId_NetLoaderError), func, err);
+	errorScreen(textGetString(StrId_NetSender), textGetString(StrId_NetSenderError), func, err);
 }
 
 int sendData(int sock, int sendsize, char *buffer)
@@ -264,19 +268,49 @@ static void send3DSXFile(in_addr_t dsaddr, char *name, FILE *fh)
 
 void netsenderTask(void* arg)
 {
-	menuEntry_s* me = (menuEntry_s*)arg;
 	wantExit = false;
+	inputIp = false;
+	strcpy(receiverIp, "000.000.000.000");
+	ipNumberSelector = 0;
 	filelen = 0;
 	filetotal = 0;
 
 	if (!netsenderInit())
 	{
-		errorScreen(textGetString(StrId_NetLoader), textGetString(StrId_NetLoaderUnavailable));
+		errorScreen(textGetString(StrId_NetSender), textGetString(StrId_NetSenderUnavailable));
 		return;
 	}
 
 	uiEnterState(UI_STATE_NETSENDER);
 
+	while (!inputIp)
+	{
+		if (wantExit)
+		{
+			netsenderDeactivate();
+			uiExitState();
+			return;
+		}
+		svcSleepThread(1e7);
+	}
+
+	struct in_addr dsaddr;
+	dsaddr.s_addr = INADDR_NONE;
+
+	struct addrinfo *info;
+	if (getaddrinfo(receiverIp, NULL, NULL, &info) == 0) {
+		dsaddr = ((struct sockaddr_in*)info->ai_addr)->sin_addr;
+		freeaddrinfo(info);
+	}
+
+	if (dsaddr.s_addr == INADDR_NONE)
+	{
+		netsenderDeactivate();
+		uiExitState();
+		return;
+	}
+
+	menuEntry_s* me = (menuEntry_s*)arg;
 	char* filename = strdup(me->path);
 	char* basename = strrchr(filename,'/') + 1;  // assume it doesnt fail
 
@@ -285,25 +319,6 @@ void netsenderTask(void* arg)
 	filelen = ftell(inf);
 	fseek(inf, 0, SEEK_SET);
 
-	struct in_addr dsaddr;
-	dsaddr.s_addr  =  INADDR_NONE;
-
-	struct addrinfo *info;
-	if (getaddrinfo("192.168.1.17", NULL, NULL, &info) == 0) {
-		dsaddr = ((struct sockaddr_in*)info->ai_addr)->sin_addr;
-		freeaddrinfo(info);
-	}
-
-	if (dsaddr.s_addr == INADDR_NONE)
-	{
-		fclose(inf);
-		free(filename);
-
-		netsenderDeactivate();
-		uiExitState();
-		return;
-	}
-	
 	send3DSXFile(dsaddr.s_addr, basename, inf);
 
 	fclose(inf);
@@ -319,7 +334,42 @@ void netsenderUpdate(void)
 	if (wantExit || datafd >= 0) return;
 
 	if (hidKeysDown() & KEY_B)
+	{
 		wantExit = true;
+	}
+	else if (hidKeysDown() & KEY_A)
+	{
+		inputIp = true;
+		svcSleepThread(1e7);
+	}
+	else if (hidKeysDown() & KEY_LEFT)
+	{
+		ipNumberSelector--;
+		if (ipNumberSelector <= -1)
+			ipNumberSelector = RECEIVER_IP_LENGTH-1;
+		else if (ipNumberSelector % 3 == (ipNumberSelector/3) - 1)
+			ipNumberSelector--;
+	}
+	else if (hidKeysDown() & KEY_RIGHT)
+	{
+		ipNumberSelector++;
+		if (ipNumberSelector >= RECEIVER_IP_LENGTH)
+			ipNumberSelector = 0;
+		else if (ipNumberSelector % 3 == (ipNumberSelector/3) - 1)
+			ipNumberSelector++;
+	}
+	else if (hidKeysDown() & KEY_UP)
+	{
+		receiverIp[ipNumberSelector]++;
+		if (receiverIp[ipNumberSelector] > '9')
+			receiverIp[ipNumberSelector] = '0';
+	}
+	else if (hidKeysDown() & KEY_DOWN)
+	{
+		receiverIp[ipNumberSelector]--;
+		if (receiverIp[ipNumberSelector] < '0')
+			receiverIp[ipNumberSelector] = '9';
+	}
 }
 
 void netsenderExit(void)
@@ -337,16 +387,37 @@ void netsenderDrawBot(void)
 	drawingSubmitPrim(GPU_TRIANGLE_STRIP, 4);
 
 	textSetColor(0xFF545454);
-	textDrawInBox(textGetString(StrId_NetLoader), 0, 0.75f, 0.75f, 60.0f+25.0f, 8.0f, 320-8.0f);
+	textDrawInBox(textGetString(StrId_NetSender), 0, 0.75f, 0.75f, 60.0f+25.0f, 8.0f, 320-8.0f);
 
 	char buf[256];
 	const char* text = buf;
 	u32 ip = gethostid();
 
 	if (ip == 0)
-		snprintf(buf, sizeof(buf), textGetString(StrId_NetLoaderOffline));
+	{
+		snprintf(buf, sizeof(buf), textGetString(StrId_NetSenderOffline));
+	}
+	else if (!inputIp)
+	{
+		snprintf(buf, sizeof(buf), textGetString(StrId_NetSenderActive));
+
+		char otherbuf[256];
+		snprintf(otherbuf, sizeof(otherbuf), "\n%s", receiverIp);
+		float receiverIpWidth = textCalcWidth(otherbuf)*0.5f;
+		textDraw(320.0f-8.0f-receiverIpWidth, 60.0f+25.0f+8.0f, 0.5f, 0.5f, false, otherbuf);
+
+		// Draw the selector under the selected digit
+		char* ipForWidth = strdup(receiverIp);
+		ipForWidth[ipNumberSelector] = '\0';
+		receiverIpWidth -= textCalcWidth(ipForWidth)*0.5f;
+		free(ipForWidth);
+
+		textDraw(320.0f-8.0f-receiverIpWidth, 60.0f+25.0f+8.0f, 0.5f, 0.5f, false, "\n\n^");
+	}
 	else
-		snprintf(buf, sizeof(buf), textGetString(StrId_NetLoaderTransferring), filetotal/1024, filelen/1024);
+	{
+		snprintf(buf, sizeof(buf), textGetString(StrId_NetSenderTransferring), filetotal/1024, filelen/1024);
+	}
 
 	textDraw(8.0f, 60.0f+25.0f+8.0f, 0.5f, 0.5f, false, text);
 
