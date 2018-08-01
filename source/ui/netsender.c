@@ -346,18 +346,18 @@ static bool validateIp(const char* ip, size_t len)
 
 static SwkbdCallbackResult callback(void *user, const char **ppMessage, const char *text, size_t textlen)
 {
-    (void)user;
+	(void)user;
 
-    bool validIp = validateIp(text, textlen);
-    if(!validIp)
-    {
-        *ppMessage = textGetString(StrId_NetSenderInvalidIp);
-        return SWKBD_CALLBACK_CONTINUE;
-    }
-    else
-    {
-        return SWKBD_CALLBACK_OK;
-    }
+	bool validIp = validateIp(text, textlen);
+	if(!validIp)
+	{
+		*ppMessage = textGetString(StrId_NetSenderInvalidIp);
+		return SWKBD_CALLBACK_CONTINUE;
+	}
+	else
+	{
+		return SWKBD_CALLBACK_OK;
+	}
 }
 
 void netsenderUpdate(void)
