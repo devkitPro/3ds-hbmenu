@@ -34,6 +34,7 @@ typedef enum
 	StrId_NetSender,
 	StrId_NetSenderUnavailable,
 	StrId_NetSenderOffline,
+	StrId_NetSenderInvalidIp,
 	StrId_NetSenderError,
 	StrId_NetSenderActive,
 	StrId_NetSenderTransferring,

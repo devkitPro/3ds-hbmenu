@@ -15,12 +15,12 @@
 typedef u32 in_addr_t;
 
 static int datafd = -1;
+static struct in_addr dsaddr;
+static LightEvent event;
 static volatile size_t filelen, filetotal;
 static volatile bool wantExit = false;
-static volatile bool inputIp = false;
 #define RECEIVER_IP_LENGTH 15
 static char receiverIp[RECEIVER_IP_LENGTH+1];
-static int ipNumberSelector = 0;
 
 static void netsenderError(const char* func, int err);
 
@@ -128,7 +128,7 @@ static int recvInt32LE(int socket, s32 *data)
 	return -1;
 }
 
-static void send3DSXFile(in_addr_t dsaddr, char *name, FILE *fh)
+static void send3DSXFile(in_addr_t inaddr, char *name, FILE *fh)
 {
 	static unsigned char in[ZLIB_CHUNK];
 	static unsigned char out[ZLIB_CHUNK];
@@ -154,13 +154,15 @@ static void send3DSXFile(in_addr_t dsaddr, char *name, FILE *fh)
 	memset(&s, '\0', sizeof(struct sockaddr_in));
 	s.sin_family = AF_INET;
 	s.sin_port = htons(NETSENDER_PORT);
-	s.sin_addr.s_addr = dsaddr;
+	s.sin_addr.s_addr = inaddr;
 
 	if (connect(datafd, (struct sockaddr *)&s, sizeof(s)) < 0 )
 	{
 		struct in_addr address;
-		address.s_addr = dsaddr;
+		address.s_addr = inaddr;
 		fprintf(stderr,"Connection to %s failed\n",inet_ntoa(address));
+		close(datafd);
+		datafd = -1;
 		return;
 	}
 
@@ -170,6 +172,7 @@ static void send3DSXFile(in_addr_t dsaddr, char *name, FILE *fh)
 	{
 		fprintf(stderr,"Failed sending filename length\n");
 		close(datafd);
+		datafd = -1;
 		return;
 	}
 
@@ -177,12 +180,14 @@ static void send3DSXFile(in_addr_t dsaddr, char *name, FILE *fh)
 	{
 		fprintf(stderr,"Failed sending filename\n");
 		close(datafd);
+		datafd = -1;
 		return;
 	}
 
 	if (sendInt32LE(datafd, filelen))
 	{
 		close(datafd);
+		datafd = -1;
 		return;
 	}
 
@@ -190,12 +195,14 @@ static void send3DSXFile(in_addr_t dsaddr, char *name, FILE *fh)
 	if (recvInt32LE(datafd, &response) != 0)
 	{
 		close(datafd);
+		datafd = -1;
 		return;
 	}
 
 	if (response != 0)
 	{
 		close(datafd);
+		datafd = -1;
 		return;
 	}
 
@@ -224,6 +231,7 @@ static void send3DSXFile(in_addr_t dsaddr, char *name, FILE *fh)
 				{
 					fprintf(stderr,"Failed sending chunk size\n");
 					close(datafd);
+					datafd = -1;
 					return;
 				}
 
@@ -232,6 +240,7 @@ static void send3DSXFile(in_addr_t dsaddr, char *name, FILE *fh)
 					fprintf(stderr,"Failed sending %s\n", name);
 					(void)deflateEnd(&strm);
 					close(datafd);
+					datafd = -1;
 					return;
 				}
 
@@ -246,6 +255,7 @@ static void send3DSXFile(in_addr_t dsaddr, char *name, FILE *fh)
 	if (recvInt32LE(datafd,&response)!=0)
 	{
 		close(datafd);
+		datafd = -1;
 		return;
 	}
 
@@ -262,18 +272,20 @@ static void send3DSXFile(in_addr_t dsaddr, char *name, FILE *fh)
 	if (sendData(datafd,cmdlen+4,cmdbuf))
 	{
 		close(datafd);
+		datafd = -1;
 		return;
 	}
+	
+	close(datafd);
+	datafd = -1;
 }
 
 void netsenderTask(void* arg)
 {
 	wantExit = false;
-	inputIp = false;
-	strcpy(receiverIp, "000.000.000.000");
-	ipNumberSelector = 0;
 	filelen = 0;
 	filetotal = 0;
+	dsaddr.s_addr = INADDR_NONE;
 
 	if (!netsenderInit())
 	{
@@ -281,29 +293,14 @@ void netsenderTask(void* arg)
 		return;
 	}
 
+	LightEvent_Init(&event, RESET_ONESHOT);
+
 	uiEnterState(UI_STATE_NETSENDER);
 
-	while (!inputIp)
-	{
-		if (wantExit)
-		{
-			netsenderDeactivate();
-			uiExitState();
-			return;
-		}
-		svcSleepThread(1e7);
-	}
+	LightEvent_Wait(&event);
+	LightEvent_Clear(&event);
 
-	struct in_addr dsaddr;
-	dsaddr.s_addr = INADDR_NONE;
-
-	struct addrinfo *info;
-	if (getaddrinfo(receiverIp, NULL, NULL, &info) == 0) {
-		dsaddr = ((struct sockaddr_in*)info->ai_addr)->sin_addr;
-		freeaddrinfo(info);
-	}
-
-	if (dsaddr.s_addr == INADDR_NONE)
+	if (wantExit || dsaddr.s_addr == INADDR_NONE)
 	{
 		netsenderDeactivate();
 		uiExitState();
@@ -329,6 +326,40 @@ void netsenderTask(void* arg)
 	return;
 }
 
+static bool validateIp(const char* ip, size_t len)
+{
+	if(len < 7) // if it's not long enough to hold 4 digits and 3 separators, it's too short.
+		return false;
+
+	struct addrinfo *info;
+	if (getaddrinfo(ip, NULL, NULL, &info) == 0)
+	{
+		dsaddr = ((struct sockaddr_in*)info->ai_addr)->sin_addr;
+		freeaddrinfo(info);
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+static SwkbdCallbackResult callback(void *user, const char **ppMessage, const char *text, size_t textlen)
+{
+    (void)user;
+
+    bool validIp = validateIp(text, textlen);
+    if(!validIp)
+    {
+        *ppMessage = textGetString(StrId_NetSenderInvalidIp);
+        return SWKBD_CALLBACK_CONTINUE;
+    }
+    else
+    {
+        return SWKBD_CALLBACK_OK;
+    }
+}
+
 void netsenderUpdate(void)
 {
 	if (wantExit || datafd >= 0) return;
@@ -337,39 +368,20 @@ void netsenderUpdate(void)
 	{
 		wantExit = true;
 	}
-	else if (hidKeysDown() & KEY_A)
+
+	SwkbdState swkbd;
+	swkbdInit(&swkbd, SWKBD_TYPE_NUMPAD, 2, RECEIVER_IP_LENGTH);
+	swkbdSetNumpadKeys(&swkbd, L'.', 0);
+	swkbdSetFeatures(&swkbd, SWKBD_FIXED_WIDTH);
+	swkbdSetValidation(&swkbd, SWKBD_NOTEMPTY, 0, 0);
+	swkbdSetInitialText(&swkbd, "000.000.000.000");
+	swkbdSetFilterCallback(&swkbd, callback, NULL);
+	SwkbdButton button = swkbdInputText(&swkbd, receiverIp, RECEIVER_IP_LENGTH+1);
+	if(button == SWKBD_BUTTON_LEFT) // Cancel
 	{
-		inputIp = true;
-		svcSleepThread(1e7);
+		wantExit = true;
 	}
-	else if (hidKeysDown() & KEY_LEFT)
-	{
-		ipNumberSelector--;
-		if (ipNumberSelector <= -1)
-			ipNumberSelector = RECEIVER_IP_LENGTH-1;
-		else if (ipNumberSelector % 3 == (ipNumberSelector/3) - 1)
-			ipNumberSelector--;
-	}
-	else if (hidKeysDown() & KEY_RIGHT)
-	{
-		ipNumberSelector++;
-		if (ipNumberSelector >= RECEIVER_IP_LENGTH)
-			ipNumberSelector = 0;
-		else if (ipNumberSelector % 3 == (ipNumberSelector/3) - 1)
-			ipNumberSelector++;
-	}
-	else if (hidKeysDown() & KEY_UP)
-	{
-		receiverIp[ipNumberSelector]++;
-		if (receiverIp[ipNumberSelector] > '9')
-			receiverIp[ipNumberSelector] = '0';
-	}
-	else if (hidKeysDown() & KEY_DOWN)
-	{
-		receiverIp[ipNumberSelector]--;
-		if (receiverIp[ipNumberSelector] < '0')
-			receiverIp[ipNumberSelector] = '9';
-	}
+	LightEvent_Signal(&event);
 }
 
 void netsenderExit(void)
@@ -394,30 +406,9 @@ void netsenderDrawBot(void)
 	u32 ip = gethostid();
 
 	if (ip == 0)
-	{
 		snprintf(buf, sizeof(buf), textGetString(StrId_NetSenderOffline));
-	}
-	else if (!inputIp)
-	{
-		snprintf(buf, sizeof(buf), textGetString(StrId_NetSenderActive));
-
-		char otherbuf[256];
-		snprintf(otherbuf, sizeof(otherbuf), "\n%s", receiverIp);
-		float receiverIpWidth = textCalcWidth(otherbuf)*0.5f;
-		textDraw(320.0f-8.0f-receiverIpWidth, 60.0f+25.0f+8.0f, 0.5f, 0.5f, false, otherbuf);
-
-		// Draw the selector under the selected digit
-		char* ipForWidth = strdup(receiverIp);
-		ipForWidth[ipNumberSelector] = '\0';
-		receiverIpWidth -= textCalcWidth(ipForWidth)*0.5f;
-		free(ipForWidth);
-
-		textDraw(320.0f-8.0f-receiverIpWidth, 60.0f+25.0f+8.0f, 0.5f, 0.5f, false, "\n\n^");
-	}
 	else
-	{
 		snprintf(buf, sizeof(buf), textGetString(StrId_NetSenderTransferring), filetotal/1024, filelen/1024);
-	}
 
 	textDraw(8.0f, 60.0f+25.0f+8.0f, 0.5f, 0.5f, false, text);
 

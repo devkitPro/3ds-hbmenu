@@ -844,6 +844,22 @@ const char* const g_strings[StrId_Max][16] =
 		STR_TW("發生錯誤。\n詳細錯誤資訊：[%s:%d]"),
 	},
 
+	[StrId_NetSenderInvalidIp] =
+	{
+		STR_EN("Invalid IP address."),
+		STR_ES(""),
+		STR_DE(""),
+		STR_FR("Address IP invalide."),
+		STR_IT(""),
+		STR_JP(""),
+		STR_PT(""),
+		STR_NL(""),
+		STR_KO(""),
+		STR_RU(""),
+		STR_ZH(""),
+		STR_TW(""),
+	},
+
 	[StrId_NetSenderOffline] =
 	{
 		STR_EN(
