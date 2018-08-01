@@ -964,51 +964,51 @@ const char* const g_strings[StrId_Max][16] =
 	{
 		STR_EN(
 			"Transferring…\n"
-			"%zu out of %zu KiB written"
+			"%zu out of %zu KiB sent"
 		),
 		STR_ES(
 			"Transfiriendo…\n"
-			"%zu de %zu KiB escritos"
+			"%zu de %zu KiB"
 		),
 		STR_DE(
 			"Übertragen…\n"
-			"%zu von %zu KiB geschrieben"
+			"%zu von %zu KiB"
 		),
 		STR_FR(
 			"Transfert…\n"
-			"%zu sur %zu Kio écrits"
+			"%zu sur %zu Kio envoyés"
 		),
 		STR_IT(
 			"Trasferimento…\n"
-			"%zu di %zu KiB scritti"
+			"%zu di %zu KiB"
 		),
 		STR_JP(
 			"データを転送しています…\n"
-			"%zu / %zu KiB 転送済み"
+			"%zu / %zu KiB"
 		),
 		STR_PT(
 			"A transferir…\n"
-			"%zu de %zu KiB escritos"
+			"%zu de %zu KiB"
 		),
 		STR_NL(
 			"Overbrengen…\n"
-			"%zu van %zu KiB geschreven"
+			"%zu van %zu KiB"
 		),
 		STR_KO(
 			"전송중…\n"
-			"%zu / %zu KiB 쓰여짐"
+			"%zu / %zu KiB"
 		),
 		STR_RU(
 			"Передача…\n"
-			"%zu из %zu КиБ написано"
+			"%zu из %zu КиБ"
 		),
 		STR_ZH(
 			"正在传输…\n"
-			"已完成 %zu / %zu KiB"
+			"%zu / %zu KiB"
 		),
 		STR_TW(
 			"正在傳輸…\n"
-			"已完成 %zu / %zu KiB"
+			"%zu / %zu KiB"
 		),
 	},
 };
