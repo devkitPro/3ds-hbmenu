@@ -84,17 +84,23 @@ int recvData(int sock, char *buffer, int size, int flags)
 {
 	int len, sizeleft = size;
 
-	while (sizeleft) {
+	while (sizeleft)
+	{
 		len = recv(sock, buffer, sizeleft, flags);
-		if (len == 0) {
+		if (len == 0)
+		{
 			size = 0;
 			break;
 		}
-		if (len != -1) {
+		if (len != -1)
+		{
 			sizeleft -=len;
 			buffer +=len;
-		} else {
-			if (errno != EWOULDBLOCK && errno != EAGAIN) {
+		}
+		else
+		{
+			if (errno != EWOULDBLOCK && errno != EAGAIN)
+			{
 				perror(NULL);
 				break;
 			}
@@ -328,7 +334,7 @@ void netsenderTask(void* arg)
 
 static bool validateIp(const char* ip, size_t len)
 {
-	if(len < 7) // if it's not long enough to hold 4 digits and 3 separators, it's too short.
+	if (len < 7) // if it's not long enough to hold 4 digits and 3 separators, it's too short.
 		return false;
 
 	struct addrinfo *info;
@@ -349,7 +355,7 @@ static SwkbdCallbackResult callback(void *user, const char **ppMessage, const ch
 	(void)user;
 
 	bool validIp = validateIp(text, textlen);
-	if(!validIp)
+	if (!validIp)
 	{
 		*ppMessage = textGetString(StrId_NetSenderInvalidIp);
 		return SWKBD_CALLBACK_CONTINUE;
