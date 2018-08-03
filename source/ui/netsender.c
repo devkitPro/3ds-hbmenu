@@ -19,6 +19,7 @@ static struct in_addr dsaddr;
 static LightEvent event;
 static volatile size_t filelen, filetotal;
 static volatile bool wantExit = false;
+static volatile bool readyForTyping = false;
 #define RECEIVER_IP_LENGTH 15
 static char receiverIp[RECEIVER_IP_LENGTH+1];
 
@@ -55,6 +56,123 @@ void netsenderError(const char* func, int err)
 	if (uiGetStateInfo()->update == netsenderUpdate)
 		uiExitState();
 	errorScreen(textGetString(StrId_NetSender), textGetString(StrId_NetSenderError), func, err);
+}
+
+/*---------------------------------------------------------------------------------
+	Subtract the `struct timeval' values Y from X,
+	storing the result in RESULT.
+	Return 1 if the difference is negative, otherwise 0.
+
+	From http://www.gnu.org/software/libtool/manual/libc/Elapsed-Time.html
+---------------------------------------------------------------------------------*/
+static int timeval_subtract (struct timeval *result, struct timeval *x, struct timeval *y)
+{
+//---------------------------------------------------------------------------------
+	struct timeval tmp;
+	tmp.tv_sec = y->tv_sec;
+	tmp.tv_usec = y->tv_usec;
+
+	/* Perform the carry for the later subtraction by updating y. */
+	if (x->tv_usec < tmp.tv_usec)
+	{
+		int nsec = (tmp.tv_usec - x->tv_usec) / 1000000 + 1;
+		tmp.tv_usec -= 1000000 * nsec;
+		tmp.tv_sec += nsec;
+	}
+
+	if (x->tv_usec - tmp.tv_usec > 1000000)
+	{
+		int nsec = (x->tv_usec - tmp.tv_usec) / 1000000;
+		tmp.tv_usec += 1000000 * nsec;
+		tmp.tv_sec -= nsec;
+	}
+
+	/*	Compute the time remaining to wait.
+		tv_usec is certainly positive. */
+	result->tv_sec = x->tv_sec - tmp.tv_sec;
+	result->tv_usec = x->tv_usec - tmp.tv_usec;
+
+	/* Return 1 if result is negative. */
+	return x->tv_sec < tmp.tv_sec;
+}
+
+//---------------------------------------------------------------------------------
+static void timeval_add (struct timeval *result, struct timeval *x, struct timeval *y)
+{
+//---------------------------------------------------------------------------------
+	result->tv_sec = x->tv_sec + y->tv_sec;
+	result->tv_usec = x->tv_usec + y->tv_usec;
+
+	if (result->tv_usec > 1000000)
+	{
+		result->tv_sec += result->tv_usec / 1000000;
+		result->tv_usec = result->tv_usec % 1000000;
+	}
+}
+
+//---------------------------------------------------------------------------------
+static struct in_addr find3DS(int retries)
+{
+//---------------------------------------------------------------------------------
+	struct sockaddr_in s, remote, rs;
+	char recvbuf[256];
+	char mess[] = "3dsboot";
+
+	int broadcastSock = socket(PF_INET, SOCK_DGRAM, 0);
+	if (broadcastSock < 0)
+		fprintf(stderr, "create send socket");
+
+	memset(&s, '\0', sizeof(struct sockaddr_in));
+	s.sin_family = AF_INET;
+	s.sin_port = htons(17491);
+	s.sin_addr.s_addr = INADDR_BROADCAST;
+
+	memset(&rs, '\0', sizeof(struct sockaddr_in));
+	rs.sin_family = AF_INET;
+	rs.sin_port = htons(17491);
+	rs.sin_addr.s_addr = INADDR_ANY;
+
+	int recvSock = socket(PF_INET, SOCK_DGRAM, 0);
+
+	if (recvSock < 0)
+		fprintf(stderr, "create receive socket");
+
+	if (bind(recvSock, (struct sockaddr*) &rs, sizeof(rs)) < 0)
+		fprintf(stderr, "bind");
+
+	fcntl(recvSock, F_SETFL, O_NONBLOCK);
+	struct timeval wanted, now, result;
+
+	gettimeofday(&wanted, NULL);
+
+	int timeout = retries, len;
+	while(timeout)
+	{
+		gettimeofday(&now, NULL);
+		if (timeval_subtract(&result,&wanted,&now))
+		{
+			if (sendto(broadcastSock, mess, strlen(mess), 0, (struct sockaddr *)&s, sizeof(s)) < 0)
+				fprintf(stderr, "sendto");
+
+			result.tv_sec=0;
+			result.tv_usec=150000;
+			timeval_add(&wanted,&now,&result);
+			timeout--;
+		}
+		socklen_t socklen = sizeof(remote);
+		len = recvfrom(recvSock,recvbuf,sizeof(recvbuf),0,(struct sockaddr *)&remote,&socklen);
+		if (len != -1)
+		{
+			if (strncmp("boot3ds",recvbuf,strlen("boot3ds")) == 0)
+			{
+				break;
+			}
+		}
+	}
+	if (timeout == 0) remote.sin_addr.s_addr = INADDR_NONE;
+	close(broadcastSock);
+	close(recvSock);
+	return remote.sin_addr;
 }
 
 int sendData(int sock, int sendsize, char *buffer)
@@ -292,6 +410,7 @@ void netsenderTask(void* arg)
 	filelen = 0;
 	filetotal = 0;
 	dsaddr.s_addr = INADDR_NONE;
+	readyForTyping = false;
 
 	if (!netsenderInit())
 	{
@@ -299,12 +418,16 @@ void netsenderTask(void* arg)
 		return;
 	}
 
-	LightEvent_Init(&event, RESET_ONESHOT);
-
 	uiEnterState(UI_STATE_NETSENDER);
 
-	LightEvent_Wait(&event);
-	LightEvent_Clear(&event);
+	dsaddr = find3DS(10);
+	if(dsaddr.s_addr == INADDR_NONE)
+	{
+		readyForTyping = true;
+		LightEvent_Init(&event, RESET_ONESHOT);
+		LightEvent_Wait(&event);
+		LightEvent_Clear(&event);
+	}
 
 	if (wantExit || dsaddr.s_addr == INADDR_NONE)
 	{
@@ -375,19 +498,22 @@ void netsenderUpdate(void)
 		wantExit = true;
 	}
 
-	SwkbdState swkbd;
-	swkbdInit(&swkbd, SWKBD_TYPE_NUMPAD, 2, RECEIVER_IP_LENGTH);
-	swkbdSetNumpadKeys(&swkbd, L'.', 0);
-	swkbdSetFeatures(&swkbd, SWKBD_FIXED_WIDTH);
-	swkbdSetValidation(&swkbd, SWKBD_NOTEMPTY, 0, 0);
-	swkbdSetInitialText(&swkbd, "000.000.000.000");
-	swkbdSetFilterCallback(&swkbd, callback, NULL);
-	SwkbdButton button = swkbdInputText(&swkbd, receiverIp, RECEIVER_IP_LENGTH+1);
-	if(button == SWKBD_BUTTON_LEFT) // Cancel
+	if(readyForTyping && dsaddr.s_addr == INADDR_NONE)
 	{
-		wantExit = true;
+		SwkbdState swkbd;
+		swkbdInit(&swkbd, SWKBD_TYPE_NUMPAD, 2, RECEIVER_IP_LENGTH);
+		swkbdSetNumpadKeys(&swkbd, L'.', 0);
+		swkbdSetFeatures(&swkbd, SWKBD_FIXED_WIDTH);
+		swkbdSetValidation(&swkbd, SWKBD_NOTEMPTY, 0, 0);
+		swkbdSetInitialText(&swkbd, "000.000.000.000");
+		swkbdSetFilterCallback(&swkbd, callback, NULL);
+		SwkbdButton button = swkbdInputText(&swkbd, receiverIp, RECEIVER_IP_LENGTH+1);
+		if (button == SWKBD_BUTTON_LEFT) // Cancel
+		{
+			wantExit = true;
+		}
+		LightEvent_Signal(&event);
 	}
-	LightEvent_Signal(&event);
 }
 
 void netsenderExit(void)
