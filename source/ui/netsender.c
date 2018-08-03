@@ -120,7 +120,11 @@ static struct in_addr find3DS(int retries)
 
 	int broadcastSock = socket(PF_INET, SOCK_DGRAM, 0);
 	if (broadcastSock < 0)
-		fprintf(stderr, "create send socket");
+	{
+		netsenderError("broadcast socket", errno);
+		remote.sin_addr.s_addr = INADDR_NONE;
+		return remote.sin_addr;
+	}
 
 	memset(&s, '\0', sizeof(struct sockaddr_in));
 	s.sin_family = AF_INET;
@@ -135,10 +139,21 @@ static struct in_addr find3DS(int retries)
 	int recvSock = socket(PF_INET, SOCK_DGRAM, 0);
 
 	if (recvSock < 0)
-		fprintf(stderr, "create receive socket");
+	{
+		netsenderError("receive socket", errno);
+		close(broadcastSock);
+		remote.sin_addr.s_addr = INADDR_NONE;
+		return remote.sin_addr;
+	}
 
 	if (bind(recvSock, (struct sockaddr*) &rs, sizeof(rs)) < 0)
-		fprintf(stderr, "bind");
+	{
+		netsenderError("bind receive socket", errno);
+		close(broadcastSock);
+		close(recvSock);
+		remote.sin_addr.s_addr = INADDR_NONE;
+		return remote.sin_addr;
+	}
 
 	fcntl(recvSock, F_SETFL, O_NONBLOCK);
 	struct timeval wanted, now, result;
@@ -152,7 +167,13 @@ static struct in_addr find3DS(int retries)
 		if (timeval_subtract(&result,&wanted,&now))
 		{
 			if (sendto(broadcastSock, mess, strlen(mess), 0, (struct sockaddr *)&s, sizeof(s)) < 0)
-				fprintf(stderr, "sendto");
+			{
+				netsenderError("sendto", errno);
+				close(broadcastSock);
+				close(recvSock);
+				remote.sin_addr.s_addr = INADDR_NONE;
+				return remote.sin_addr;
+			}
 
 			result.tv_sec=0;
 			result.tv_usec=150000;
@@ -169,7 +190,10 @@ static struct in_addr find3DS(int retries)
 			}
 		}
 	}
-	if (timeout == 0) remote.sin_addr.s_addr = INADDR_NONE;
+
+	if (timeout == 0)
+		remote.sin_addr.s_addr = INADDR_NONE;
+
 	close(broadcastSock);
 	close(recvSock);
 	return remote.sin_addr;
@@ -190,7 +214,7 @@ int sendData(int sock, int sendsize, char *buffer)
 		{
 			if (errno != EWOULDBLOCK && errno != EAGAIN)
 			{
-				perror(NULL);
+				netsenderError("send", errno);
 				break;
 			}
 		}
@@ -219,7 +243,7 @@ int recvData(int sock, char *buffer, int size, int flags)
 		{
 			if (errno != EWOULDBLOCK && errno != EAGAIN)
 			{
-				perror(NULL);
+				netsenderError("recv", errno);
 				break;
 			}
 		}
@@ -271,6 +295,7 @@ static void send3DSXFile(in_addr_t inaddr, char *name, FILE *fh)
 	datafd = socket(AF_INET,SOCK_STREAM,0);
 	if (datafd < 0)
 	{
+		netsenderError("datafd", errno);
 		return;
 	}
 
@@ -282,9 +307,7 @@ static void send3DSXFile(in_addr_t inaddr, char *name, FILE *fh)
 
 	if (connect(datafd, (struct sockaddr *)&s, sizeof(s)) < 0 )
 	{
-		struct in_addr address;
-		address.s_addr = inaddr;
-		fprintf(stderr,"Connection to %s failed\n",inet_ntoa(address));
+		netsenderError("connect", errno);
 		close(datafd);
 		datafd = -1;
 		return;
@@ -294,7 +317,7 @@ static void send3DSXFile(in_addr_t inaddr, char *name, FILE *fh)
 
 	if (sendInt32LE(datafd, namelen))
 	{
-		fprintf(stderr,"Failed sending filename length\n");
+		netsenderError("filenameLen", errno);
 		close(datafd);
 		datafd = -1;
 		return;
@@ -302,7 +325,7 @@ static void send3DSXFile(in_addr_t inaddr, char *name, FILE *fh)
 
 	if (sendData(datafd, namelen, name))
 	{
-		fprintf(stderr,"Failed sending filename\n");
+		netsenderError("filename", errno);
 		close(datafd);
 		datafd = -1;
 		return;
@@ -310,6 +333,7 @@ static void send3DSXFile(in_addr_t inaddr, char *name, FILE *fh)
 
 	if (sendInt32LE(datafd, filelen))
 	{
+		netsenderError("filelen", errno);
 		close(datafd);
 		datafd = -1;
 		return;
@@ -318,6 +342,7 @@ static void send3DSXFile(in_addr_t inaddr, char *name, FILE *fh)
 	s32 response;
 	if (recvInt32LE(datafd, &response) != 0)
 	{
+		netsenderError("response", 0);
 		close(datafd);
 		datafd = -1;
 		return;
@@ -325,6 +350,20 @@ static void send3DSXFile(in_addr_t inaddr, char *name, FILE *fh)
 
 	if (response != 0)
 	{
+		switch(response) {
+			case -1:
+				netsenderError("create file", 0);
+				break;
+			case -2:
+				netsenderError("no space", 0);
+				break;
+			case -3:
+				netsenderError("no memory", 0);
+				break;
+			default:
+				netsenderError("response:", response);
+				break;
+		}
 		close(datafd);
 		datafd = -1;
 		return;
@@ -336,7 +375,10 @@ static void send3DSXFile(in_addr_t inaddr, char *name, FILE *fh)
 		strm.avail_in = fread(in, 1, ZLIB_CHUNK, fh);
 		filetotal += strm.avail_in;
 		if (ferror(fh)) {
+			netsenderError("ferror", 0);
 			(void)deflateEnd(&strm);
+			close(datafd);
+			datafd = -1;
 			return;
 		}
 		flush = feof(fh) ? Z_FINISH : Z_NO_FLUSH;
@@ -353,7 +395,7 @@ static void send3DSXFile(in_addr_t inaddr, char *name, FILE *fh)
 			{
 				if (sendInt32LE(datafd,have))
 				{
-					fprintf(stderr,"Failed sending chunk size\n");
+					netsenderError("chunk size", errno);
 					close(datafd);
 					datafd = -1;
 					return;
@@ -361,7 +403,7 @@ static void send3DSXFile(in_addr_t inaddr, char *name, FILE *fh)
 
 				if (sendData(datafd, have, (char*)out))
 				{
-					fprintf(stderr,"Failed sending %s\n", name);
+					netsenderError("have", errno);
 					(void)deflateEnd(&strm);
 					close(datafd);
 					datafd = -1;
@@ -395,6 +437,7 @@ static void send3DSXFile(in_addr_t inaddr, char *name, FILE *fh)
 
 	if (sendData(datafd,cmdlen+4,cmdbuf))
 	{
+		netsenderError("cmdbuf", errno);
 		close(datafd);
 		datafd = -1;
 		return;
