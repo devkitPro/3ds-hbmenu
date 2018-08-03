@@ -19,7 +19,7 @@ static struct in_addr dsaddr;
 static LightEvent event;
 static volatile size_t filelen, filetotal;
 static volatile bool wantExit = false;
-static volatile bool readyForTyping = false;
+static volatile bool doneSearching = false;
 #define RECEIVER_IP_LENGTH 15
 static char receiverIp[RECEIVER_IP_LENGTH+1];
 
@@ -55,7 +55,7 @@ void netsenderError(const char* func, int err)
 	netsenderDeactivate();
 	if (uiGetStateInfo()->update == netsenderUpdate)
 		uiExitState();
-	errorScreen(textGetString(StrId_NetSender), textGetString(StrId_NetSenderError), func, err);
+	errorScreen(textGetString(StrId_NetSender), textGetString(StrId_NetLoaderError), func, err);
 }
 
 /*---------------------------------------------------------------------------------
@@ -453,7 +453,7 @@ void netsenderTask(void* arg)
 	filelen = 0;
 	filetotal = 0;
 	dsaddr.s_addr = INADDR_NONE;
-	readyForTyping = false;
+	doneSearching = false;
 
 	if (!netsenderInit())
 	{
@@ -464,9 +464,9 @@ void netsenderTask(void* arg)
 	uiEnterState(UI_STATE_NETSENDER);
 
 	dsaddr = find3DS(10);
+	doneSearching = true;
 	if(dsaddr.s_addr == INADDR_NONE)
 	{
-		readyForTyping = true;
 		LightEvent_Init(&event, RESET_ONESHOT);
 		LightEvent_Wait(&event);
 		LightEvent_Clear(&event);
@@ -504,11 +504,12 @@ static bool validateIp(const char* ip, size_t len)
 		return false;
 
 	struct addrinfo *info;
-	if (getaddrinfo(ip, NULL, NULL, &info) == 0)
+	if (getaddrinfo(ip, NULL, NULL, &info) == 0) // check it's a valid address first
 	{
 		dsaddr = ((struct sockaddr_in*)info->ai_addr)->sin_addr;
 		freeaddrinfo(info);
-		return true;
+		// this won't error, so 0.0.0.0 (the default ip) will return false and force the user to put something else
+		return inet_addr(ip) != 0;
 	}
 	else
 	{
@@ -541,7 +542,7 @@ void netsenderUpdate(void)
 		wantExit = true;
 	}
 
-	if(readyForTyping && dsaddr.s_addr == INADDR_NONE)
+	if(doneSearching && dsaddr.s_addr == INADDR_NONE)
 	{
 		SwkbdState swkbd;
 		swkbdInit(&swkbd, SWKBD_TYPE_NUMPAD, 2, RECEIVER_IP_LENGTH);
@@ -581,9 +582,11 @@ void netsenderDrawBot(void)
 	u32 ip = gethostid();
 
 	if (ip == 0)
-		snprintf(buf, sizeof(buf), textGetString(StrId_NetSenderOffline));
+		snprintf(buf, sizeof(buf), textGetString(StrId_NetLoaderOffline));
+	else if(!doneSearching)
+		snprintf(buf, sizeof(buf), textGetString(StrId_NetSenderActive));
 	else
-		snprintf(buf, sizeof(buf), textGetString(StrId_NetSenderTransferring), filetotal/1024, filelen/1024);
+		snprintf(buf, sizeof(buf), textGetString(StrId_NetLoaderTransferring), filetotal/1024, filelen/1024);
 
 	textDraw(8.0f, 60.0f+25.0f+8.0f, 0.5f, 0.5f, false, text);
 

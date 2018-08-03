@@ -828,22 +828,6 @@ const char* const g_strings[StrId_Max][16] =
 		STR_TW(""),
 	},
 
-	[StrId_NetSenderError] =
-	{
-		STR_EN("An error occurred.\nTechnical details: [%s:%d]"),
-		STR_ES("Ha ocurrido un error.\nDatos técnicos: [%s:%d]"),
-		STR_DE("Ein Fehler ist aufgetreten\nTechnische Details: [%s:%d]"),
-		STR_FR("Une erreur s'est produite.\nDétails techniques : [%s:%d]"),
-		STR_IT("Si è verificato un errore.\nDettagli tecnici : [%s:%d]"),
-		STR_JP("エラーが発生しました。\n技術的な詳細：[%s:%d]"),
-		STR_PT("Ocorreu um erro.\nDetalhes técnicos: [%s:%d]"),
-		STR_NL("Er is een fout opgetreden\nTechnische details: [%s:%d]"),
-		STR_KO("오류가 발생했습니다.\n기술적 상세: [%s:%d]"),
-		STR_RU("Произошла ошибка.\nТехнические подробности: [%s:%d]"),
-		STR_ZH("发生错误。\n详细错误信息：[%s:%d]"),
-		STR_TW("發生錯誤。\n詳細錯誤資訊：[%s:%d]"),
-	},
-
 	[StrId_NetSenderInvalidIp] =
 	{
 		STR_EN("Invalid IP address."),
@@ -859,172 +843,56 @@ const char* const g_strings[StrId_Max][16] =
 		STR_ZH(""),
 		STR_TW(""),
 	},
-
-	[StrId_NetSenderOffline] =
-	{
-		STR_EN(
-			"Offline, waiting for network…\n\n"
-			"  \xEE\x80\x81 Cancel"
-		),
-		STR_ES(
-			"Sin conexión, esperando a la red…\n\n"
-			"  \xEE\x80\x81 Cancelar"
-		),
-		STR_DE(
-			"Offline, warte auf Netzwerkverbindung…\n\n"
-			"  \xEE\x80\x81 Abbrechen"
-		),
-		STR_FR(
-			"Hors-ligne, en attente de connexion réseau…\n\n"
-			"  \xEE\x80\x81 Annuler"
-		),
-		STR_IT(
-			"Disconnesso, in attesa della connessione…\n\n"
-			"  \xEE\x80\x81 Annulla"
-		),
-		STR_JP(
-			"オフライン、ネット接続を待っています…\n\n"
-			"  \xEE\x80\x81 キャンセル"
-		),
-		STR_PT(
-			"[[Offline, waiting for network]]…\n\n"
-			"  \xEE\x80\x81 Cancelar"
-		),
-		STR_NL(
-			"[[Offline, waiting for network]]…\n\n"
-			"  \xEE\x80\x81 Annuleren"
-		),
-		STR_KO(
-			"오프라인임, 네트워크 대기중……\n\n"
-			"  \xEE\x80\x81 취소"
-		),
-		STR_RU(
-			"[[Offline, waiting for network]]…\n\n"
-			"  \xEE\x80\x81 Отмена"
-		),
-		STR_ZH(
-			"无法连接网络，等待网络连接…\n\n"
-			"  \xEE\x80\x81 取消等待"
-		),
-		STR_TW(
-			"當前離線，等待網路連線…\n\n"
-			"  \xEE\x80\x81 取消等待"
-		),
-	},
-
+	
 	[StrId_NetSenderActive] =
 	{
 		STR_EN(
-			"Input the receiving IP…\n"
-			"IP Addr:\n\n"
+			"Waiting for 3dslink to connect…\n\n\n"
 			"  \xEE\x80\x81 Cancel"
 		),
 		STR_ES(
-			"\n"
-			"Dir.IP:\n\n"
+			"Esperando a que se conecte 3dslink…\n\n\n"
 			"  \xEE\x80\x81 Cancelar"
 		),
 		STR_DE(
-			"\n"
-			"IP Addr:\n\n"
+			"Warte auf Verbindung von 3dslink…\n\n\n"
 			"  \xEE\x80\x81 Abbrechen"
 		),
 		STR_FR(
-			"Entrez l'addresse IP du receveur…\n"
-			"Adr. IP :\n\n"
+			"En attente de la connexion de 3dslink…\n\n\n"
 			"  \xEE\x80\x81 Annuler"
 		),
 		STR_IT(
-			"\n"
-			"Ind. IP :\n\n"
+			"In attesa della connessione di 3dslink…\n\n\n"
 			"  \xEE\x80\x81 Annulla"
 		),
 		STR_JP(
-			"\n"
-			"IPアドレス：%s\n\n"
+			"3dslinkが接続されるのを待っています…\n\n\n"
 			"  \xEE\x80\x81 キャンセル"
 		),
 		STR_PT(
-			"\n"
-			"End. IP:\n\n"
+			"A aguardar pela conexão do 3dslink…\n\n\n"
 			"  \xEE\x80\x81 Cancelar"
 		),
 		STR_NL(
-			"\n"
-			"IP Addr:\n\n"
+			"Wachten op 3dslink verbinding…\n\n\n"
 			"  \xEE\x80\x81 Annuleren"
 		),
 		STR_KO(
-			"\n"
-			"IP 주소:\n\n"
+			"3dslink의 연결을 대기중…\n\n\n"
 			"  \xEE\x80\x81 취소"
 		),
 		STR_RU(
-			"\n"
-			"айпи адрес:\n\n"
+			"Ожидание подключения 3dslink…\n\n\n"
 			"  \xEE\x80\x81 Отмена"
 		),
 		STR_ZH(
-			"\n"
-			"IP 地址：%s\n\n"
+			"等待 3dslink 连接…\n\n\n"
 			"  \xEE\x80\x81 取消等待"
 		),
 		STR_TW(
-			"\n"
-			"IP 位址：%s\n\n"
+			"等待 3dslink 連接…\n\n\n"
 			"  \xEE\x80\x81 取消等待"
-		),
-	},
-
-	[StrId_NetSenderTransferring] =
-	{
-		STR_EN(
-			"Transferring…\n"
-			"%zu out of %zu KiB sent"
-		),
-		STR_ES(
-			"Transfiriendo…\n"
-			"%zu de %zu KiB"
-		),
-		STR_DE(
-			"Übertragen…\n"
-			"%zu von %zu KiB"
-		),
-		STR_FR(
-			"Transfert…\n"
-			"%zu sur %zu Kio envoyés"
-		),
-		STR_IT(
-			"Trasferimento…\n"
-			"%zu di %zu KiB"
-		),
-		STR_JP(
-			"データを転送しています…\n"
-			"%zu / %zu KiB"
-		),
-		STR_PT(
-			"A transferir…\n"
-			"%zu de %zu KiB"
-		),
-		STR_NL(
-			"Overbrengen…\n"
-			"%zu van %zu KiB"
-		),
-		STR_KO(
-			"전송중…\n"
-			"%zu / %zu KiB"
-		),
-		STR_RU(
-			"Передача…\n"
-			"%zu из %zu КиБ"
-		),
-		STR_ZH(
-			"正在传输…\n"
-			"%zu / %zu KiB"
-		),
-		STR_TW(
-			"正在傳輸…\n"
-			"%zu / %zu KiB"
 		),
 	},
 };
