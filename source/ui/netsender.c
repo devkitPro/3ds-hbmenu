@@ -55,7 +55,7 @@ static int timeval_subtract (struct timeval *result, struct timeval *x, struct t
 	tmp.tv_sec = y->tv_sec;
 	tmp.tv_usec = y->tv_usec;
 
-	/* Perform the carry for the later subtraction by updating y. */
+	// Perform the carry for the later subtraction by updating y.
 	if (x->tv_usec < tmp.tv_usec)
 	{
 		int nsec = (tmp.tv_usec - x->tv_usec) / 1000000 + 1;
@@ -70,12 +70,11 @@ static int timeval_subtract (struct timeval *result, struct timeval *x, struct t
 		tmp.tv_sec -= nsec;
 	}
 
-	/*	Compute the time remaining to wait.
-		tv_usec is certainly positive. */
+	// Compute the time remaining to wait. tv_usec is certainly positive.
 	result->tv_sec = x->tv_sec - tmp.tv_sec;
 	result->tv_usec = x->tv_usec - tmp.tv_usec;
 
-	/* Return 1 if result is negative. */
+	// Return 1 if result is negative.
 	return x->tv_sec < tmp.tv_sec;
 }
 
