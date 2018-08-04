@@ -441,7 +441,7 @@ void netsenderTask(void* arg)
 
 	dsaddr = find3DS(10);
 	doneSearching = true;
-	if(dsaddr.s_addr == INADDR_NONE)
+	if (dsaddr.s_addr == INADDR_NONE)
 	{
 		LightEvent_Init(&event, RESET_ONESHOT);
 		LightEvent_Wait(&event);
@@ -471,7 +471,6 @@ void netsenderTask(void* arg)
 
 	netsenderDeactivate();
 	uiExitState();
-	return;
 }
 
 static bool validateIp(const char* ip, size_t len)
@@ -487,10 +486,8 @@ static bool validateIp(const char* ip, size_t len)
 		// this won't error, so 0.0.0.0 (the default ip) will return false and force the user to put something else
 		return inet_addr(ip) != 0;
 	}
-	else
-	{
-		return false;
-	}
+
+	return false;
 }
 
 static SwkbdCallbackResult callback(void *user, const char **ppMessage, const char *text, size_t textlen)
@@ -503,10 +500,8 @@ static SwkbdCallbackResult callback(void *user, const char **ppMessage, const ch
 		*ppMessage = textGetString(StrId_NetSenderInvalidIp);
 		return SWKBD_CALLBACK_CONTINUE;
 	}
-	else
-	{
-		return SWKBD_CALLBACK_OK;
-	}
+
+	return SWKBD_CALLBACK_OK;
 }
 
 void netsenderUpdate(void)
@@ -514,11 +509,9 @@ void netsenderUpdate(void)
 	if (wantExit || datafd >= 0) return;
 
 	if (hidKeysDown() & KEY_B)
-	{
 		wantExit = true;
-	}
 
-	if(doneSearching && dsaddr.s_addr == INADDR_NONE)
+	if (doneSearching && dsaddr.s_addr == INADDR_NONE)
 	{
 		SwkbdState swkbd;
 		swkbdInit(&swkbd, SWKBD_TYPE_NUMPAD, 2, RECEIVER_IP_LENGTH);
@@ -528,10 +521,10 @@ void netsenderUpdate(void)
 		swkbdSetInitialText(&swkbd, "000.000.000.000");
 		swkbdSetFilterCallback(&swkbd, callback, NULL);
 		SwkbdButton button = swkbdInputText(&swkbd, receiverIp, RECEIVER_IP_LENGTH+1);
+
 		if (button == SWKBD_BUTTON_LEFT) // Cancel
-		{
 			wantExit = true;
-		}
+
 		LightEvent_Signal(&event);
 	}
 }
