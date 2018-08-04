@@ -340,7 +340,8 @@ static void send3DSXFile(in_addr_t inaddr, char *name, FILE *fh)
 
 	size_t totalsent = 0, blocks = 0;
 
-	do {
+	do
+	{
 		strm.avail_in = fread(in, 1, ZLIB_CHUNK, fh);
 		filetotal += strm.avail_in;
 		if (ferror(fh))
@@ -353,7 +354,8 @@ static void send3DSXFile(in_addr_t inaddr, char *name, FILE *fh)
 		strm.next_in = in;
 		/* run deflate() on input until output buffer not full, finish
 		   compression if all of source has been read in */
-		do {
+		do
+		{
 			strm.avail_out = ZLIB_CHUNK;
 			strm.next_out = out;
 			ret = deflate(&strm, flush);    /* no bad return value */
@@ -377,10 +379,12 @@ static void send3DSXFile(in_addr_t inaddr, char *name, FILE *fh)
 				totalsent += have;
 				blocks++;
 			}
-		} while (strm.avail_out == 0);
+		}
+		while (strm.avail_out == 0);
 		/* done when last data in file processed */
-	} while (flush != Z_FINISH);
-	(void)deflateEnd(&strm);
+	}
+	while (flush != Z_FINISH);
+	deflateEnd(&strm);
 
 	if (recvInt32LE(datafd,&response)!=0)
 		goto send3DSXFileExit;
