@@ -423,7 +423,7 @@ void netsenderTask(void* arg)
 
 	dsaddr = find3DS(10);
 	if (wantExit)
-		goto __cleanup;
+		goto _cleanup;
 
 	doneSearching = true;
 	if (dsaddr.s_addr == INADDR_NONE)
@@ -434,7 +434,7 @@ void netsenderTask(void* arg)
 	}
 
 	if (wantExit || dsaddr.s_addr == INADDR_NONE)
-		goto __cleanup;
+		goto _cleanup;
 
 	menuEntry_s* me = (menuEntry_s*)arg;
 	char* filename = strdup(me->path);
@@ -450,7 +450,7 @@ void netsenderTask(void* arg)
 	fclose(inf);
 	free(filename);
 
-__cleanup:
+_cleanup:
 	netsenderDeactivate();
 	uiExitState();
 }
