@@ -392,41 +392,14 @@ void netloaderExit(void)
 
 void netloaderDrawBot(void)
 {
-	drawingSetMode(DRAW_MODE_DRAWING);
-	drawingSetZ(0.4f);
-
-	drawingWithColor(0x80FFFFFF);
-	drawingDrawQuad(0.0f, 60.0f, 320.0f, 120.0f);
-	drawingSubmitPrim(GPU_TRIANGLE_STRIP, 4);
-
-	textSetColor(0xFF545454);
-	textDrawInBox(textGetString(StrId_NetLoader), 0, 0.75f, 0.75f, 60.0f+25.0f, 8.0f, 320-8.0f);
-
 	char buf[256];
-	const char* text = buf;
-	u32 ip = gethostid();
-
-	if (ip == 0)
-		snprintf(buf, sizeof(buf), textGetString(StrId_NetLoaderOffline));
-	else if (datafd < 0)
-		snprintf(buf, sizeof(buf), textGetString(StrId_NetLoaderActive), ip&0xFF, (ip>>8)&0xFF, (ip>>16)&0xFF, (ip>>24)&0xFF, NETWORK_PORT);
-	else
-		snprintf(buf, sizeof(buf), textGetString(StrId_NetLoaderTransferring), filetotal/1024, filelen/1024);
-
-	textDraw(8.0f, 60.0f+25.0f+8.0f, 0.5f, 0.5f, false, text);
-
-	if (datafd >= 0 && filelen)
+	const char* text = NULL;
+	if (datafd < 0)
 	{
-		float progress = (float)filetotal / filelen;
-		float width = progress*320;
-
-		drawingWithColor(0xC000E000);
-		drawingDrawQuad(0.0f, 60.0f+120.0f-16.0f, width, 16.0f);
-		drawingWithColor(0xC0C0C0C0);
-		drawingDrawQuad(width, 60.0f+120.0f-16.0f, 320.0f-width, 16.0f);
-
-		snprintf(buf, sizeof(buf), "%.02f%%", progress*100);
-		textSetColor(0xFF000000);
-		textDrawInBox(buf, 0, 0.5f, 0.5f, 60.0f+120.0f-3.0f, 0.0f, 320.0f);
+		u32 ip = gethostid();
+		snprintf(buf, sizeof(buf), textGetString(StrId_NetLoaderActive), ip&0xFF, (ip>>8)&0xFF, (ip>>16)&0xFF, (ip>>24)&0xFF, NETWORK_PORT);
+		text = buf;
 	}
+
+	networkDrawBot(StrId_NetSender, text, (datafd >= 0 && filelen), filelen, filetotal);
 }
