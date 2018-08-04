@@ -110,10 +110,8 @@ void menuUpdate(void)
 		int i;
 		menuEntry_s* me;
 		for (i = 0, me = menu->firstEntry; i != menu->curEntry; i ++, me = me->next);
-		if(me->type == ENTRY_TYPE_FILE)
-		{
+		if (me->type == ENTRY_TYPE_FILE)
 			workerSchedule(netsenderTask, me);
-		}
 	}
 	else if (menu->nEntries > 0)
 	{
