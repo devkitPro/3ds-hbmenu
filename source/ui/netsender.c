@@ -165,6 +165,8 @@ static struct in_addr find3DS(int retries)
 				break;
 			}
 		}
+
+		svcSleepThread(1e6);
 	}
 
 	if (timeout == 0)
