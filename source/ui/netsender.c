@@ -355,7 +355,8 @@ static void send3DSXFile(in_addr_t inaddr, char *name, FILE *fh)
 	do {
 		strm.avail_in = fread(in, 1, ZLIB_CHUNK, fh);
 		filetotal += strm.avail_in;
-		if (ferror(fh)) {
+		if (ferror(fh))
+		{
 			netsenderError("ferror", 0);
 			(void)deflateEnd(&strm);
 			close(datafd);
