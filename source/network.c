@@ -26,7 +26,10 @@ void networkDeactivate(void)
 {
 	socExit();
 	if(SOC_buffer)
+	{
 		free(SOC_buffer);
+		SOC_buffer = NULL;
+	}
 }
 
 // xError in their own files call xDeactivate beforehand
