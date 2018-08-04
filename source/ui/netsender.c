@@ -137,7 +137,7 @@ static struct in_addr find3DS(int retries)
 	gettimeofday(&wanted, NULL);
 
 	int timeout = retries, len;
-	while(timeout)
+	while (timeout)
 	{
 		gettimeofday(&now, NULL);
 		if (timeval_subtract(&result,&wanted,&now))
@@ -179,7 +179,7 @@ static struct in_addr find3DS(int retries)
 
 int sendData(int sock, int sendsize, char *buffer)
 {
-	while(sendsize)
+	while (sendsize)
 	{
 		int len = send(sock, buffer, sendsize, 0);
 		if (len == 0) break;
@@ -328,7 +328,7 @@ static void send3DSXFile(in_addr_t inaddr, char *name, FILE *fh)
 
 	if (response != 0)
 	{
-		switch(response) {
+		switch (response) {
 			case -1:
 				netsenderError("create file", 0);
 				break;
