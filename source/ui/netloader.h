@@ -1,7 +1,5 @@
 #pragma once
-#include "../common.h"
-
-#define NETLOADER_PORT 17491
+#include "../network.h"
 
 void netloaderTask(void* arg);
 void netloaderUpdate(void);

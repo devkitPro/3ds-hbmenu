@@ -1,7 +1,5 @@
 #pragma once
-#include "../common.h"
-
-#define NETSENDER_PORT 17491
+#include "../network.h"
 
 void netsenderTask(void* arg);
 void netsenderUpdate(void);

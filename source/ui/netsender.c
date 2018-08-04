@@ -27,35 +27,18 @@ static void netsenderError(const char* func, int err);
 
 static bool netsenderInit(void)
 {
-	static void* SOC_buffer;
-
-	if (!SOC_buffer)
-	{
-		SOC_buffer = memalign(0x1000, 0x100000);
-		if (!SOC_buffer)
-			return false;
-	}
-
-	Result ret = socInit(SOC_buffer, 0x100000);
-	if (R_FAILED(ret))
-	{
-		socExit();
-		return false;
-	}
-	return true;
+	return networkInit();
 }
 
 static void netsenderDeactivate(void)
 {
-	socExit();
+	networkDeactivate();
 }
 
 void netsenderError(const char* func, int err)
 {
 	netsenderDeactivate();
-	if (uiGetStateInfo()->update == netsenderUpdate)
-		uiExitState();
-	errorScreen(textGetString(StrId_NetSender), textGetString(StrId_NetLoaderError), func, err);
+	networkError(false, func, err);
 }
 
 /*---------------------------------------------------------------------------------
@@ -128,12 +111,12 @@ static struct in_addr find3DS(int retries)
 
 	memset(&s, '\0', sizeof(struct sockaddr_in));
 	s.sin_family = AF_INET;
-	s.sin_port = htons(17491);
+	s.sin_port = htons(NETWORK_PORT);
 	s.sin_addr.s_addr = INADDR_BROADCAST;
 
 	memset(&rs, '\0', sizeof(struct sockaddr_in));
 	rs.sin_family = AF_INET;
-	rs.sin_port = htons(17491);
+	rs.sin_port = htons(NETWORK_PORT);
 	rs.sin_addr.s_addr = INADDR_ANY;
 
 	int recvSock = socket(PF_INET, SOCK_DGRAM, 0);
@@ -302,7 +285,7 @@ static void send3DSXFile(in_addr_t inaddr, char *name, FILE *fh)
 	struct sockaddr_in s;
 	memset(&s, '\0', sizeof(struct sockaddr_in));
 	s.sin_family = AF_INET;
-	s.sin_port = htons(NETSENDER_PORT);
+	s.sin_port = htons(NETWORK_PORT);
 	s.sin_addr.s_addr = inaddr;
 
 	if (connect(datafd, (struct sockaddr *)&s, sizeof(s)) < 0 )
