@@ -157,7 +157,7 @@ static struct in_addr find3DS(int retries)
 			timeout--;
 		}
 		socklen_t socklen = sizeof(remote);
-		len = recvfrom(recvSock,recvbuf,sizeof(recvbuf),0,(struct sockaddr *)&remote,&socklen);
+		len = recvfrom(recvSock, recvbuf, sizeof(recvbuf), 0, (struct sockaddr *)&remote, &socklen);
 		if (len != -1)
 		{
 			if (strncmp("boot3ds",recvbuf,strlen("boot3ds")) == 0)
