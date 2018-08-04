@@ -321,7 +321,8 @@ static void send3DSXFile(in_addr_t inaddr, char *name, FILE *fh)
 
 	if (response != 0)
 	{
-		switch (response) {
+		switch (response)
+		{
 			case -1:
 				netsenderError("create file", 0);
 				break;
