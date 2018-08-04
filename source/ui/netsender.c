@@ -50,7 +50,6 @@ void netsenderError(const char* func, int err)
 ---------------------------------------------------------------------------------*/
 static int timeval_subtract (struct timeval *result, struct timeval *x, struct timeval *y)
 {
-//---------------------------------------------------------------------------------
 	struct timeval tmp;
 	tmp.tv_sec = y->tv_sec;
 	tmp.tv_usec = y->tv_usec;
@@ -78,10 +77,8 @@ static int timeval_subtract (struct timeval *result, struct timeval *x, struct t
 	return x->tv_sec < tmp.tv_sec;
 }
 
-//---------------------------------------------------------------------------------
 static void timeval_add (struct timeval *result, struct timeval *x, struct timeval *y)
 {
-//---------------------------------------------------------------------------------
 	result->tv_sec = x->tv_sec + y->tv_sec;
 	result->tv_usec = x->tv_usec + y->tv_usec;
 
@@ -92,10 +89,8 @@ static void timeval_add (struct timeval *result, struct timeval *x, struct timev
 	}
 }
 
-//---------------------------------------------------------------------------------
 static struct in_addr find3DS(int retries)
 {
-//---------------------------------------------------------------------------------
 	struct sockaddr_in s, remote, rs;
 	char recvbuf[256];
 	char mess[] = "3dsboot";
