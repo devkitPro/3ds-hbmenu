@@ -5,4 +5,4 @@
 
 bool networkInit(void);
 void networkDeactivate(void);
-void networkError(bool netloader, const char* func, int err);
+void networkError(void (* update)(void), StrId titleStrId, const char* func, int err);

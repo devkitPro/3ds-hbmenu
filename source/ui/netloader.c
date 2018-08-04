@@ -152,7 +152,7 @@ static void netloaderDeactivate(void)
 void netloaderError(const char* func, int err)
 {
 	netloaderDeactivate();
-	networkError(true, func, err);
+	networkError(netloaderUpdate, StrId_NetLoader, func, err);
 }
 
 static int receiveAndDecompress(int sock, FILE* fh, size_t filesize)

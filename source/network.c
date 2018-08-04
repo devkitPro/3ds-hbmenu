@@ -28,9 +28,9 @@ void networkDeactivate(void)
 }
 
 // xError in their own files call xDeactivate beforehand
-void networkError(bool netloader, const char* func, int err)
+void networkError(void (* update)(void), StrId titleStrId, const char* func, int err)
 {
-	if (uiGetStateInfo()->update == (netloader ? netloaderUpdate : netsenderUpdate))
+	if (uiGetStateInfo()->update == update)
 		uiExitState();
-	errorScreen(textGetString(netloader ? StrId_NetLoader : StrId_NetSender), textGetString(StrId_NetLoaderError), func, err);
+	errorScreen(textGetString(titleStrId), textGetString(StrId_NetLoaderError), func, err);
 }

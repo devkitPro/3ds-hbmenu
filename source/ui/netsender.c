@@ -38,7 +38,7 @@ static void netsenderDeactivate(void)
 void netsenderError(const char* func, int err)
 {
 	netsenderDeactivate();
-	networkError(false, func, err);
+	networkError(netsenderUpdate, StrId_NetSender, func, err);
 }
 
 /*---------------------------------------------------------------------------------
