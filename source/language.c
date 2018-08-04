@@ -580,39 +580,7 @@ const char* const g_strings[StrId_Max][16] =
 		),
 	},
 
-	[StrId_NetLoader] =
-	{
-		STR_EN("3dslink NetLoader"),
-		STR_ES("Cargador de programas 3dslink"),
-		STR_DE("3dslink Netzwerk-Loader"),
-		STR_FR("Chargeur de programme 3dslink"),
-		STR_IT("Caricamento programmi 3dslink"),
-		STR_JP("3dslinkネットローダ"),
-		STR_PT("Carregador de programas 3dslink"),
-		STR_NL("3dslink netwerk lader"),
-		STR_KO("3dslink 네트워크 로더"),
-		STR_RU("Загрузчик 3dslink"),
-		STR_ZH("3dslink 网络执行模块"),
-		STR_TW("3dslink 網路執行模組"),
-	},
-
-	[StrId_NetLoaderUnavailable] =
-	{
-		STR_EN("The NetLoader is currently unavailable."),
-		STR_ES("El cargador de programas no está disponible."),
-		STR_DE("Der Netzwerk-Loader ist zur Zeit nicht verfügbar."),
-		STR_FR("Le chargeur de programme 3dslink est indisponible."),
-		STR_IT("Il caricamento programmi 3dslink non è disponibile."),
-		STR_JP("ネットローダは現在利用できません。"),
-		STR_PT("O carregador de programas está de momento indisponível."),
-		STR_NL("De netwerk lader is niet beschikbaar."),
-		STR_KO("현재 네트워크 로더는 사용이 불가합니다."),
-		STR_RU("Загрузчик в настоящее время недоступен."),
-		STR_ZH("无法启动 3dslink 网络执行模块。"),
-		STR_TW("無法啓動 3dslink 網路執行模組。"),
-	},
-
-	[StrId_NetLoaderError] =
+	[StrId_NetworkError] =
 	{
 		STR_EN("An error occurred.\nTechnical details: [%s:%d]"),
 		STR_ES("Ha ocurrido un error.\nDatos técnicos: [%s:%d]"),
@@ -628,7 +596,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_TW("發生錯誤。\n詳細錯誤資訊：[%s:%d]"),
 	},
 
-	[StrId_NetLoaderOffline] =
+	[StrId_NetworkOffline] =
 	{
 		STR_EN(
 			"Offline, waiting for network…\n\n"
@@ -678,6 +646,90 @@ const char* const g_strings[StrId_Max][16] =
 			"當前離線，等待網路連線…\n\n"
 			"  \xEE\x80\x81 取消等待"
 		),
+	},
+
+	[StrId_NetworkTransferring] =
+	{
+		STR_EN(
+			"Transferring…\n"
+			"%zu out of %zu KiB written"
+		),
+		STR_ES(
+			"Transfiriendo…\n"
+			"%zu de %zu KiB escritos"
+		),
+		STR_DE(
+			"Übertragen…\n"
+			"%zu von %zu KiB geschrieben"
+		),
+		STR_FR(
+			"Transfert…\n"
+			"%zu sur %zu Kio écrits"
+		),
+		STR_IT(
+			"Trasferimento…\n"
+			"%zu di %zu KiB scritti"
+		),
+		STR_JP(
+			"データを転送しています…\n"
+			"%zu / %zu KiB 転送済み"
+		),
+		STR_PT(
+			"A transferir…\n"
+			"%zu de %zu KiB escritos"
+		),
+		STR_NL(
+			"Overbrengen…\n"
+			"%zu van %zu KiB geschreven"
+		),
+		STR_KO(
+			"전송중…\n"
+			"%zu / %zu KiB 쓰여짐"
+		),
+		STR_RU(
+			"Передача…\n"
+			"%zu из %zu КиБ написано"
+		),
+		STR_ZH(
+			"正在传输…\n"
+			"已完成 %zu / %zu KiB"
+		),
+		STR_TW(
+			"正在傳輸…\n"
+			"已完成 %zu / %zu KiB"
+		),
+	},
+
+	[StrId_NetLoader] =
+	{
+		STR_EN("3dslink NetLoader"),
+		STR_ES("Cargador de programas 3dslink"),
+		STR_DE("3dslink Netzwerk-Loader"),
+		STR_FR("Chargeur de programme 3dslink"),
+		STR_IT("Caricamento programmi 3dslink"),
+		STR_JP("3dslinkネットローダ"),
+		STR_PT("Carregador de programas 3dslink"),
+		STR_NL("3dslink netwerk lader"),
+		STR_KO("3dslink 네트워크 로더"),
+		STR_RU("Загрузчик 3dslink"),
+		STR_ZH("3dslink 网络执行模块"),
+		STR_TW("3dslink 網路執行模組"),
+	},
+
+	[StrId_NetLoaderUnavailable] =
+	{
+		STR_EN("The NetLoader is currently unavailable."),
+		STR_ES("El cargador de programas no está disponible."),
+		STR_DE("Der Netzwerk-Loader ist zur Zeit nicht verfügbar."),
+		STR_FR("Le chargeur de programme 3dslink est indisponible."),
+		STR_IT("Il caricamento programmi 3dslink non è disponibile."),
+		STR_JP("ネットローダは現在利用できません。"),
+		STR_PT("O carregador de programas está de momento indisponível."),
+		STR_NL("De netwerk lader is niet beschikbaar."),
+		STR_KO("현재 네트워크 로더는 사용이 불가합니다."),
+		STR_RU("Загрузчик в настоящее время недоступен."),
+		STR_ZH("无法启动 3dslink 网络执行模块。"),
+		STR_TW("無法啓動 3dslink 網路執行模組。"),
 	},
 
 	[StrId_NetLoaderActive] =
@@ -744,58 +796,6 @@ const char* const g_strings[StrId_Max][16] =
 		),
 	},
 
-	[StrId_NetLoaderTransferring] =
-	{
-		STR_EN(
-			"Transferring…\n"
-			"%zu out of %zu KiB written"
-		),
-		STR_ES(
-			"Transfiriendo…\n"
-			"%zu de %zu KiB escritos"
-		),
-		STR_DE(
-			"Übertragen…\n"
-			"%zu von %zu KiB geschrieben"
-		),
-		STR_FR(
-			"Transfert…\n"
-			"%zu sur %zu Kio écrits"
-		),
-		STR_IT(
-			"Trasferimento…\n"
-			"%zu di %zu KiB scritti"
-		),
-		STR_JP(
-			"データを転送しています…\n"
-			"%zu / %zu KiB 転送済み"
-		),
-		STR_PT(
-			"A transferir…\n"
-			"%zu de %zu KiB escritos"
-		),
-		STR_NL(
-			"Overbrengen…\n"
-			"%zu van %zu KiB geschreven"
-		),
-		STR_KO(
-			"전송중…\n"
-			"%zu / %zu KiB 쓰여짐"
-		),
-		STR_RU(
-			"Передача…\n"
-			"%zu из %zu КиБ написано"
-		),
-		STR_ZH(
-			"正在传输…\n"
-			"已完成 %zu / %zu KiB"
-		),
-		STR_TW(
-			"正在傳輸…\n"
-			"已完成 %zu / %zu KiB"
-		),
-	},
-
 	[StrId_NetSender] =
 	{
 		STR_EN("3dslink Server"),
@@ -814,10 +814,10 @@ const char* const g_strings[StrId_Max][16] =
 
 	[StrId_NetSenderUnavailable] =
 	{
-		STR_EN("The NetSender is currently unavailable."),
+		STR_EN("The 3dslink server is currently unavailable."),
 		STR_ES(""),
 		STR_DE(""),
-		STR_FR("L'envoyeur de programme 3dslink est indisponible."),
+		STR_FR("Le serveur 3dslink est indisponible."),
 		STR_IT(""),
 		STR_JP(""),
 		STR_PT(""),

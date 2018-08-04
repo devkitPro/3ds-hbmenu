@@ -37,7 +37,7 @@ void networkError(void (* update)(void), StrId titleStrId, const char* func, int
 {
 	if (uiGetStateInfo()->update == update)
 		uiExitState();
-	errorScreen(textGetString(titleStrId), textGetString(StrId_NetLoaderError), func, err);
+	errorScreen(textGetString(titleStrId), textGetString(StrId_NetworkError), func, err);
 }
 
 void networkDrawBot(StrId titleStrId, const char* other, bool transferring, size_t filelen, size_t filetotal)
@@ -60,9 +60,9 @@ void networkDrawBot(StrId titleStrId, const char* other, bool transferring, size
 		u32 ip = gethostid();
 
 		if (ip == 0)
-			snprintf(buf, sizeof(buf), textGetString(StrId_NetLoaderOffline));
+			snprintf(buf, sizeof(buf), textGetString(StrId_NetworkOffline));
 		else
-			snprintf(buf, sizeof(buf), textGetString(StrId_NetLoaderTransferring), filetotal/1024, filelen/1024);
+			snprintf(buf, sizeof(buf), textGetString(StrId_NetworkTransferring), filetotal/1024, filelen/1024);
 	}
 
 	textDraw(8.0f, 60.0f+25.0f+8.0f, 0.5f, 0.5f, false, text);

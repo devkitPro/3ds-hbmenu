@@ -24,12 +24,13 @@ typedef enum
 	StrId_NoTargetTitleSupport,
 	StrId_MissingTargetTitle,
 
+	StrId_NetworkOffline,
+	StrId_NetworkError,
+	StrId_NetworkTransferring,
+
 	StrId_NetLoader,
 	StrId_NetLoaderUnavailable,
-	StrId_NetLoaderOffline,
-	StrId_NetLoaderError,
 	StrId_NetLoaderActive,
-	StrId_NetLoaderTransferring,
 
 	StrId_NetSender,
 	StrId_NetSenderUnavailable,
