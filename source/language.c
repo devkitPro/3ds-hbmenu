@@ -798,10 +798,10 @@ const char* const g_strings[StrId_Max][16] =
 
 	[StrId_NetSender] =
 	{
-		STR_EN("3dslink NetSender"),
+		STR_EN("3dslink Server"),
 		STR_ES(""),
 		STR_DE(""),
-		STR_FR("Envoyeur de programme 3dslink"),
+		STR_FR("Serveur 3dslink"),
 		STR_IT(""),
 		STR_JP(""),
 		STR_PT(""),
