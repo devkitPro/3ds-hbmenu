@@ -358,7 +358,7 @@ static void send3DSXFile(in_addr_t inaddr, char *name, FILE *fh)
 		if (ferror(fh))
 		{
 			netsenderError("ferror", 0);
-			(void)deflateEnd(&strm);
+			deflateEnd(&strm);
 			close(datafd);
 			datafd = -1;
 			return;
@@ -386,7 +386,7 @@ static void send3DSXFile(in_addr_t inaddr, char *name, FILE *fh)
 				if (sendData(datafd, have, (char*)out))
 				{
 					netsenderError("have", errno);
-					(void)deflateEnd(&strm);
+					deflateEnd(&strm);
 					close(datafd);
 					datafd = -1;
 					return;
