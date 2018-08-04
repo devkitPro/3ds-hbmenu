@@ -289,9 +289,7 @@ static void send3DSXFile(in_addr_t inaddr, char *name, FILE *fh)
 	if (connect(datafd, (struct sockaddr *)&s, sizeof(s)) < 0 )
 	{
 		netsenderError("connect", errno);
-		close(datafd);
-		datafd = -1;
-		return;
+		goto send3DSXFileExit;
 	}
 
 	int namelen = strlen(name);
@@ -299,34 +297,26 @@ static void send3DSXFile(in_addr_t inaddr, char *name, FILE *fh)
 	if (sendInt32LE(datafd, namelen))
 	{
 		netsenderError("filenameLen", errno);
-		close(datafd);
-		datafd = -1;
-		return;
+		goto send3DSXFileExit;
 	}
 
 	if (sendData(datafd, namelen, name))
 	{
 		netsenderError("filename", errno);
-		close(datafd);
-		datafd = -1;
-		return;
+		goto send3DSXFileExit;
 	}
 
 	if (sendInt32LE(datafd, filelen))
 	{
 		netsenderError("filelen", errno);
-		close(datafd);
-		datafd = -1;
-		return;
+		goto send3DSXFileExit;
 	}
 
 	s32 response;
 	if (recvInt32LE(datafd, &response) != 0)
 	{
 		netsenderError("response", 0);
-		close(datafd);
-		datafd = -1;
-		return;
+		goto send3DSXFileExit;
 	}
 
 	if (response != 0)
@@ -345,9 +335,7 @@ static void send3DSXFile(in_addr_t inaddr, char *name, FILE *fh)
 				netsenderError("response:", response);
 				break;
 		}
-		close(datafd);
-		datafd = -1;
-		return;
+		goto send3DSXFileExit;
 	}
 
 	size_t totalsent = 0, blocks = 0;
@@ -359,9 +347,7 @@ static void send3DSXFile(in_addr_t inaddr, char *name, FILE *fh)
 		{
 			netsenderError("ferror", 0);
 			deflateEnd(&strm);
-			close(datafd);
-			datafd = -1;
-			return;
+			goto send3DSXFileExit;
 		}
 		flush = feof(fh) ? Z_FINISH : Z_NO_FLUSH;
 		strm.next_in = in;
@@ -378,18 +364,14 @@ static void send3DSXFile(in_addr_t inaddr, char *name, FILE *fh)
 				if (sendInt32LE(datafd,have))
 				{
 					netsenderError("chunk size", errno);
-					close(datafd);
-					datafd = -1;
-					return;
+					goto send3DSXFileExit;
 				}
 
 				if (sendData(datafd, have, (char*)out))
 				{
 					netsenderError("have", errno);
 					deflateEnd(&strm);
-					close(datafd);
-					datafd = -1;
-					return;
+					goto send3DSXFileExit;
 				}
 
 				totalsent += have;
@@ -401,11 +383,7 @@ static void send3DSXFile(in_addr_t inaddr, char *name, FILE *fh)
 	(void)deflateEnd(&strm);
 
 	if (recvInt32LE(datafd,&response)!=0)
-	{
-		close(datafd);
-		datafd = -1;
-		return;
-	}
+		goto send3DSXFileExit;
 
 	static char cmdbuf[3072];
 	memset(cmdbuf, 0, 3072);
@@ -418,13 +396,9 @@ static void send3DSXFile(in_addr_t inaddr, char *name, FILE *fh)
 	cmdbuf[3] = (cmdlen>>24) & 0xff;
 
 	if (sendData(datafd,cmdlen+4,cmdbuf))
-	{
 		netsenderError("cmdbuf", errno);
-		close(datafd);
-		datafd = -1;
-		return;
-	}
 	
+	send3DSXFileExit:
 	close(datafd);
 	datafd = -1;
 }
