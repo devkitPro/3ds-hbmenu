@@ -1,6 +1,5 @@
 #include "netsender.h"
 
-#include <malloc.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>

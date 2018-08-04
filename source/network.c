@@ -1,5 +1,7 @@
 #include "network.h"
 
+#include <malloc.h>
+
 static void* SOC_buffer;
 
 bool networkInit(void)
