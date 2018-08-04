@@ -281,7 +281,7 @@ static void send3DSXFile(in_addr_t inaddr, char *name, FILE *fh)
 	}
 
 	struct sockaddr_in s;
-	memset(&s, '\0', sizeof(struct sockaddr_in));
+	memset(&s, 0, sizeof(struct sockaddr_in));
 	s.sin_family = AF_INET;
 	s.sin_port = htons(NETWORK_PORT);
 	s.sin_addr.s_addr = inaddr;
