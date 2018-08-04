@@ -109,12 +109,12 @@ static struct in_addr find3DS(int retries)
 		return remote.sin_addr;
 	}
 
-	memset(&s, '\0', sizeof(struct sockaddr_in));
+	memset(&s, 0, sizeof(struct sockaddr_in));
 	s.sin_family = AF_INET;
 	s.sin_port = htons(NETWORK_PORT);
 	s.sin_addr.s_addr = INADDR_BROADCAST;
 
-	memset(&rs, '\0', sizeof(struct sockaddr_in));
+	memset(&rs, 0, sizeof(struct sockaddr_in));
 	rs.sin_family = AF_INET;
 	rs.sin_port = htons(NETWORK_PORT);
 	rs.sin_addr.s_addr = INADDR_ANY;
