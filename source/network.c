@@ -25,7 +25,7 @@ bool networkInit(void)
 void networkDeactivate(void)
 {
 	socExit();
-	if(SOC_buffer)
+	if (SOC_buffer)
 	{
 		free(SOC_buffer);
 		SOC_buffer = NULL;
@@ -54,7 +54,7 @@ void networkDrawBot(StrId titleStrId, const char* other, bool transferring, size
 
 	char buf[256];
 	const char* text = other;
-	if(text == NULL)
+	if (text == NULL)
 	{
 		text = buf;
 		u32 ip = gethostid();
