@@ -266,7 +266,7 @@ static void send3DSXFile(in_addr_t inaddr, char *name, FILE *fh)
 	unsigned have;
 	z_stream strm;
 
-	/* allocate deflate state */
+	// allocate deflate state
 	strm.zalloc = Z_NULL;
 	strm.zfree = Z_NULL;
 	strm.opaque = Z_NULL;
@@ -352,13 +352,12 @@ static void send3DSXFile(in_addr_t inaddr, char *name, FILE *fh)
 		}
 		flush = feof(fh) ? Z_FINISH : Z_NO_FLUSH;
 		strm.next_in = in;
-		/* run deflate() on input until output buffer not full, finish
-		   compression if all of source has been read in */
+		// run deflate() on input until output buffer not full, finish compression if all of source has been read in
 		do
 		{
 			strm.avail_out = ZLIB_CHUNK;
 			strm.next_out = out;
-			ret = deflate(&strm, flush);    /* no bad return value */
+			ret = deflate(&strm, flush);    // no bad return value
 			have = ZLIB_CHUNK - strm.avail_out;
 
 			if (have != 0)
@@ -379,11 +378,9 @@ static void send3DSXFile(in_addr_t inaddr, char *name, FILE *fh)
 				totalsent += have;
 				blocks++;
 			}
-		}
-		while (strm.avail_out == 0);
-		/* done when last data in file processed */
-	}
-	while (flush != Z_FINISH);
+		} while (strm.avail_out == 0);
+		// done when last data in file processed
+	} while (flush != Z_FINISH);
 	deflateEnd(&strm);
 
 	if (recvInt32LE(datafd,&response)!=0)
