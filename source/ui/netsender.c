@@ -139,6 +139,9 @@ static struct in_addr find3DS(int retries)
 	int timeout = retries, len;
 	while (timeout)
 	{
+		if (wantExit)
+			break;
+
 		gettimeofday(&now, NULL);
 		if (timeval_subtract(&result,&wanted,&now))
 		{
@@ -442,6 +445,13 @@ void netsenderTask(void* arg)
 	uiEnterState(UI_STATE_NETSENDER);
 
 	dsaddr = find3DS(10);
+	if (wantExit)
+	{
+		netsenderDeactivate();
+		uiExitState();
+		return;
+	}
+
 	doneSearching = true;
 	if (dsaddr.s_addr == INADDR_NONE)
 	{
