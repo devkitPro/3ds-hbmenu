@@ -401,5 +401,5 @@ void netloaderDrawBot(void)
 		text = buf;
 	}
 
-	networkDrawBot(StrId_NetSender, text, (datafd >= 0 && filelen), filelen, filetotal);
+	networkDrawBot(StrId_NetLoader, text, (datafd >= 0 && filelen), filelen, filetotal);
 }
