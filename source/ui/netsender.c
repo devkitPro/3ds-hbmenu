@@ -19,6 +19,7 @@ static LightEvent event;
 static volatile size_t filelen, filetotal;
 static volatile bool wantExit = false;
 static volatile bool doneSearching = false;
+static volatile bool errored = false;
 #define RECEIVER_IP_LENGTH 15
 static char receiverIp[RECEIVER_IP_LENGTH+1];
 
@@ -36,6 +37,7 @@ static void netsenderDeactivate(void)
 
 void netsenderError(const char* func, int err)
 {
+	errored = true;
 	netsenderDeactivate();
 	networkError(netsenderUpdate, StrId_NetSender, func, err);
 }
@@ -412,6 +414,7 @@ void netsenderTask(void* arg)
 	filetotal = 0;
 	dsaddr.s_addr = INADDR_NONE;
 	doneSearching = false;
+	errored = false;
 
 	if (!netsenderInit())
 	{
@@ -422,7 +425,7 @@ void netsenderTask(void* arg)
 	uiEnterState(UI_STATE_NETSENDER);
 
 	dsaddr = find3DS(10);
-	if (wantExit)
+	if (errored || wantExit)
 		goto _cleanup;
 
 	doneSearching = true;
@@ -452,7 +455,8 @@ void netsenderTask(void* arg)
 
 _cleanup:
 	netsenderDeactivate();
-	uiExitState();
+	if (!errored)
+		uiExitState();
 }
 
 static bool validateIp(const char* ip, size_t len)
