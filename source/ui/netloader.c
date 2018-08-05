@@ -1,6 +1,5 @@
 #include "netloader.h"
 
-#include <malloc.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
@@ -55,22 +54,7 @@ static int recvall(int sock, void* buffer, int size, int flags)
 
 static bool netloaderInit(void)
 {
-	static void* SOC_buffer;
-
-	if (!SOC_buffer)
-	{
-		SOC_buffer = memalign(0x1000, 0x100000);
-		if (!SOC_buffer)
-			return false;
-	}
-
-	Result ret = socInit(SOC_buffer, 0x100000);
-	if (R_FAILED(ret))
-	{
-		socExit();
-		return false;
-	}
-	return true;
+	return networkInit();
 }
 
 static bool netloaderActivate(void)
@@ -95,7 +79,7 @@ static bool netloaderActivate(void)
 	memset(&serv_addr, '0', sizeof(serv_addr));
 	serv_addr.sin_family = AF_INET;
 	serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
-	serv_addr.sin_port = htons(NETLOADER_PORT);
+	serv_addr.sin_port = htons(NETWORK_PORT);
 
 	if (bind(udpfd, (struct sockaddr*)&serv_addr, sizeof(serv_addr)) < 0)
 	{
@@ -109,7 +93,7 @@ static bool netloaderActivate(void)
 		return false;
 	}
 
-	// create listening socket on all addresses on NETLOADER_PORT
+	// create listening socket on all addresses on NETWORK_PORT
 
 	listenfd = socket(AF_INET, SOCK_STREAM, 0);
 	if (listenfd < 0)
@@ -161,15 +145,13 @@ static void netloaderDeactivate(void)
 		udpfd = -1;
 	}
 
-	socExit();
+	networkDeactivate();
 }
 
 void netloaderError(const char* func, int err)
 {
 	netloaderDeactivate();
-	if (uiGetStateInfo()->update == netloaderUpdate)
-		uiExitState();
-	errorScreen(textGetString(StrId_NetLoader), textGetString(StrId_NetLoaderError), func, err);
+	networkError(netloaderUpdate, StrId_NetLoader, func, err);
 }
 
 static int receiveAndDecompress(int sock, FILE* fh, size_t filesize)
@@ -299,7 +281,7 @@ void netloaderTask(void* arg)
 		if (len != -1 && strncmp(recvbuf, "3dsboot", 7) == 0)
 		{
 			sa_udp_remote.sin_family = AF_INET;
-			sa_udp_remote.sin_port = htons(17491);
+			sa_udp_remote.sin_port = htons(NETWORK_PORT);
 			sendto(udpfd, "boot3ds", 7, 0, (struct sockaddr*) &sa_udp_remote,sizeof(sa_udp_remote));
 		}
 
@@ -410,41 +392,14 @@ void netloaderExit(void)
 
 void netloaderDrawBot(void)
 {
-	drawingSetMode(DRAW_MODE_DRAWING);
-	drawingSetZ(0.4f);
-
-	drawingWithColor(0x80FFFFFF);
-	drawingDrawQuad(0.0f, 60.0f, 320.0f, 120.0f);
-	drawingSubmitPrim(GPU_TRIANGLE_STRIP, 4);
-
-	textSetColor(0xFF545454);
-	textDrawInBox(textGetString(StrId_NetLoader), 0, 0.75f, 0.75f, 60.0f+25.0f, 8.0f, 320-8.0f);
-
 	char buf[256];
-	const char* text = buf;
-	u32 ip = gethostid();
-
-	if (ip == 0)
-		snprintf(buf, sizeof(buf), textGetString(StrId_NetLoaderOffline));
-	else if (datafd < 0)
-		snprintf(buf, sizeof(buf), textGetString(StrId_NetLoaderActive), ip&0xFF, (ip>>8)&0xFF, (ip>>16)&0xFF, (ip>>24)&0xFF, NETLOADER_PORT);
-	else
-		snprintf(buf, sizeof(buf), textGetString(StrId_NetLoaderTransferring), filetotal/1024, filelen/1024);
-
-	textDraw(8.0f, 60.0f+25.0f+8.0f, 0.5f, 0.5f, false, text);
-
-	if (datafd >= 0 && filelen)
+	const char* text = NULL;
+	if (datafd < 0)
 	{
-		float progress = (float)filetotal / filelen;
-		float width = progress*320;
-
-		drawingWithColor(0xC000E000);
-		drawingDrawQuad(0.0f, 60.0f+120.0f-16.0f, width, 16.0f);
-		drawingWithColor(0xC0C0C0C0);
-		drawingDrawQuad(width, 60.0f+120.0f-16.0f, 320.0f-width, 16.0f);
-
-		snprintf(buf, sizeof(buf), "%.02f%%", progress*100);
-		textSetColor(0xFF000000);
-		textDrawInBox(buf, 0, 0.5f, 0.5f, 60.0f+120.0f-3.0f, 0.0f, 320.0f);
+		u32 ip = gethostid();
+		snprintf(buf, sizeof(buf), textGetString(StrId_NetLoaderActive), ip&0xFF, (ip>>8)&0xFF, (ip>>16)&0xFF, (ip>>24)&0xFF, NETWORK_PORT);
+		text = buf;
 	}
+
+	networkDrawBot(StrId_NetLoader, text, (datafd >= 0 && filelen), filelen, filetotal);
 }

@@ -4,6 +4,7 @@
 #include "ui/reboot.h"
 #include "ui/titleselect.h"
 #include "ui/netloader.h"
+#include "ui/netsender.h"
 #include "ui/background.h"
 
 const uiStateInfo_s g_uiStateTable[UI_STATE_MAX] =
@@ -13,6 +14,7 @@ const uiStateInfo_s g_uiStateTable[UI_STATE_MAX] =
 	[UI_STATE_REBOOT]     = { .update = rebootUpdate,                                   .drawBot = rebootDrawBot,     },
 	[UI_STATE_TITLESELECT]= { .update = titleSelectUpdate,                              .drawBot = titleSelectDrawBot,},
 	[UI_STATE_NETLOADER]  = { .update = netloaderUpdate,                                .drawBot = netloaderDrawBot,  },
+	[UI_STATE_NETSENDER]  = { .update = netsenderUpdate,                                .drawBot = netsenderDrawBot,  },
 	[UI_STATE_BACKGROUND] = { .update = backgroundUpdate, .drawTop = backgroundDrawTop, .drawBot = backgroundDrawBot, },
 };
 
@@ -53,6 +55,7 @@ int main()
 	}
 
 	netloaderExit();
+	netsenderExit();
 	launchExit();
 	workerExit();
 	textExit();
