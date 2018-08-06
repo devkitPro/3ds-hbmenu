@@ -407,7 +407,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_KO("제목 메타데이터를 읽는데 실패하였습니다.\n%08lX%08lX@%d"),
 		STR_RU("Ошибка чтения метаданных заголовка\n.%08lX%08lX@%d"),
 		STR_ZH("读取软件相关信息时发生错误：\n%08lX%08lX@%d"),
-		STR_TW("讀取軟體相關數據時發生錯誤：\n%08lX%08lX@%d")
+		STR_TW("讀取軟體相關數據時發生錯誤：\n%08lX%08lX@%d"),
 		STR_NO("Feil under innlesing av tittelmetadata.\n%08lX%08lX@%d"),
 	},
 
