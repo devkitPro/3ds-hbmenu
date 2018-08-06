@@ -12,6 +12,7 @@
 #define STR_PT(_str) [CFG_LANGUAGE_PT] = _str
 #define STR_RU(_str) [CFG_LANGUAGE_RU] = _str
 #define STR_TW(_str) [CFG_LANGUAGE_TW] = _str
+#define STR_NO(_str) [CFG_LANGUAGE_NO] = _str
 
 const char* const g_strings[StrId_Max][16] =
 {
@@ -29,6 +30,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_RU("загрузка…"),
 		STR_ZH("加载中…"),
 		STR_TW("加載中…"),
+		STR_NO("Laster inn …"),
 	},
 
 	[StrId_Directory] =
@@ -45,6 +47,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_RU("каталог"),
 		STR_ZH("目录"),
 		STR_TW("資料夾"),
+	        STR_NO("Mappe"),
 	},
 
 	[StrId_DefaultLongTitle] =
@@ -61,6 +64,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_RU("приложение хомебреw"),
 		STR_ZH("自制应用程序"),
 		STR_TW("自製程式"),
+	        STR_NO("Hjemmebrent-app"),
 	},
 
 	[StrId_DefaultPublisher] =
@@ -77,6 +81,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_RU("неизвестный автор"),
 		STR_ZH("未知作者"),
 		STR_TW("未知作者"),
+	        STR_NO("Ukjent skaper"),
 	},
 
 	[StrId_IOError] =
@@ -93,6 +98,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_RU("I/O-ошибка"),
 		STR_ZH("读写出错"),
 		STR_TW("讀寫錯誤"),
+		STR_NO("I/O-feil"),
 	},
 
 	[StrId_CouldNotOpenFile] =
@@ -109,6 +115,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_RU("Не могу открыть файл:\n%s"),
 		STR_ZH("无法打开文件:\n%s"),
 		STR_TW("開啓檔案失敗:\n%s"),
+		STR_NO("Klarte ikke å åpne filen:\n%s"),
 	},
 
 	[StrId_NoAppsFound_Title] =
@@ -125,6 +132,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_RU("приложение не найдено"),
 		STR_ZH("找不到可执行的自制程序"),
 		STR_TW("未能找到可執行的自製程式"),
+		STR_NO("Ingen apper ble funnet"),
 	},
 
 	[StrId_NoAppsFound_Msg] =
@@ -193,6 +201,11 @@ const char* const g_strings[StrId_Max][16] =
 			"記憶體找不到任何可執行的應用程式。\n"
 			"請在記憶體建立「3ds」資料夾，\n"
 			"然後儲存自製軟體到此處。"
+		),
+		STR_NO(
+			"Ingen apper ble funnet på SD-kortet.\n"
+			"Sørg for at en mappe ved navn /3ds finnes i\n"
+			"rootmappen til SD-kortet og at den inneholder apper.\n"
 		),
 	},
 
@@ -271,6 +284,12 @@ const char* const g_strings[StrId_Max][16] =
 			"  \xEE\x80\x80 重啓設備\n"
 			"  \xEE\x80\x81 取消操作"
 		),
+		STR_NO(
+			"Å gå tilbake til \xEE\x81\xB3HOME er ikke mulig.\n"
+			"Du er i ferd med å starte konsollen din på nytt.\n\n"
+			"  \xEE\x80\x80 Omstart\n"
+			"  \xEE\x80\x81 Avbryt"
+		),
 	},
 
 	[StrId_ReturnToHome] =
@@ -347,6 +366,12 @@ const char* const g_strings[StrId_Max][16] =
 			"  \xEE\x80\x81 取消操作\n"
 			"  \xEE\x80\x82 重啓設備"
 		),
+		STR_NO(
+			"Du er i ferd med å gå tilbake til \xEE\x81\xB3HOME.\n\n"
+			"  \xEE\x80\x80 Gå tilbake\n"
+			"  \xEE\x80\x81 Avbryt\n"
+			"  \xEE\x80\x82 Omstart"
+		),
 	},
 
 	[StrId_TitleSelector] =
@@ -363,6 +388,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_RU("Селектор заголовков"),
 		STR_ZH("应用启动器"),
 		STR_TW("自製程式啓動器"),
+		STR_NO("Tittelvelger"),
 	},
 
 	[StrId_ErrorReadingTitleMetadata] =
@@ -382,6 +408,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_RU("Ошибка чтения метаданных заголовка\n.%08lX%08lX@%d"),
 		STR_ZH("读取软件相关信息时发生错误：\n%08lX%08lX@%d"),
 		STR_TW("讀取軟體相關數據時發生錯誤：\n%08lX%08lX@%d"),
+		STR_NO("Feil under innlesing av tittelmetadata.\n%08lX%08lX@%d"),
 	},
 
 	[StrId_NoTitlesFound] =
@@ -398,6 +425,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_RU("Заголовки не обнаружены"),
 		STR_ZH("主机内找不到任何软件。"),
 		STR_TW("主機内找不到任何軟體。"),
+		STR_NO("Ingen titler ble oppdaget."),
 	},
 
 	[StrId_SelectTitle] =
@@ -461,6 +489,11 @@ const char* const g_strings[StrId_Max][16] =
 			"請選擇一個目標軟體。\n\n"
 			"  \xEE\x80\x80 確認\n"
 			"  \xEE\x80\x81 取消"
+		),
+		STR_NO(
+			"Vennligst velg en tilsiktet tittel.\n\n"
+			"  \xEE\x80\x80 Velg\n"
+			"  \xEE\x80\x81 Avbryt"
 		),
 	},
 
@@ -526,6 +559,11 @@ const char* const g_strings[StrId_Max][16] =
 			"無法在當前選中的軟體啓動自製軟件。\n"
 			"請利用其它漏洞來啓動「自製軟體啓動器」。"
 		),
+		STR_NO(
+			"Denne hjemmebrenningsexploiten støtter ikke\n"
+			"å starte opp apper under måltitler.\n"
+			"Vennligst bruk en annen exploit."
+		),
 	},
 
 	[StrId_MissingTargetTitle] =
@@ -578,6 +616,10 @@ const char* const g_strings[StrId_Max][16] =
 			"主機找不到該應用程式\n"
 			"所需求的軟體。"
 		),
+		STR_NO(
+			"Appen som du forsøkte å kjøre, krever en\n"
+			"tittel som ikke er installert på systemet."
+		),
 	},
 
 	[StrId_NetworkError] =
@@ -594,6 +636,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_RU("Произошла ошибка.\nТехнические подробности: [%s:%d]"),
 		STR_ZH("发生错误。\n详细错误信息：[%s:%d]"),
 		STR_TW("發生錯誤。\n詳細錯誤資訊：[%s:%d]"),
+		STR_NO("En feil oppstod.\nTekniske detaljer: [%s:%d]"),
 	},
 
 	[StrId_NetworkOffline] =
@@ -645,6 +688,10 @@ const char* const g_strings[StrId_Max][16] =
 		STR_TW(
 			"當前離線，等待網路連線…\n\n"
 			"  \xEE\x80\x81 取消等待"
+		),
+		STR_NO(
+			"Ikke på nett, venter på nettverkstilkobling …\n\n"
+			"  \xEE\x80\x81 Avbryt"
 		),
 	},
 
@@ -698,6 +745,10 @@ const char* const g_strings[StrId_Max][16] =
 			"正在傳輸…\n"
 			"已完成 %zu / %zu KiB"
 		),
+		STR_NO(
+			"Overfører …\n"
+			"%zu av %zu KiB har blitt skrevet"
+		),
 	},
 
 	[StrId_NetLoader] =
@@ -714,6 +765,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_RU("Загрузчик 3dslink"),
 		STR_ZH("3dslink 网络执行模块"),
 		STR_TW("3dslink 網路執行模組"),
+		STR_NO("3dslink Nettinnlaster),
 	},
 
 	[StrId_NetLoaderUnavailable] =
@@ -730,6 +782,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_RU("Загрузчик в настоящее время недоступен."),
 		STR_ZH("无法启动 3dslink 网络执行模块。"),
 		STR_TW("無法啓動 3dslink 網路執行模組。"),
+		STR_NO("Nettinnlasteren er utilgjengelig for øyeblikket."),
 	},
 
 	[StrId_NetLoaderActive] =
@@ -794,6 +847,11 @@ const char* const g_strings[StrId_Max][16] =
 			"IP 位址：%lu.%lu.%lu.%lu，連接埠：%d\n\n"
 			"  \xEE\x80\x81 取消等待"
 		),
+		STR_NO(
+			"Venter på at 3dslink skal koble til …\n"
+			"IP-adr.: %lu.%lu.%lu.%lu, Port: %d\n\n"
+			"  \xEE\x80\x81 Avbryt"
+		),
 	},
 
 	[StrId_NetSender] =
@@ -810,6 +868,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_RU(""),
 		STR_ZH(""),
 		STR_TW(""),
+		STR_NO("3dslink-tjener"),
 	},
 
 	[StrId_NetSenderUnavailable] =
@@ -826,6 +885,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_RU(""),
 		STR_ZH(""),
 		STR_TW(""),
+		STR_NO("3dslink-tjeneren er utilgjengelig for øyeblikket."),
 	},
 
 	[StrId_NetSenderInvalidIp] =
@@ -842,6 +902,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_RU(""),
 		STR_ZH(""),
 		STR_TW(""),
+		STR_NO("Ugyldig IP-adresse."),
 	},
 	
 	[StrId_NetSenderActive] =
@@ -894,5 +955,9 @@ const char* const g_strings[StrId_Max][16] =
 			"等待 3dslink 連接…\n\n\n"
 			"  \xEE\x80\x81 取消等待"
 		),
+		STR_NO(
+			"Venter på at 3dslink skal koble til …\n\n\n"
+			"  \xEE\x80\x81 Avbryt"
+	        ),
 	},
 };
