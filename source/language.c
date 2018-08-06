@@ -30,7 +30,7 @@ const char* const g_strings[StrId_Max][16] =
 		STR_RU("загрузка…"),
 		STR_ZH("加载中…"),
 		STR_TW("加載中…"),
-		STR_NO("Laster inn …")
+		STR_NO("Laster inn …"),
 	},
 
 	[StrId_Directory] =
@@ -851,6 +851,7 @@ const char* const g_strings[StrId_Max][16] =
 			"Venter på at 3dslink skal koble til …\n"
 			"IP-adr.: %lu.%lu.%lu.%lu, Port: %d\n\n"
 			"  \xEE\x80\x81 Avbryt"
+		),
 	},
 
 	[StrId_NetSender] =
@@ -957,5 +958,6 @@ const char* const g_strings[StrId_Max][16] =
 		STR_NO(
 			"Venter på at 3dslink skal koble til …\n\n\n"
 			"  \xEE\x80\x81 Avbryt"
+	        ),
 	},
 };
