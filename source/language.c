@@ -799,49 +799,19 @@ const char* const g_strings[StrId_Max][16] =
 	[StrId_NetSender] =
 	{
 		STR_EN("3dslink Server"),
-		STR_ES(""),
-		STR_DE(""),
 		STR_FR("Serveur 3dslink"),
-		STR_IT(""),
-		STR_JP(""),
-		STR_PT(""),
-		STR_NL(""),
-		STR_KO(""),
-		STR_RU(""),
-		STR_ZH(""),
-		STR_TW(""),
 	},
 
 	[StrId_NetSenderUnavailable] =
 	{
 		STR_EN("The 3dslink server is currently unavailable."),
-		STR_ES(""),
-		STR_DE(""),
 		STR_FR("Le serveur 3dslink est indisponible."),
-		STR_IT(""),
-		STR_JP(""),
-		STR_PT(""),
-		STR_NL(""),
-		STR_KO(""),
-		STR_RU(""),
-		STR_ZH(""),
-		STR_TW(""),
 	},
 
 	[StrId_NetSenderInvalidIp] =
 	{
 		STR_EN("Invalid IP address."),
-		STR_ES(""),
-		STR_DE(""),
 		STR_FR("Address IP invalide."),
-		STR_IT(""),
-		STR_JP(""),
-		STR_PT(""),
-		STR_NL(""),
-		STR_KO(""),
-		STR_RU(""),
-		STR_ZH(""),
-		STR_TW(""),
 	},
 	
 	[StrId_NetSenderActive] =
