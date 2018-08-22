@@ -286,7 +286,10 @@ void menuDrawBot(void)
 		if (opac > 0.0f)
 		{
 			textSetColor((u32)(opac*0x100) << 24);
-			textDrawInBox("\xEE\x81\xB3\n▼", 0, 1.0f, 1.0f, 200.0f, 0.0f, 320.0f);
+			u8 model;
+			CFGU_GetSystemModel(&model);
+			// Check for New 2DS XL
+			textDrawInBox((model == 5) ? "\n\uE01A \uE073" : "\uE073\n▼", 0, 1.0f, 1.0f, 200.0f, 0.0f, 320.0f);
 		} else
 		{
 			showingHomeIcon = false;
