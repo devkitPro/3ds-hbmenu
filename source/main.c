@@ -37,7 +37,6 @@ int main()
 		svcBreak(USERBREAK_PANIC);
 
 	ptmuInit();
-	cfguInit();
 	uiInit();
 	drawingInit();
 	textInit();
@@ -62,7 +61,6 @@ int main()
 	textExit();
 	drawingExit();
 	romfsExit();
-	cfguExit();
 	ptmuExit();
 	return 0;
 }
