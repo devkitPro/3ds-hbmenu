@@ -3,6 +3,7 @@
 // Global variables
 touchPosition g_touchPos;
 circlePosition g_cstickPos;
+u8 g_systemModel;
 
 // Static variables
 static UIState s_stateStack[UI_STATE_STACK_DEPTH];
@@ -12,7 +13,13 @@ static bool s_shouldExit;
 
 void uiInit(void)
 {
-	// Nothing here?
+	Result res = cfguInit();
+	if (R_SUCCEEDED(res))
+	{
+		res = CFGU_GetSystemModel(&g_systemModel);
+		cfguExit();
+	}
+	if (R_FAILED(res)) g_systemModel = 0;
 }
 
 void uiEnterBusy(void)

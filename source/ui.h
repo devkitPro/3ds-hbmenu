@@ -28,6 +28,8 @@ typedef struct
 extern touchPosition g_touchPos;
 extern circlePosition g_cstickPos;
 
+extern u8 g_systemModel;
+
 extern const uiStateInfo_s g_uiStateTable[UI_STATE_MAX];
 #define g_uiStateBg (&g_uiStateTable[UI_STATE_BACKGROUND])
 

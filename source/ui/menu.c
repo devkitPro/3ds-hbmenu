@@ -286,18 +286,8 @@ void menuDrawBot(void)
 		if (opac > 0.0f)
 		{
 			textSetColor((u32)(opac*0x100) << 24);
-			static u8 model = 0xFF;
-			if (model == 0xFF)
-			{
-				Result res = cfguInit();
-				if (R_SUCCEEDED(res))
-					res = CFGU_GetSystemModel(&model);
-				if (R_FAILED(res))
-					model = 0;
-				cfguExit();
-			}
 			// Check for New 2DS XL
-			if (model == 5)
+			if (g_systemModel == 5)
 				textDraw(0.0f, 200.0f, 1.0f, 1.0f, true, "\n\uE01A \uE073");
 			else
 				textDrawInBox("\uE073\n▼", 0, 1.0f, 1.0f, 200.0f, 0.0f, 320.0f);
