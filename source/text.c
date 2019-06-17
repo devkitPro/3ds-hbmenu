@@ -11,13 +11,13 @@ void textInit(void)
 
 	// Load the glyph texture sheets
 	int i;
-	TGLP_s* glyphInfo = fontGetGlyphInfo();
+	TGLP_s* glyphInfo = fontGetGlyphInfo(NULL);
 	s_glyphSheets = malloc(sizeof(C3D_Tex)*glyphInfo->nSheets);
 	s_textScale = 30.0f / glyphInfo->cellHeight;
 	for (i = 0; i < glyphInfo->nSheets; i ++)
 	{
 		C3D_Tex* tex = &s_glyphSheets[i];
-		tex->data = fontGetGlyphSheetTex(i);
+		tex->data = fontGetGlyphSheetTex(NULL, i);
 		tex->fmt = glyphInfo->sheetFmt;
 		tex->size = glyphInfo->sheetSize;
 		tex->width = glyphInfo->sheetWidth;
@@ -95,8 +95,8 @@ float textCalcWidth(const char* text)
 
 		if (code > 0)
 		{
-			int glyphIdx = fontGlyphIndexFromCodePoint(code);
-			charWidthInfo_s* cwi = fontGetCharWidthInfo(glyphIdx);
+			int glyphIdx = fontGlyphIndexFromCodePoint(NULL, code);
+			charWidthInfo_s* cwi = fontGetCharWidthInfo(NULL, glyphIdx);
 			width += cwi->charWidth;
 		}
 	} while (code > 0);
@@ -123,13 +123,13 @@ void textDraw(float x, float y, float scaleX, float scaleY, bool baseline, const
 		if (code == '\n')
 		{
 			x = firstX;
-			y += ceilf(scaleY*fontGetInfo()->lineFeed);
+			y += ceilf(scaleY*fontGetInfo(NULL)->lineFeed);
 		}
 		else if (code > 0)
 		{
-			int glyphIdx = fontGlyphIndexFromCodePoint(code);
+			int glyphIdx = fontGlyphIndexFromCodePoint(NULL, code);
 			fontGlyphPos_s data;
-			fontCalcGlyphPos(&data, glyphIdx, flags, scaleX, scaleY);
+			fontCalcGlyphPos(&data, NULL, glyphIdx, flags, scaleX, scaleY);
 
 			// Draw the glyph
 			drawingSetTex(&s_glyphSheets[data.sheetIndex]);
