@@ -1,5 +1,6 @@
 .*/
 build/
+*.t3x
 *.3dsx
 *.smdh
 *.exe
