@@ -11,7 +11,7 @@ include $(DEVKITARM)/3ds_rules
 
 
 export VER_MAJOR	:= 2
-export VER_MINOR	:= 0
+export VER_MINOR	:= 1
 export VER_PATCH	:= 0
 
 export VERSTRING	:=	v$(VER_MAJOR).$(VER_MINOR).$(VER_PATCH)
