@@ -813,7 +813,7 @@ const char* const g_strings[StrId_Max][16] =
 	[StrId_NetSenderInvalidIp] =
 	{
 		STR_EN("Invalid IP address."),
-		STR_EN("Dirección IP no válida."),
+		STR_EN("Dirección IP inválida."),
 		STR_FR("Address IP invalide."),
 	},
 	
