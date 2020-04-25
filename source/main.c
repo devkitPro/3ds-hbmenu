@@ -31,7 +31,6 @@ int main()
 	Result rc;
 
 	osSetSpeedupEnable(true);
-	sdmcWriteSafe(false);
 	rc = romfsInit();
 	if (R_FAILED(rc))
 		svcBreak(USERBREAK_PANIC);
