@@ -169,16 +169,20 @@ void backgroundDrawTop(float iod)
 	// Draw HUD
 	drawingSetZ(0.5f);
 
+	float logo_width = g_imageData[logoImg].width;
+	float logo_left = floorf(0.5f*(400.0f - logo_width));
+	float logo_right = 400.0f - logo_left;
+
 	textSetColor(0xFFFFFFFF);
 	textDrawInBox(timeString, 0, 0.5f, 0.5f, 15.0f, 0.0f, 400.0f);
-	textDrawInBox(versionString, 1, 0.5f, 0.5f, 200.0f, 80.0f, 80.0f+271-10);
+	textDrawInBox(versionString, 1, 0.5f, 0.5f, 200.0f, 80.0f, logo_right);
 #ifdef DBGSTRING
-	textDrawInBox(dbgString, -1, 0.5f, 0.5f, 200.0f, 20.0f, 80.0f+271-10);
+	textDrawInBox(dbgString, -1, 0.5f, 0.5f, 214.0f, 20.0f, logo_right);
 #endif
 
 	float posX = 20.0f*sinf(C3D_Angle(logoPosX));
 	float posY =  6.0f*sinf(C3D_Angle(logoPosY));
-	drawingDrawImage(logoImg, 0xFFFFFFFF, 80.0f+posX+iod*8, 63.0f+posY);
+	drawingDrawImage(logoImg, 0xFFFFFFFF, logo_left+posX-iod*6.0f, 63.0f+posY);
 	drawingDrawImage(wifiLevels[wifiStatus], 0xFFFFFFFF, 0.0f, 0.0f);
 	drawingDrawImage(charging ? images_batteryCharge_idx : batteryLevels[batteryLevel], 0xFFFFFFFF, 400.0f-27, 0.0f);
 }
