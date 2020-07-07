@@ -15,6 +15,11 @@ export VER_MINOR	:= 1
 export VER_PATCH	:= 1
 
 export VERSTRING	:=	v$(VER_MAJOR).$(VER_MINOR).$(VER_PATCH)
+
+ifeq ($(RELEASE),)
+	export VERSTRING	:=	$(VERSTRING)-$(shell git describe --dirty --always)
+endif
+
 #---------------------------------------------------------------------------------
 # TARGET is the name of the output
 # BUILD is the directory where object files & intermediate files will be placed
