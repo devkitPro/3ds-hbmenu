@@ -68,13 +68,16 @@ static void fixSpaceNewLine(char* buf)
 bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut)
 {
 	static char tempbuf[PATH_MAX+1];
-	bool isOldAppFolder = false;
+	bool isAppBundleFolder = false;
 
 	tempbuf[PATH_MAX] = 0;
 	strcpy(me->name, name);
-	if (me->type == ENTRY_TYPE_FOLDER)
+	if (me->type == ENTRY_TYPE_FOLDER) do
 	{
-		// Check for old style application folder
+		// Check if this folder is an application bundle (except if it's the starting directory)
+		if (strcmp(me->path, "sdmc:/3ds") == 0)
+			break;
+
 		snprintf(tempbuf, sizeof(tempbuf)-1, "%.*s/boot.3dsx", sizeof(tempbuf)-12, me->path);
 		bool found = fileExists(tempbuf);
 		if (!found)
@@ -85,13 +88,15 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut)
 
 		if (found)
 		{
-			isOldAppFolder = true;
+			isAppBundleFolder = true;
 			shortcut = false;
 			me->type = ENTRY_TYPE_FILE;
 			strcpy(me->path, tempbuf);
-		} else
-			strcpy(me->description, textGetString(StrId_Directory));
-	}
+		}
+	} while (0);
+
+	if (me->type == ENTRY_TYPE_FOLDER)
+		strcpy(me->description, textGetString(StrId_Directory));
 
 	if (me->type == ENTRY_TYPE_FILE)
 	{
@@ -127,34 +132,23 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut)
 			}
 		}
 
-		if (!smdhLoaded) do
+		if (!smdhLoaded)
+			// Attempt loading the embedded SMDH
+			smdhLoaded = menuEntryLoadEmbeddedSmdh(me);
+
+		if (!smdhLoaded && isAppBundleFolder) do
 		{
-			// Attempt loading external SMDH
+			// Attempt loading external SMDH from app bundle folder
 			strcpy(tempbuf, me->path);
 			char* ext = getExtension(tempbuf);
 			strcpy(ext, ".smdh");
 			smdhLoaded = menuEntryLoadExternalSmdh(me, tempbuf);
 			if (smdhLoaded) break;
 
-			strcpy(ext, ".icn");
+			char* slash = getSlash(tempbuf);
+			strcpy(slash, "/icon.smdh");
 			smdhLoaded = menuEntryLoadExternalSmdh(me, tempbuf);
 			if (smdhLoaded) break;
-
-			if (isOldAppFolder)
-			{
-				char* slash = getSlash(tempbuf);
-				strcpy(slash, "/icon.smdh");
-				smdhLoaded = menuEntryLoadExternalSmdh(me, tempbuf);
-				if (smdhLoaded) break;
-
-				strcpy(slash, "/icon.icn");
-				smdhLoaded = menuEntryLoadExternalSmdh(me, tempbuf);
-				if (smdhLoaded) break;
-			}
-
-			// Attempt loading the embedded SMDH
-			if (!shortcut)
-				smdhLoaded = menuEntryLoadEmbeddedSmdh(me);
 		} while (0);
 
 		if (smdhLoaded)
@@ -185,7 +179,7 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut)
 			strcpy(tempbuf, me->path);
 			strcpy(getExtension(tempbuf), ".xml");
 			bool found = fileExists(tempbuf);
-			if (!found && isOldAppFolder)
+			if (!found && isAppBundleFolder)
 			{
 				strcpy(tempbuf, me->path);
 				strcpy(getSlash(tempbuf), "/descriptor.xml");
