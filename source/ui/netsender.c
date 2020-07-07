@@ -401,7 +401,7 @@ static void send3DSXFile(in_addr_t inaddr, char *name, FILE *fh)
 
 	if (sendData(datafd,cmdlen+4,cmdbuf))
 		netsenderError("cmdbuf", errno);
-	
+
 _cleanup:
 	close(datafd);
 	datafd = -1;
@@ -500,7 +500,7 @@ void netsenderUpdate(void)
 		SwkbdState swkbd;
 		swkbdInit(&swkbd, SWKBD_TYPE_NUMPAD, 2, RECEIVER_IP_LENGTH);
 		swkbdSetNumpadKeys(&swkbd, L'.', 0);
-		swkbdSetFeatures(&swkbd, SWKBD_FIXED_WIDTH);
+		swkbdSetFeatures(&swkbd, SWKBD_DARKEN_TOP_SCREEN | SWKBD_FIXED_WIDTH);
 		swkbdSetValidation(&swkbd, SWKBD_NOTEMPTY, 0, 0);
 		swkbdSetInitialText(&swkbd, "000.000.000.000");
 		swkbdSetFilterCallback(&swkbd, callback, NULL);
