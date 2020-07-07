@@ -13,9 +13,48 @@ static char dbgString[64];
 #define SECONDS_IN_HOUR 3600
 #define SECONDS_IN_MINUTE 60
 
+#define WAVE_HEIGHT 48.0f
+#define WAVE_NUMPOINTS 32
+#define WAVE_NUMCURVES 5
+
 static bubble_t bubbles[BUBBLE_COUNT];
 static float logoPosX, logoPosY;
 static ImageId logoImg = images_logo_idx;
+
+static inline float floatFract(float x)
+{
+	return x - floorf(x);
+}
+
+static float randomFloat(void)
+{
+	// Wichmann-Hill
+	static u16 s1 = 100, s2 = 100, s3 = 100;
+
+	s1 = (171 * s1) % 30269;
+	s2 = (172 * s2) % 30307;
+	s3 = (170 * s3) % 30323;
+
+	return floatFract(s1/30269.0f + s2/30307.0f + s3/30323.0f);
+}
+
+static float randomFloatInterval(float vmin, float vmax)
+{
+	return randomFloat()*(vmax-vmin) + vmin;
+}
+
+static struct
+{
+	float phase;
+	float amplitude;
+	float velocity;
+} waveCurves[WAVE_NUMCURVES];
+
+//static float wavePos;
+static float wavePoints[WAVE_NUMPOINTS];
+static float waveDisturbance[WAVE_NUMPOINTS];
+static u32 waveDisturbancePos;
+static float waveDisturbanceCur;
 
 static const ImageId batteryLevels[] =
 {
@@ -52,7 +91,56 @@ void backgroundInit(void)
 		bubbles[i].angv = 0.02f*randf();
 		bubbles[i].fade = 15;
 	}
+	float height = WAVE_HEIGHT*0.8f;
+	for (i = 0; i < WAVE_NUMCURVES; i ++)
+	{
+		waveCurves[i].amplitude = randomFloatInterval(0, height);
+		waveCurves[i].phase = randomFloat();
+		waveCurves[i].velocity = randomFloatInterval(1.0f, 4.0f);
+		height -= waveCurves[i].amplitude;
+	}
+	waveCurves[WAVE_NUMCURVES-1].velocity = M_TAU;
 	sprintf(versionString, "%s \xEE\x80\x9D %s", launchGetLoader()->name, VERSION);
+}
+
+void waveDisturb(float amount)
+{
+	waveDisturbanceCur += amount;
+	if (waveDisturbanceCur > WAVE_HEIGHT)
+		waveDisturbanceCur = WAVE_HEIGHT;
+}
+
+void waveUpdate(void)
+{
+	waveDisturbance[waveDisturbancePos] = waveDisturbanceCur;
+
+	for (u32 i = 0; i < WAVE_NUMPOINTS; i ++)
+	{
+		float x = (float)i / (WAVE_NUMPOINTS-1);
+		float y = 120.0f;
+		float dist = waveDisturbance[(waveDisturbancePos + i + 1) % WAVE_NUMPOINTS];
+		for (u32 j = 0; j < WAVE_NUMCURVES; j ++)
+		{
+			float ampl = waveCurves[j].amplitude;
+			if (j == (WAVE_NUMCURVES-1))
+				ampl = dist;
+			y += 0.5f*ampl * sinf(M_TAU*(waveCurves[j].velocity*x + waveCurves[j].phase));
+		}
+		wavePoints[i] = y;
+	}
+
+	for (u32 j = 0; j < WAVE_NUMCURVES; j ++)
+	{
+		float variance = randomFloatInterval(0.95f, 1.05f);
+		if (j == (WAVE_NUMCURVES-1))
+			variance *= waveCurves[j].velocity;
+		waveCurves[j].phase += variance/60.0f;
+	}
+
+	waveDisturbancePos = (waveDisturbancePos + 1) % WAVE_NUMPOINTS;
+	waveDisturbanceCur -= randomFloatInterval(0.95f, 1.05f);
+	if (waveDisturbanceCur < 0.0f)
+		waveDisturbanceCur = 0.0f;
 }
 
 static void bubbleUpdate(bubble_t* bubble)
@@ -123,10 +211,18 @@ void backgroundUpdate(void)
 	sprintf(dbgString, "fs:%lu gpu: %.2f%% cpu: %.2f%%", frames, C3D_GetDrawingTime()*6, C3D_GetProcessingTime()*6);
 #endif
 
-	// Update bubbles
+	if (kDown & (KEY_LEFT|KEY_RIGHT))
+		waveDisturb(WAVE_HEIGHT);
+	else if (kDown & (KEY_UP|KEY_DOWN))
+		waveDisturb(WAVE_HEIGHT*0.5f);
+
+	// Update graphical effects
 	for (j = frames; j; j --)
+	{
+		waveUpdate();
 		for (i = 0; i < BUBBLE_COUNT; i ++)
 			bubbleUpdate(&bubbles[i]);
+	}
 
 	// Update logo
 	if (logoImg == images_logo2_idx)
@@ -155,10 +251,24 @@ void backgroundDrawTop(float iod)
 	drawingSetMode(DRAW_MODE_DRAWING);
 
 	// Clear screen
+	drawingSetMode(DRAW_MODE_DRAWING);
 	drawingSetZ(1.0f);
 	drawingEnableDepth(false);
 	drawingWithColor(0xFFFF8400);
 	drawingDrawQuad(0.0f, 0.0f, 400.0f, 240.0f);
+
+	// Draw the wave
+	drawingSetMode(DRAW_MODE_WAVE);
+	drawingWithVertexColor();
+	drawingSetGradient(0, 1.0f, 1.0f, 1.0f, 0.0f);
+	drawingSetGradient(1, 1.0f, 1.0f, 1.0f, 1.0f);
+	drawingDrawWave(wavePoints, WAVE_NUMPOINTS, 0.0f, 400.0f, -4.0f, +0.0f);
+	drawingSetGradient(0, 1.0f, 1.0f, 1.0f, 1.0f);
+	drawingSetGradient(1, 0.2588f, 0.6392f, 1.0f, 1.0f);
+	drawingDrawWave(wavePoints, WAVE_NUMPOINTS, 0.0f, 400.0f, +0.0f, +8.0f);
+	drawingSetGradient(0, 0.2588f, 0.6392f, 1.0f, 1.0f);
+	drawingDrawWave(wavePoints, WAVE_NUMPOINTS, 0.0f, 400.0f, +8.0f, +240.0f);
+	drawingSetMode(DRAW_MODE_DRAWING);
 	drawingEnableDepth(true);
 
 	// Draw bubbles!

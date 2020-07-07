@@ -2,6 +2,7 @@
 
 ; Uniforms
 .fvec projection[4]
+.fvec gradient[2]
 
 ; Constants
 .constf myconst(0.0, 1.0, -1.0, 0.1)
@@ -12,14 +13,13 @@
 ; Outputs
 .out outpos position
 .out outclr color
-.out outtc0 texcoord0
 
 ; Inputs (defined as aliases for convenience)
 .alias inpos v0
-.alias intex v1
+.alias inprm v1
 
-.entry draw_main
-.proc draw_main
+.entry wave_main
+.proc wave_main
 	; Force the w component of inpos to be 1.0
 	mov r0.xyz, inpos
 	mov r0.w,   ones
@@ -30,11 +30,9 @@
 	dp4 outpos.z, projection[2], r0
 	dp4 outpos.w, projection[3], r0
 
-	; outclr = white
-	mov outclr, ones
-
-	; outtc0 = intex
-	mov outtc0, intex
+	add r7, ones, -inprm.x
+	mul r7, gradient[0], r7
+	mad outclr, inprm.x, gradient[1], r7
 
 	; We're finished
 	end

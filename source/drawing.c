@@ -3,8 +3,9 @@
 
 // Global variables
 imageInfo_s* g_imageData;
-shaderProgram_s g_drawProg;
+shaderProgram_s g_drawProg, g_waveProg;
 u8 uLoc_projection;
+u8 uLoc_gradient;
 C3D_AttrInfo g_drawAttrInfo;
 C3D_BufInfo g_drawBufInfo;
 u32 g_drawFrames = 1;
@@ -65,9 +66,12 @@ void drawingInit(void)
 	s_programBin = DVLB_ParseFile((u32*)program_shbin, program_shbin_size);
 	shaderProgramInit(&g_drawProg);
 	shaderProgramSetVsh(&g_drawProg, &s_programBin->DVLE[0]);
+	shaderProgramInit(&g_waveProg);
+	shaderProgramSetVsh(&g_waveProg, &s_programBin->DVLE[1]);
 
 	// Load uniform positions
 	uLoc_projection = shaderInstanceGetUniformLocation(g_drawProg.vertexShader, "projection");
+	uLoc_gradient = shaderInstanceGetUniformLocation(g_waveProg.vertexShader, "gradient");
 
 	// Create vertex buffer
 	s_drawBuffer = (drawVertex_s*)linearAlloc(sizeof(drawVertex_s)*DRAWING_MAX_VERTICES);
@@ -103,6 +107,7 @@ void drawingExit(void)
 	Tex3DS_TextureFree(s_imagesTexInfo);
 
 	// Free the shader programs
+	shaderProgramFree(&g_waveProg);
 	shaderProgramFree(&g_drawProg);
 	DVLB_Free(s_programBin);
 
@@ -134,6 +139,10 @@ void drawingSetMode(DrawingMode mode)
 			C3D_SetAttrInfo(&g_drawAttrInfo);
 			C3D_SetBufInfo(&g_drawBufInfo);
 			break;
+		case DRAW_MODE_WAVE:
+			C3D_BindProgram(&g_waveProg);
+			C3D_SetAttrInfo(&g_drawAttrInfo);
+			C3D_SetBufInfo(&g_drawBufInfo);
 		default:
 			break;
 	}
@@ -149,6 +158,18 @@ void drawingSetTex(C3D_Tex* tex)
 	if (tex == s_curTex) return;
 	s_curTex = tex;
 	C3D_TexBind(0, tex);
+}
+
+void drawingSetGradient(unsigned which, float r, float g, float b, float a)
+{
+	C3D_FVUnifSet(GPU_VERTEX_SHADER, uLoc_gradient+which, r, g, b, a);
+}
+
+void drawingWithVertexColor(void)
+{
+	C3D_TexEnv* env = C3D_GetTexEnv(0);
+	C3D_TexEnvSrc(env, C3D_Both, GPU_PRIMARY_COLOR, 0, 0);
+	C3D_TexEnvFunc(env, C3D_Both, GPU_REPLACE);
 }
 
 void drawingWithColor(u32 color)
@@ -336,4 +357,15 @@ void drawingDrawImage(ImageId id, u32 color, float x, float y)
 	drawingAddVertex(x,          y,           tcTopLeft[0], tcTopLeft[1]);
 	drawingAddVertex(x+p->width, y,           tcTopRight[0], tcTopRight[1]);
 	drawingSubmitPrim(GPU_TRIANGLE_STRIP, 4);
+}
+
+void drawingDrawWave(float* points, u32 num_points, float x, float width, float dy_top, float dy_bot)
+{
+	for (u32 i = 0; i < num_points; i ++)
+	{
+		float px = x + width * i / (num_points-1);
+		drawingAddVertex(px, points[i] + dy_top, 0.0f, 0.0f);
+		drawingAddVertex(px, points[i] + dy_bot, 1.0f, 0.0f);
+	}
+	drawingSubmitPrim(GPU_TRIANGLE_STRIP, 2*num_points);
 }
