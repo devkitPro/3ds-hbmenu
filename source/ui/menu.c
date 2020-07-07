@@ -4,6 +4,7 @@
 
 static bool showingHomeIcon;
 static float homeIconStatus;
+static u32 storedButtons;
 
 static void changeDirTask(void* arg)
 {
@@ -18,6 +19,13 @@ static void launchMenuEntryTask(void* arg)
 		changeDirTask(me->path);
 	else
 		launchMenuEntry(me);
+}
+
+static void toggleStarTask(void* arg)
+{
+	menuEntry_s* me = (menuEntry_s*)arg;
+	menuToggleStar(me);
+	uiEnterState(UI_STATE_MENU);
 }
 
 static float menuGetScrollHeight(menu_s* menu)
@@ -79,6 +87,20 @@ void menuUpdate(void)
 	u32 down = hidKeysDown();
 	u32 held = hidKeysHeld();
 	u32 up   = hidKeysUp();
+
+	// Avoid registering a SELECT press with the Rosalina menu combo
+	// See https://github.com/mtheall/ftpd/commit/0db916db66ced76b7e4d05a0407189224c070ad0
+	bool selectPress = false;
+	if (down == KEY_SELECT && held == KEY_SELECT)
+		storedButtons = KEY_SELECT;
+	else if (up & KEY_SELECT)
+	{
+		if (storedButtons == KEY_SELECT)
+			selectPress = true;
+	}
+	else
+		storedButtons |= held;
+
 	bool pressedSettings = (down & KEY_TOUCH) && g_touchPos.px >= (320-g_imageData[images_settings_idx].width) && g_touchPos.py >= (240-g_imageData[images_settings_idx].height);
 	if (down & KEY_A)
 	{
@@ -112,6 +134,14 @@ void menuUpdate(void)
 		for (i = 0, me = menu->firstEntry; i != menu->curEntry; i ++, me = me->next);
 		if (me->type == ENTRY_TYPE_FILE)
 			workerSchedule(netsenderTask, me);
+	}
+	else if (selectPress)
+	{
+		int i;
+		menuEntry_s* me;
+		for (i = 0, me = menu->firstEntry; i != menu->curEntry; i ++, me = me->next);
+		if (me->type == ENTRY_TYPE_FILE)
+			workerSchedule(toggleStarTask, me);
 	}
 	else if (menu->nEntries > 0)
 	{
@@ -209,7 +239,7 @@ float menuDrawEntry(menuEntry_s* me, float x, float y, bool selected)
 
 	if (selected)
 		drawingDrawImage(images_appbubble_idx, 0x80808080, x, y+4);
-	drawingDrawImage(images_appbubble_idx, 0xFFFFFFFF, x, y);
+	drawingDrawImage(images_appbubble_idx, !me->isStarred ? 0xFFFFFFFF : 0xFFD0FFFF, x, y);
 
 	if (me->icon)
 	{
@@ -219,6 +249,13 @@ float menuDrawEntry(menuEntry_s* me, float x, float y, bool selected)
 		drawingDrawImage(images_folderIcon_idx, 0xFFFFFFFF, x+8, y+8);
 	else
 		drawingDrawImage(images_defaultIcon_idx, 0xFFFFFFFF, x+8, y+8);
+
+	if (me->isStarred)
+	{
+		float starWidth = g_imageData[images_star_idx].width;
+		float starHeight = g_imageData[images_star_idx].height;
+		drawingDrawImage(images_star_idx, 0xFFFFFFFF, x - 0.25f*starWidth, y+bubbleHeight-0.75*starHeight);
+	}
 
 	textSetColor(0xFF545454);
 	textDrawInBox(me->name, -1, 0.5f, 0.5f, y+20, x+66, x+bubbleWidth-8);

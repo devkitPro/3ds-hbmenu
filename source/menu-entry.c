@@ -72,6 +72,8 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut)
 
 	tempbuf[PATH_MAX] = 0;
 	strcpy(me->name, name);
+	snprintf(me->starpath, sizeof(me->starpath)-1, "%.*s.star", sizeof(me->starpath)-12, me->path);
+
 	if (me->type == ENTRY_TYPE_FOLDER) do
 	{
 		// Check if this folder is an application bundle (except if it's the starting directory)
@@ -202,6 +204,7 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut)
 			shortcutFree(&sc);
 	}
 
+	me->isStarred = me->type == ENTRY_TYPE_FILE && fileExists(me->starpath);
 	return true;
 }
 

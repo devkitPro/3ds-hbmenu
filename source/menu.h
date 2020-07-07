@@ -30,6 +30,7 @@ struct menuEntry_s_tag
 	MenuEntryType type;
 
 	char path[PATH_MAX+1];
+	char starpath[PATH_MAX+1];
 	argData_s args;
 
 	char name[ENTRY_NAMELENGTH+1];
@@ -45,6 +46,8 @@ struct menuEntry_s_tag
 	u64 titleId;
 	u8 titleMediatype;
 	bool titleSelected;
+
+	bool isStarred;
 };
 
 void menuEntryInit(menuEntry_s* me, MenuEntryType type);
@@ -71,6 +74,7 @@ struct menu_s_tag
 
 menu_s* menuGetCurrent(void);
 int menuScan(const char* target);
+void menuToggleStar(menuEntry_s* me);
 
 static inline char* getExtension(const char* str)
 {

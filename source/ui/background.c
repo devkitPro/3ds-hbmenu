@@ -171,7 +171,7 @@ static void bubbleUpdate(bubble_t* bubble)
 
 static bool checkLogoAdv(u32 down)
 {
-	static const u32 params[] = { KEY_UP, KEY_UP, KEY_DOWN, KEY_DOWN, KEY_LEFT, KEY_RIGHT, KEY_LEFT, KEY_RIGHT, KEY_SELECT };
+	static const u32 params[] = { KEY_UP, KEY_UP, KEY_DOWN, KEY_DOWN, KEY_LEFT, KEY_RIGHT, KEY_LEFT, KEY_RIGHT, KEY_L, KEY_R };
 	static u32 state, timeout;
 
 	if (down & params[state])

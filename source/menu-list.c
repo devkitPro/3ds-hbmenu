@@ -54,6 +54,8 @@ static int menuEntryCmp(const void *p1, const void *p2)
 	const menuEntry_s* lhs = *(menuEntry_s**)p1;
 	const menuEntry_s* rhs = *(menuEntry_s**)p2;
 
+	if(lhs->isStarred != rhs->isStarred)
+		return lhs->isStarred ? -1 : 1;
 	if(lhs->type == rhs->type)
 		return strcasecmp(lhs->name, rhs->name);
 	if(lhs->type == ENTRY_TYPE_FOLDER)
@@ -135,4 +137,32 @@ int menuScan(const char* target)
 	s_curMenu = !s_curMenu;
 	menuClear();
 	return 0;
+}
+
+void menuToggleStar(menuEntry_s* me)
+{
+	me->isStarred = !me->isStarred;
+	if (me->isStarred)
+	{
+		FILE* f = fopen(me->starpath, "w");
+		if (f) fclose(f);
+	} else
+		remove(me->starpath);
+
+	// Sort the menu again
+	s_curMenu = !s_curMenu;
+	menuSort();
+	s_curMenu = !s_curMenu;
+	menuClear();
+
+	menu_s* menu = menuGetCurrent();
+	int pos = -1;
+	for (menuEntry_s* cur = menu->firstEntry; cur; cur = cur->next)
+	{
+		++pos;
+		if (cur == me)
+			break;
+	}
+	menu->curEntry = pos;
+	menu->perturbed = true;
 }
