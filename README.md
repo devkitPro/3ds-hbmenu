@@ -2,35 +2,41 @@
 
 #### Presentation
 
-The Homebrew Launcher (hbmenu for short) is a fairly simple (and beautiful) menu that lists homebrew applications in the 3DSX format and lets you run them. It can be used with the following entrypoints:
+The Homebrew Launcher (hbmenu for short) is the main menu used to list and launch homebrew applications. It is essentially a graphical shell around an existing homebrew loading mechanism. The following entrypoints are supported:
 
-- ninjhax 1.x (the original 3DS homebrew exploit, originally released in November 2014)
-- hax 2.x (the followup to ninjhax, originally released in July 2015)
-- Rosalina (part of Luma3DS 8.0+ custom firmware, originally released in June 2017)
+- [Luma3DS Rosalina](https://github.com/LumaTeam/Luma3DS) **(recommended)**: Works on all system versions from 4.0 onwards; it provides unrestricted access to 3DS system resources as well as nice extra features such as remote debugging (GDB). For more information read the [Rosalina documentation](https://github.com/LumaTeam/Luma3DS/wiki/Rosalina).
+- [Legacy \*hax 2.x](https://smealum.github.io/3ds/): This is a now-obsolete homebrew loading system that only provides limited access to 3DS system resources, as it only attacks a low privilege level. Support for this entrypoint is deprecated and may be removed in a future release.
+
+3DS homebrew is built and distributed as executables with the `.3dsx` extension. Note that you may encounter files with the `.cia` extension - these are **not** homebrew executables that can be loaded using hbmenu.
 
 #### Usage
 
-To install hbmenu, simply copy boot.3dsx to the root of your SD card.
+To install hbmenu, simply copy `boot.3dsx` to the root of your SD card. If you are using a recent version of [Luma3DS](https://github.com/LumaTeam/Luma3DS) you probably already have a copy of hbmenu installed, as it comes bundled with it.
 
 Use the D-Pad, Circle Pad or the touchscreen to select an application, and press A or touch it again to start it. Use the C-Stick alternatively on New 3DS to scroll the list of applications.
 
-On certain entrypoints (ninjhax 1.x and hax 2.x), it is not possible to go back to the 3DS HOME menu using the HOME button. As an alternative, you can press the START button where you can reboot your console or (in the case of hax 2.x) relaunch HOME menu.
+hbmenu supports starring applications, so that they are shown at the beginning of the list. The SELECT button stars/unstars the currently selected homebrew application.
 
-hbmenu starts in the sdmc:/3ds/ directory for applications and it will look for 3dsx files inside it. You can navigate the directory tree and open/browse folders as you would expect. Old style application bundle folders are also detected, however this functionality may be removed in the future.
+On \*hax 2.x, it is not possible to go back to the 3DS HOME menu using the HOME button. As an alternative, you can press the START button where you can reboot your console or relaunch HOME menu.
+
+hbmenu starts in the sdmc:/3ds/ directory for applications and it will look for 3dsx files inside it. You can navigate the directory tree and open/browse folders as you would expect. Additionally, folders containing a 3dsx file with the same name as the folder (or alternatively `boot.3dsx`) will be detected as an application bundle folder, and it will be presented as a single icon that can directly launch the application.
 
 Here is an example directory structure that hbmenu will have no trouble recognizing:
 
 - sdmc:/
   - 3ds/
     - games/
-	  - Hermes.3dsx
+	    - Hermes.3dsx
       - cubemadness.3dsx
+    - Checkpoint/ *(this folder will be detected as an application bundle)*
+      - Checkpoint.3dsx
+      - ...
+    - ftpd.3dsx
+    - mgba.3dsx
     - 3dscraft.3dsx
     - blargSNES.3dsx
     - gameyob.3dsx
     - 3dnes.3dsx
-    - ftpd.3dsx
-    - Themely.3dsx
 
 If hbmenu does not find an icon file (either embedded in the executable or provided separately) to associate with a given 3dsx, it will display a default icon and the path to the executable as a fallback.
 
