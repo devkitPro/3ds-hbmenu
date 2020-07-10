@@ -35,6 +35,7 @@ int main()
 	if (R_FAILED(rc))
 		svcBreak(USERBREAK_PANIC);
 
+	hidSetRepeatParameters(20, 10);
 	ptmuInit();
 	uiInit();
 	drawingInit();

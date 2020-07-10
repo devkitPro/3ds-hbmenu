@@ -84,7 +84,7 @@ static void menuUpdateAnimation(menu_s* menu, float maxScroll, float val)
 void menuUpdate(void)
 {
 	menu_s* menu = menuGetCurrent();
-	u32 down = hidKeysDown();
+	u32 down = hidKeysDown() | (hidKeysDownRepeat() & (KEY_UP|KEY_DOWN|KEY_LEFT|KEY_RIGHT));
 	u32 held = hidKeysHeld();
 	u32 up   = hidKeysUp();
 
