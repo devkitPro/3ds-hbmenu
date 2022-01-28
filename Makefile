@@ -65,7 +65,7 @@ CFLAGS	:=	-g -Wall -O2 -mword-relocations \
 			-fno-math-errno \
 			$(ARCH)
 
-CFLAGS	+=	$(INCLUDE) -DARM11 -D_3DS -DVERSION=\"$(VERSTRING)\"
+CFLAGS	+=	$(INCLUDE) -DARM11 -D__3DS__ -DVERSION=\"$(VERSTRING)\"
 
 CXXFLAGS	:= $(CFLAGS) -fno-rtti -fno-exceptions -std=gnu++11
 
