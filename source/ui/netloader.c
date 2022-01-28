@@ -3,6 +3,7 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
+#include <inttypes.h>
 #include <errno.h>
 #include <fcntl.h>
 
@@ -245,6 +246,7 @@ static int receiveAndDecompress(int sock, FILE* fh, size_t filesize)
 
 void netloaderTask(void* arg)
 {
+	struct sockaddr_in sa_udp_remote;
 	char recvbuf[256];
 	wantExit = false;
 	filelen = 0;
@@ -274,7 +276,6 @@ void netloaderTask(void* arg)
 			return;
 		}
 
-		struct sockaddr_in sa_udp_remote;
 		socklen_t fromlen = sizeof(sa_udp_remote);
 
 		int len = recvfrom(udpfd, recvbuf, sizeof(recvbuf), 0, (struct sockaddr*) &sa_udp_remote, &fromlen);
@@ -285,7 +286,8 @@ void netloaderTask(void* arg)
 			sendto(udpfd, "boot3ds", 7, 0, (struct sockaddr*) &sa_udp_remote,sizeof(sa_udp_remote));
 		}
 
-		datafd = accept(listenfd, NULL, NULL);
+		socklen_t addrlen = sizeof(struct sockaddr_in);
+		datafd = accept(listenfd, (struct sockaddr*)&sa_udp_remote, &addrlen);
 		if (datafd < 0)
 		{
 			if (errno != -EWOULDBLOCK && errno != EWOULDBLOCK)
@@ -370,6 +372,13 @@ void netloaderTask(void* arg)
 			while (ptr < ptrend)
 				ptr += launchAddArg(ad, ptr);
 		}
+	}
+
+	uint32_t remote = sa_udp_remote.sin_addr.s_addr;
+	if (remote) {
+		char netlinked[18];
+		sprintf(netlinked,"%08" PRIx32 "_3DSLINK_",remote);
+		launchAddArg(&me.args, netlinked);
 	}
 
 	netloaderDeactivate();
