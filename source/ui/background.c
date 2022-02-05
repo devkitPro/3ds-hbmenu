@@ -254,7 +254,7 @@ void backgroundDrawTop(float iod)
 	drawingSetMode(DRAW_MODE_DRAWING);
 	drawingSetZ(1.0f);
 	drawingEnableDepth(false);
-	drawingWithColor(0xFFFF8400);
+	drawingWithColor(0xFF000000);
 	drawingDrawQuad(0.0f, 0.0f, 400.0f, 240.0f);
 
 	// Draw the wave
@@ -264,9 +264,9 @@ void backgroundDrawTop(float iod)
 	drawingSetGradient(1, 1.0f, 1.0f, 1.0f, 1.0f);
 	drawingDrawWave(wavePoints, WAVE_NUMPOINTS, 0.0f, 400.0f, -4.0f, +0.0f);
 	drawingSetGradient(0, 1.0f, 1.0f, 1.0f, 1.0f);
-	drawingSetGradient(1, 0.2588f, 0.6392f, 1.0f, 1.0f);
+	drawingSetGradient(1, 0.0f, 0.0f, 0.0f, 1.0f);
 	drawingDrawWave(wavePoints, WAVE_NUMPOINTS, 0.0f, 400.0f, +0.0f, +8.0f);
-	drawingSetGradient(0, 0.2588f, 0.6392f, 1.0f, 1.0f);
+	drawingSetGradient(0, 0.0f, 0.0f, 0.0f, 1.0f);
 	drawingDrawWave(wavePoints, WAVE_NUMPOINTS, 0.0f, 400.0f, +8.0f, +240.0f);
 	drawingSetMode(DRAW_MODE_DRAWING);
 	drawingEnableDepth(true);
@@ -306,7 +306,7 @@ void backgroundDrawBot(void)
 	// Clear screen
 	drawingSetZ(0.8f);
 	drawingEnableDepth(false);
-	drawingWithColor(0xFFFFA342);
+	drawingWithColor(0xFF000000);
 	drawingDrawQuad(0.0f, 0.0f, 320.0f, 240.0f);
 	drawingSubmitPrim(GPU_TRIANGLE_STRIP, 4);
 	drawingEnableDepth(true);
