@@ -12,6 +12,7 @@ typedef enum
 {
 	ENTRY_TYPE_FILE,
 	ENTRY_TYPE_FOLDER,
+	ENTRY_TYPE_FILEASSOC
 } MenuEntryType;
 
 typedef struct menuEntry_s_tag menuEntry_s;
@@ -37,6 +38,9 @@ struct menuEntry_s_tag
 	char description[ENTRY_DESCLENGTH+1];
 	char author[ENTRY_AUTHORLENGTH+1];
 
+    bool fileAssocType; 			//< 0 file_extension, 1 = filename
+    char fileAssocStr[PATH_MAX+1];	//< file_extension/filename
+
 	smdh_s smdh;
 	descriptor_s descriptor;
 
@@ -54,6 +58,7 @@ void menuEntryInit(menuEntry_s* me, MenuEntryType type);
 void menuEntryFree(menuEntry_s* me);
 bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut);
 void menuEntryParseSmdh(menuEntry_s* me);
+void menuEntryFileAssocLoad(const char* filepath);
 
 struct menu_s_tag
 {
@@ -74,7 +79,14 @@ struct menu_s_tag
 
 menu_s* menuGetCurrent(void);
 int menuScan(const char* target);
+char *menuGetRootBasePath(void);
+void menuStartupPath(void);
 void menuToggleStar(menuEntry_s* me);
+
+menu_s* menuFileAssocGetCurrent(void);
+void menuFileAssocClear(void);
+int menuFileAssocScan(const char* target);
+void menuFileAssocAddEntry(menuEntry_s* me);
 
 static inline char* getExtension(const char* str)
 {

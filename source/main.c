@@ -20,8 +20,13 @@ const uiStateInfo_s g_uiStateTable[UI_STATE_MAX] =
 
 static void startup(void* unused)
 {
+	#if __DEBUG__
+		logFileInit();
+	#endif
+
 	menuScan("sdmc:/3ds");
 	uiEnterState(UI_STATE_MENU);
+	menuLoadFileAssoc();
 }
 
 const char* __romfs_path = "sdmc:/boot.3dsx";
@@ -35,6 +40,7 @@ int main()
 	if (R_FAILED(rc))
 		svcBreak(USERBREAK_PANIC);
 
+	menuStartupPath();
 	hidSetRepeatParameters(20, 10);
 	ptmuInit();
 	uiInit();

@@ -1,11 +1,17 @@
 #include "common.h"
 
 static menu_s s_menu[2];
-static bool s_curMenu;
+static menu_s s_menuFileAssoc[2];
+
+static bool s_curMenu, s_curMenuFileAssoc;
 
 menu_s* menuGetCurrent(void)
 {
 	return &s_menu[s_curMenu];
+}
+
+menu_s* menuFileAssocGetCurrent(void) {
+	return &s_menuFileAssoc[s_curMenuFileAssoc];
 }
 
 static menuEntry_s* menuCreateEntry(MenuEntryType type)
@@ -15,10 +21,41 @@ static menuEntry_s* menuCreateEntry(MenuEntryType type)
 	return me;
 }
 
+static void _menuAddEntry(menu_s* m, menuEntry_s* me) {
+	me->menu = m;
+	if (m->lastEntry) {
+		m->lastEntry->next = me;
+		m->lastEntry = me;
+	} else {
+		m->firstEntry = me;
+		m->lastEntry = me;
+	}
+	m->scrollLocation = 0;
+	m->scrollVelocity = 0;
+	m->nEntries++;
+}
+
+void menuFileAssocAddEntry(menuEntry_s* me) {
+	_menuAddEntry(&s_menuFileAssoc[!s_curMenuFileAssoc], me);
+}
+
 static void menuDeleteEntry(menuEntry_s* me)
 {
 	menuEntryFree(me);
 	free(me);
+}
+
+static void _menuClear(menu_s* menu) {
+	menuEntry_s* cur, *next;
+	for (cur = menu->firstEntry; cur; cur = next) {
+		next = cur->next;
+		menuDeleteEntry(cur);
+	}
+	memset(menu, 0, sizeof(*menu));
+}
+
+void menuFileAssocClear(void) {
+	_menuClear(&s_menuFileAssoc[!s_curMenuFileAssoc]);
 }
 
 static void menuAddEntry(menuEntry_s* me)
@@ -90,6 +127,45 @@ static void menuSort(void)
 	*pp = NULL;
 
 	free(list);
+}
+
+int menuFileAssocScan(const char* target)
+{
+	menuFileAssocClear();
+
+	if (chdir(target) < 0)
+		return 1;
+
+	if (getcwd(s_menuFileAssoc[!s_curMenuFileAssoc].dirname, PATH_MAX + 1) == NULL)
+		return 1;
+
+	DIR* dir;
+	struct dirent* dp;
+	char temp[PATH_MAX + 1];
+
+	dir = opendir(s_menuFileAssoc[!s_curMenuFileAssoc].dirname);
+	if (!dir)
+		return 2;
+
+	while ((dp = readdir(dir))) {
+		if (dp->d_name[0] == '.')
+			continue;
+
+		memset(temp, 0, sizeof(temp));
+		snprintf(temp, sizeof(temp) - 1, "%s/%s", s_menuFileAssoc[!s_curMenuFileAssoc].dirname, dp->d_name);
+
+		const char* ext = getExtension(dp->d_name);
+		if (strcasecmp(ext, ".cfg") != 0)
+			continue;
+
+		menuEntryFileAssocLoad(temp);
+	}
+
+	closedir(dir);
+	s_curMenuFileAssoc = !s_curMenuFileAssoc;
+	menuFileAssocClear();
+
+	return 0;
 }
 
 int menuScan(const char* target)

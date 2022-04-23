@@ -24,3 +24,15 @@
 #include "launch.h"
 #include "titles.h"
 #include "ui/error.h"
+
+// debug
+#include "logger.h"
+#define __DEBUG__ 1
+
+#ifdef _WIN32
+#define DIRECTORY_SEPARATOR_CHAR '\\'
+static const char DIRECTORY_SEPARATOR[] = "\\";
+#else
+#define DIRECTORY_SEPARATOR_CHAR '/'
+static const char DIRECTORY_SEPARATOR[] = "/";
+#endif
