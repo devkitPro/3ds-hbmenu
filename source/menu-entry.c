@@ -52,7 +52,6 @@ char* normalizePath(const char* path) {
 bool menuEntryLoadExternalIcon(menuEntry_s* me, const char* filepath) {
 	struct stat fileStat;
 
-	LOG("Loading Icon: %s", filepath);
 	if (stat(filepath, &fileStat) == -1)
 		return false;
 
@@ -63,12 +62,9 @@ bool menuEntryLoadExternalIcon(menuEntry_s* me, const char* filepath) {
 	}
 
 	if (!me->icon)
-	{
 		me->icon = &me->texture;
-		C3D_TexInit(me->icon, 64, 64, GPU_RGB565);
-	}
 
-	Tex3DS_Texture texture = Tex3DS_TextureImportStdio(iconFile, me->icon, NULL, false);
+	Tex3DS_Texture texture = Tex3DS_TextureImportStdio(iconFile, me->icon, NULL, true);
 	fclose(iconFile);
 
 	if (!texture)
@@ -84,6 +80,18 @@ bool menuEntryLoadExternalIcon(menuEntry_s* me, const char* filepath) {
 
 	// Delete the t3x object since we don't need it
 	Tex3DS_TextureFree(texture);
+
+	return true;
+}
+
+bool menuEntryImportIcon(menuEntry_s* me, C3D_Tex* texture)
+{
+	if (!me->icon) {
+		me->icon = &me->texture;
+		C3D_TexInit(me->icon, 64, 64, GPU_RGB565);
+	}
+
+	memcpy(me->icon->data, texture->data, texture->size);
 
 	return true;
 }
@@ -513,8 +521,8 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut)
 			strncpy(strptr, ".t3x", sizeof(tempbuf) - 1 - ((ptrdiff_t)strptr - (ptrdiff_t)tempbuf));
 
 			bool iconLoaded = menuEntryLoadExternalIcon(me, tempbuf);
-			if (!iconLoaded && !fileAssocEntry->icon)
-				LOG("I don't know?");
+			if (!iconLoaded && fileAssocEntry->icon)
+				iconLoaded = menuEntryImportIcon(me, fileAssocEntry->icon);
 
 			/* attempt to load the smdh from entry->path with extension .smdh */
 			/* on failure, use the config from the entry */

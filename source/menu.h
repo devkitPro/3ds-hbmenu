@@ -64,6 +64,7 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut);
 void menuEntryParseSmdh(menuEntry_s* me);
 void menuEntryFileAssocLoad(const char* filepath);
 bool menuEntryLoadExternalIcon(menuEntry_s* me, const char* filepath);
+bool menuEntryImportIcon(menuEntry_s* me, C3D_Tex* texture);
 
 struct menu_s_tag
 {
