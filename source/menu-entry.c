@@ -50,21 +50,16 @@ char* normalizePath(const char* path) {
 }
 
 bool menuEntryLoadExternalIcon(menuEntry_s* me, const char* filepath) {
-	struct stat fileStat;
-
-	if (stat(filepath, &fileStat) == -1)
-		return false;
+	LOG("Loading %s", filepath);
 
 	FILE* iconFile = fopen(filepath, "rb");
-	if (!iconFile) {
-		fclose(iconFile);
+	if (!iconFile)
 		return false;
-	}
 
 	if (!me->icon)
 		me->icon = &me->texture;
 
-	Tex3DS_Texture texture = Tex3DS_TextureImportStdio(iconFile, me->icon, NULL, true);
+	Tex3DS_Texture texture = Tex3DS_TextureImportStdio(iconFile, me->icon, NULL, false);
 	fclose(iconFile);
 
 	if (!texture)
@@ -90,6 +85,12 @@ bool menuEntryImportIcon(menuEntry_s* me, C3D_Tex* texture)
 		me->icon = &me->texture;
 		C3D_TexInit(me->icon, 64, 64, GPU_RGB565);
 	}
+
+	if (!texture)
+		return false;
+
+	if (texture->fmt != GPU_RGB565)
+		return false;
 
 	memcpy(me->icon->data, texture->data, texture->size);
 
@@ -192,7 +193,7 @@ void menuEntryFileAssocLoad(const char* filepath)
 
 			if (config_setting_lookup_string(fileAssoc, "icon_path", &stringValue))
                 snprintf(mainIconPath, sizeof(mainIconPath) - 1, "%s%s", menuGetRootBasePath(), stringValue);
-			LOG("Main Icon: %s", mainIconPath == NULL ? "None" : mainIconPath);
+
 			appArguments = config_setting_lookup(fileAssoc, "app_args");
             targets = config_setting_lookup(fileAssoc, "targets");
 
