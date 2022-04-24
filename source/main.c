@@ -24,9 +24,9 @@ static void startup(void* unused)
 		logFileInit();
 	#endif
 
+	menuLoadFileAssoc();
 	menuScan("sdmc:/3ds");
 	uiEnterState(UI_STATE_MENU);
-	menuLoadFileAssoc();
 }
 
 const char* __romfs_path = "sdmc:/boot.3dsx";
