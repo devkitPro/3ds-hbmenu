@@ -91,6 +91,8 @@ bool menuEntryImportIcon(menuEntry_s* me, C3D_Tex* texture)
 	if (texture->fmt != GPU_RGB565)
 		return false;
 
+	/* move texture from top of space to bottom */
+
 	u16* dest = (u16*)me->icon->data + (64 - 48) * 64;
 	u16* src  = (u16*)texture->data;
 
