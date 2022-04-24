@@ -5,7 +5,7 @@ static FILE* logFile = NULL;
 static const char* LOG_FORMAT = "%s:%zu:\n%s\n\n";
 
 void logFileInit(void) {
-    logFile = freopen("love.log", "w", stderr);
+    logFile = freopen("hbmenu.log", "w", stderr);
 }
 
 void logFileOutput(const char* func, size_t line, const char* format, ...) {

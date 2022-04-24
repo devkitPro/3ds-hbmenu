@@ -12,7 +12,8 @@ typedef enum
 {
 	ENTRY_TYPE_FILE,
 	ENTRY_TYPE_FOLDER,
-	ENTRY_TYPE_FILEASSOC
+	ENTRY_TYPE_FILEASSOC,
+	ENTRY_TYPE_FILE_OTHER
 } MenuEntryType;
 
 typedef struct menuEntry_s_tag menuEntry_s;
