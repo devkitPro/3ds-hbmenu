@@ -50,9 +50,8 @@ char* normalizePath(const char* path) {
 }
 
 bool menuEntryLoadExternalIcon(menuEntry_s* me, const char* filepath) {
-	LOG("Loading %s", filepath);
-
 	FILE* iconFile = fopen(filepath, "rb");
+
 	if (!iconFile)
 		return false;
 
@@ -92,7 +91,17 @@ bool menuEntryImportIcon(menuEntry_s* me, C3D_Tex* texture)
 	if (texture->fmt != GPU_RGB565)
 		return false;
 
-	memcpy(me->icon->data, texture->data, texture->size);
+	u16* dest = (u16*)me->icon->data + (64 - 48) * 64;
+	u16* src  = (u16*)texture->data;
+
+	int j;
+	for (j = 0; j < 48; j += 8)
+	{
+		memcpy(dest, src, 48 * 8 * sizeof(u16));
+
+		src  += 64*8;
+		dest += 64*8;
+	}
 
 	return true;
 }
