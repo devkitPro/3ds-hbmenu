@@ -77,10 +77,6 @@ void menuLoadFileAssoc(void) {
 	menuFileAssocScan(temp);
 }
 
-void menuFileassocAddEntry(menuEntry_s* me) {
-
-}
-
 static float menuGetScrollHeight(menu_s* menu)
 {
 	float ret = 4.0f + menu->nEntries*(4.0f+g_imageData[images_appbubble_idx].height) - 240.0f;

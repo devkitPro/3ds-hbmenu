@@ -158,7 +158,7 @@ int menuFileAssocScan(const char* target)
 		if (strcasecmp(ext, ".cfg") != 0)
 			continue;
 
-		menuEntryFileAssocLoad(temp);
+		menuEntryFileAssocLoad(normalizePath(temp));
 	}
 
 	closedir(dir);
