@@ -39,11 +39,13 @@ bool menuEntryLoadExternalIcon(menuEntry_s* me, const char* filepath) {
 
 	const Tex3DS_SubTexture* subTexture = Tex3DS_GetSubTexture(texture, 0);
 
-	if (subTexture->width != 64)
-		return false;
+	if (subTexture->width != 64 && subTexture->height != 64) {
+		C3D_TexDelete(me->icon);
+		me->icon = NULL;
+		Tex3DS_TextureFree(texture);
 
-	if (subTexture->height != 64)
 		return false;
+	}
 
 	// Delete the t3x object since we don't need it
 	Tex3DS_TextureFree(texture);
@@ -62,6 +64,9 @@ bool menuEntryImportIcon(menuEntry_s* me, C3D_Tex* texture)
 		return false;
 
 	if (texture->fmt != GPU_RGB565)
+		return false;
+
+	if (texture->width != 64 && texture->height != 64)
 		return false;
 
 	/* move texture from top of space to bottom */
