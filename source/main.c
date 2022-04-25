@@ -20,10 +20,6 @@ const uiStateInfo_s g_uiStateTable[UI_STATE_MAX] =
 
 static void startup(void* unused)
 {
-	#if __DEBUG__
-		logFileInit();
-	#endif
-
 	menuLoadFileAssoc();
 	menuScan("sdmc:/3ds");
 	uiEnterState(UI_STATE_MENU);

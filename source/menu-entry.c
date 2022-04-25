@@ -22,33 +22,6 @@ bool fileExists(const char* path)
 	return stat(path, &st) == 0 && S_ISREG(st.st_mode);
 }
 
-/*
-* temporary solution for path issues
-* credits: https://github.com/clibs/clib/blob/master/deps/path-normalize/path-normalize.c
-*/
-
-char* normalizePath(const char* path) {
-	if (!path) return NULL;
-
-	char *copy = strdup(path);
-	if (NULL == copy) return NULL;
-
-	char *ptr = copy;
-
-	for (int i = 0; copy[i]; i++) {
-		*ptr++ = path[i];
-		if ('/' == path[i]) {
-			i++;
-			while ('/' == path[i]) i++;
-			i--;
-		}
-	}
-
-	*ptr = '\0';
-
-	return copy;
-}
-
 bool menuEntryLoadExternalIcon(menuEntry_s* me, const char* filepath) {
 	FILE* iconFile = fopen(filepath, "rb");
 

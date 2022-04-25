@@ -94,8 +94,6 @@ void menuFileAssocClear(void);
 int menuFileAssocScan(const char* target);
 void menuFileAssocAddEntry(menuEntry_s* me);
 
-char* normalizePath(const char* path);
-
 static inline char* getExtension(const char* str)
 {
 	const char* p;

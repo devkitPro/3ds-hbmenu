@@ -138,13 +138,13 @@ int menuFileAssocScan(const char* target)
 			continue;
 
 		memset(temp, 0, sizeof(temp));
-		snprintf(temp, sizeof(temp) - 1, "%s/%s", s_menuFileAssoc[!s_curMenuFileAssoc].dirname, dp->d_name);
+		snprintf(temp, sizeof(temp) - 1, "%s%s", s_menuFileAssoc[!s_curMenuFileAssoc].dirname, dp->d_name);
 
 		const char* ext = getExtension(dp->d_name);
 		if (strcasecmp(ext, ".cfg") != 0)
 			continue;
 
-		menuEntryFileAssocLoad(normalizePath(temp));
+		menuEntryFileAssocLoad(temp);
 	}
 
 	closedir(dir);
