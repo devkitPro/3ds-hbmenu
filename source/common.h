@@ -24,3 +24,6 @@
 #include "launch.h"
 #include "titles.h"
 #include "ui/error.h"
+
+#define DIRECTORY_SEPARATOR_CHAR '/'
+static const char DIRECTORY_SEPARATOR[] = "/";

@@ -1,6 +1,8 @@
 #include "common.h"
 #include "parsing/shortcut.h"
 
+#include <libconfig.h>
+
 void menuEntryInit(menuEntry_s* me, MenuEntryType type)
 {
 	memset(me, 0, sizeof(*me));
@@ -17,7 +19,71 @@ void menuEntryFree(menuEntry_s* me)
 bool fileExists(const char* path)
 {
 	struct stat st;
-	return stat(path, &st)==0 && S_ISREG(st.st_mode);
+	return stat(path, &st) == 0 && S_ISREG(st.st_mode);
+}
+
+bool menuEntryLoadExternalIcon(menuEntry_s* me, const char* filepath) {
+	FILE* iconFile = fopen(filepath, "rb");
+
+	if (!iconFile)
+		return false;
+
+	if (!me->icon)
+		me->icon = &me->texture;
+
+	Tex3DS_Texture texture = Tex3DS_TextureImportStdio(iconFile, me->icon, NULL, false);
+	fclose(iconFile);
+
+	if (!texture)
+		return false;
+
+	const Tex3DS_SubTexture* subTexture = Tex3DS_GetSubTexture(texture, 0);
+
+	if (subTexture->width != 64 && subTexture->height != 64) {
+		C3D_TexDelete(me->icon);
+		me->icon = NULL;
+		Tex3DS_TextureFree(texture);
+
+		return false;
+	}
+
+	// Delete the t3x object since we don't need it
+	Tex3DS_TextureFree(texture);
+
+	return true;
+}
+
+bool menuEntryImportIcon(menuEntry_s* me, C3D_Tex* texture)
+{
+	if (!me->icon) {
+		me->icon = &me->texture;
+		C3D_TexInit(me->icon, 64, 64, GPU_RGB565);
+	}
+
+	if (!texture)
+		return false;
+
+	if (texture->fmt != GPU_RGB565)
+		return false;
+
+	if (texture->width != 64 && texture->height != 64)
+		return false;
+
+	/* move texture from top of space to bottom */
+
+	u16* dest = (u16*)me->icon->data + (64 - 48) * 64;
+	u16* src  = (u16*)texture->data;
+
+	int j;
+	for (j = 0; j < 48; j += 8)
+	{
+		memcpy(dest, src, 48 * 8 * sizeof(u16));
+
+		src  += 64*8;
+		dest += 64*8;
+	}
+
+	return true;
 }
 
 static bool menuEntryLoadEmbeddedSmdh(menuEntry_s* me)
@@ -65,10 +131,183 @@ static void fixSpaceNewLine(char* buf)
 	} while (lastc);
 }
 
+void menuEntryFileAssocLoad(const char* filepath)
+{
+	bool success = false;
+	bool iconLoaded = false;
+
+	menuEntry_s* entry = NULL;
+
+	config_setting_t* fileAssoc = NULL;
+	config_setting_t* targets = NULL;
+	config_setting_t* target = NULL;
+	config_setting_t* appArguments = NULL;
+	config_setting_t* targetArguments = NULL;
+
+	config_t config = {0};
+
+	int targetsLength = 0;
+	int argsLength = 0;
+	int index = 0;
+
+	char appPath[PATH_MAX + 8];
+	char mainIconPath[PATH_MAX + 1];
+	char targetIconPath[PATH_MAX + 1];
+	char targetFileExtension[PATH_MAX + 1];
+	char targetFilename[PATH_MAX + 1];
+
+	char appAuthor[ENTRY_AUTHORLENGTH + 2];
+	char appDescription[ENTRY_DESCLENGTH + 2];
+
+	const char* stringValue = NULL;
+
+	config_init(&config);
+
+	memset(appPath, 0, sizeof(appPath));
+	memset(mainIconPath, 0, sizeof(mainIconPath));
+	memset(appAuthor, 0, sizeof(appAuthor));
+	memset(appDescription, 0, sizeof(appDescription));
+
+
+	if (!fileExists(filepath))
+		return;
+
+	if (config_read_file(&config, filepath)) {
+
+		fileAssoc = config_lookup(&config, "fileassoc");
+
+		if (fileAssoc != NULL) {
+			if (config_setting_lookup_string(fileAssoc, "app_path", &stringValue))
+				snprintf(appPath, sizeof(appPath) - 1, "%s%s", menuGetRootBasePath(), stringValue);
+
+			if (config_setting_lookup_string(fileAssoc, "icon_path", &stringValue))
+				snprintf(mainIconPath, sizeof(mainIconPath) - 1, "%s%s", menuGetRootBasePath(), stringValue);
+
+			appArguments = config_setting_lookup(fileAssoc, "app_args");
+			targets = config_setting_lookup(fileAssoc, "targets");
+
+			if (appPath[0] && targets) {
+				targetsLength = config_setting_length(targets);
+
+				if (targetsLength > 0) {
+					entry = menuCreateEntry(ENTRY_TYPE_FILE);
+					success = false;
+
+					if (entry) {
+						strncpy(entry->path, appPath, sizeof(entry->path) - 1);
+						entry->path[sizeof(entry->path) - 1] = 0;
+
+						stringValue = getSlash(appPath);
+
+						if (stringValue[0] == '/')
+							stringValue++;
+
+						if (menuEntryLoad(entry, stringValue, false)) {
+							strncpy(appAuthor, entry->author, sizeof(appAuthor));
+							appAuthor[sizeof(appAuthor) - 1] = 0;
+
+							strncpy(appDescription, entry->description, sizeof(appDescription));
+							appDescription[sizeof(appDescription) - 1] = 0;
+
+							success = true;
+						}
+
+						menuDeleteEntry(entry);
+						entry = NULL;
+					}
+
+					if (success) {
+						for (index = 0; index < targetsLength; index++) {
+							target = config_setting_get_elem(targets, index);
+
+							if (target == NULL)
+								continue;
+
+							memset(targetIconPath, 0, sizeof(targetIconPath));
+							memset(targetFileExtension, 0, sizeof(targetFileExtension));
+							memset(targetFilename, 0, sizeof(targetFilename));
+
+							if (config_setting_lookup_string(target, "icon_path", &stringValue))
+								snprintf(targetIconPath, sizeof(targetIconPath) - 1, "%s%s", menuGetRootBasePath(), stringValue);
+
+							if (config_setting_lookup_string(target, "file_extension", &stringValue))
+								strncpy(targetFileExtension, stringValue, sizeof(targetFileExtension) - 1);
+
+							if (config_setting_lookup_string(target, "filename", &stringValue))
+								strncpy(targetFilename, stringValue, sizeof(targetFilename) - 1);
+
+							targetArguments = config_setting_lookup(target, "app_args");
+
+							if ((targetFileExtension[0] != 0) == (targetFilename[0] != 0))
+								continue;
+
+							entry = menuCreateEntry(ENTRY_TYPE_FILEASSOC);
+							iconLoaded = false;
+
+							if (entry) {
+								strncpy(entry->path, appPath, sizeof(entry->path));
+								entry->path[sizeof(entry->path) - 1] = 0;
+
+								strncpy(entry->author, appAuthor, sizeof(entry->author));
+								entry->author[sizeof(entry->author) - 1] = 0;
+
+								strncpy(entry->description, appDescription, sizeof(entry->description));
+								entry->description[sizeof(entry->description) - 1] = 0;
+
+								if (targetFileExtension[0]) {
+									entry->fileAssocType = 0;
+									strncpy(entry->fileAssocStr, targetFileExtension, sizeof(entry->fileAssocStr));
+								} else if (targetFilename[0]) {
+									entry->fileAssocType = 1;
+									strncpy(entry->fileAssocStr, targetFilename, sizeof(entry->fileAssocStr));
+								}
+
+								entry->fileAssocStr[sizeof(entry->fileAssocStr) - 1] = 0;
+
+								if (targetIconPath[0])
+									iconLoaded = menuEntryLoadExternalIcon(entry, targetIconPath);
+
+								if (!iconLoaded && mainIconPath[0])
+									iconLoaded = menuEntryLoadExternalIcon(entry, mainIconPath);
+
+								argData_s* argData = &entry->args;
+								argData->dst = (char*)&argData->buf[1];
+
+								launchAddArg(argData, entry->path);
+
+								config_setting_t* configArgs = targetArguments ? targetArguments : appArguments;
+								if (configArgs) {
+									argsLength = config_setting_length(configArgs);
+									for (int argument = 0; argument < argsLength; argument++) {
+										stringValue = config_setting_get_string_elem(configArgs, argument);
+
+										if (stringValue == NULL)
+											continue;
+
+										launchAddArg(argData, stringValue);
+									}
+								}
+							}
+
+							if (entry)
+								menuFileAssocAddEntry(entry);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	config_destroy(&config);
+}
+
 bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut)
 {
 	static char tempbuf[PATH_MAX+1];
 	bool isAppBundleFolder = false;
+
+	menu_s* menuFileAssoc = menuFileAssocGetCurrent();
+	menuEntry_s* fileAssocEntry = NULL;
 
 	tempbuf[PATH_MAX] = 0;
 	strcpy(me->name, name);
@@ -82,17 +321,49 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut)
 
 		snprintf(tempbuf, sizeof(tempbuf)-1, "%.*s/boot.3dsx", sizeof(tempbuf)-12, me->path);
 		bool found = fileExists(tempbuf);
+		bool fileAssocFlag = false;
+
 		if (!found)
 		{
 			snprintf(tempbuf, sizeof(tempbuf)-1, "%.*s/%.*s.3dsx", sizeof(tempbuf)/2, me->path, sizeof(tempbuf)/2-7, name);
 			found = fileExists(tempbuf);
 		}
 
+		if (!found && menuFileAssoc->nEntries > 0) {
+			fileAssocFlag = true;
+
+			DIR* dir = opendir(fileAssocEntry->path);
+			struct dirent* dp;
+
+			if (dir) {
+				int index = 0;
+				while ((dp = readdir(dir))) {
+					if (dp->d_name[0] == '.')
+						continue;
+
+					for (fileAssocEntry = menuFileAssoc->firstEntry, index = 0; fileAssocEntry; fileAssocEntry = fileAssocEntry->next, index++) {
+						if (!fileAssocEntry->fileAssocType)
+							continue;
+
+						if (strcmp(dp->d_name, fileAssocEntry->fileAssocStr))
+							continue;
+
+						snprintf(tempbuf, sizeof(tempbuf) - 1, "%.*s/%.*s", (int)sizeof(tempbuf) / 2, me->path, (int)sizeof(tempbuf) / 2 - 7, dp->d_name);
+						found = fileExists(tempbuf);
+
+						if (found)
+							break;
+					}
+				}
+				closedir(dir);
+			}
+		}
+
 		if (found)
 		{
 			isAppBundleFolder = true;
 			shortcut = false;
-			me->type = ENTRY_TYPE_FILE;
+			me->type = fileAssocFlag ? ENTRY_TYPE_FILE_OTHER : ENTRY_TYPE_FILE;
 			strcpy(me->path, tempbuf);
 		}
 	} while (0);
@@ -110,13 +381,16 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut)
 
 		if (shortcut)
 		{
-			if (R_FAILED(shortcutCreate(&sc, me->path)))
+			if (R_FAILED(shortcutCreate(&sc, me->path))) {
 				return false;
+			}
+
 			if (!fileExists(sc.executable))
 			{
 				shortcutFree(&sc);
 				return false;
 			}
+
 			strcpy(me->path, "sdmc:");
 			strcat(me->path, sc.executable);
 		}
@@ -204,7 +478,103 @@ bool menuEntryLoad(menuEntry_s* me, const char* name, bool shortcut)
 			shortcutFree(&sc);
 	}
 
+	if (me->type == ENTRY_TYPE_FILE_OTHER) {
+		if (menuFileAssoc->nEntries == 0)
+			return false;
+
+		int index = 0;
+		char* strptr;
+
+		for (fileAssocEntry = menuFileAssoc->firstEntry, index = 0; fileAssocEntry; fileAssocEntry = fileAssocEntry->next, index++) {
+			if (!fileAssocEntry->fileAssocType)
+				strptr = getExtension(me->path);
+
+			if (fileAssocEntry->fileAssocType) {
+				strptr = getSlash(me->path);
+				if (strptr[0] == '/')
+					strptr++;
+			}
+
+			if (strcmp(strptr, fileAssocEntry->fileAssocStr))
+				continue;
+
+			me->type = ENTRY_TYPE_FILE;
+
+			/* attempt to load icon from entry->path (with extension t3x) */
+			/* on failure, should use icon data from the entry */
+
+			memset(tempbuf, 0, sizeof(tempbuf));
+			strncpy(tempbuf, me->path, sizeof(tempbuf));
+			tempbuf[sizeof(tempbuf) - 1] = 0;
+
+			strptr = getExtension(tempbuf);
+			strncpy(strptr, ".t3x", sizeof(tempbuf) - 1 - ((ptrdiff_t)strptr - (ptrdiff_t)tempbuf));
+
+			bool iconLoaded = menuEntryLoadExternalIcon(me, tempbuf);
+			if (!iconLoaded && fileAssocEntry->icon)
+				iconLoaded = menuEntryImportIcon(me, fileAssocEntry->icon);
+
+			/* attempt to load the smdh from entry->path with extension .smdh */
+			/* on failure, use the config from the entry */
+			memset(tempbuf, 0, sizeof(tempbuf));
+			strncpy(tempbuf, me->path, sizeof(tempbuf));
+			tempbuf[sizeof(tempbuf) - 1] = 0;
+
+			strptr = getExtension(tempbuf);
+			strncpy(strptr, ".smdh", sizeof(tempbuf) - 1 - ((ptrdiff_t)strptr - (ptrdiff_t)tempbuf));
+
+			bool smdhLoaded = menuEntryLoadExternalSmdh(me, tempbuf);
+			if (smdhLoaded) {
+				menuEntryParseSmdh(me);
+			} else {
+				strncpy(me->author, fileAssocEntry->author, sizeof(me->author));
+				me->author[sizeof(me->author) - 1] = 0;
+
+				strncpy(me->description, fileAssocEntry->description, sizeof(me->description));
+				me->description[sizeof(me->description) - 1] = 0;
+			}
+
+			/* initialize argument data */
+			argData_s* argData = &me->args;
+			argData_s* argDataAssoc = &fileAssocEntry->args;
+
+			char* argSource = (char*)&argDataAssoc->buf[1];
+			bool fTokenFound = false;
+
+			argData->dst = (char*)&argData->buf[1];
+
+			for (u32 argIndex = 0; argIndex < argDataAssoc->buf[0]; argIndex++, argSource += strlen(argSource) + 1) {
+				if (argIndex) {
+					strptr = strchr(argSource, '%');
+					if (strptr && strptr[0] && strptr[1] && (strptr == argSource || strptr[-1] != '\\')) {
+						if (strptr[1] == 'f') {
+							memset(tempbuf, 0, sizeof(tempbuf));
+							snprintf(tempbuf, sizeof(tempbuf) - 1, "%.*s%s%s", (int)((uintptr_t)strptr - (uintptr_t)argSource), argSource, me->path, &strptr[2]);
+
+							launchAddArg(argData, tempbuf);
+							fTokenFound = true;
+							continue;
+						}
+					}
+				}
+
+				launchAddArg(argData, argSource);
+			}
+
+			if (!fTokenFound)
+				launchAddArg(argData, me->path);
+
+			strncpy(me->path, fileAssocEntry->path, sizeof(me->path));
+			me->path[sizeof(me->path) - 1] = 0;
+
+			return true;
+		}
+
+		return false;
+	}
+
 	me->isStarred = me->type == ENTRY_TYPE_FILE && fileExists(me->starpath);
+
 	return true;
 }
 

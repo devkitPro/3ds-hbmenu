@@ -1,29 +1,34 @@
 #include "common.h"
 
 static menu_s s_menu[2];
-static bool s_curMenu;
+static menu_s s_menuFileAssoc[2];
+
+static bool s_curMenu, s_curMenuFileAssoc;
 
 menu_s* menuGetCurrent(void)
 {
 	return &s_menu[s_curMenu];
 }
 
-static menuEntry_s* menuCreateEntry(MenuEntryType type)
+menu_s* menuFileAssocGetCurrent(void) {
+	return &s_menuFileAssoc[s_curMenuFileAssoc];
+}
+
+menuEntry_s* menuCreateEntry(MenuEntryType type)
 {
 	menuEntry_s* me = (menuEntry_s*)malloc(sizeof(menuEntry_s));
 	menuEntryInit(me, type);
 	return me;
 }
 
-static void menuDeleteEntry(menuEntry_s* me)
+void menuDeleteEntry(menuEntry_s* me)
 {
 	menuEntryFree(me);
 	free(me);
 }
 
-static void menuAddEntry(menuEntry_s* me)
+static void _menuAddEntry(menu_s* m, menuEntry_s* me)
 {
-	menu_s* m = &s_menu[!s_curMenu];
 	me->menu = m;
 	if (m->lastEntry)
 	{
@@ -34,19 +39,37 @@ static void menuAddEntry(menuEntry_s* me)
 		m->firstEntry = me;
 		m->lastEntry = me;
 	}
-	m->nEntries ++;
+	m->nEntries++;
+}
+
+static void _menuClear(menu_s* menu)
+{
+	menuEntry_s* cur, *next;
+	for (cur = menu->firstEntry; cur; cur = next) {
+		next = cur->next;
+		menuDeleteEntry(cur);
+	}
+	memset(menu, 0, sizeof(*menu));
 }
 
 static void menuClear(void)
 {
-	menu_s* m = &s_menu[!s_curMenu];
-	menuEntry_s *cur, *next;
-	for (cur = m->firstEntry; cur; cur = next)
-	{
-		next = cur->next;
-		menuDeleteEntry(cur);
-	}
-	memset(m, 0, sizeof(*m));
+	_menuClear(&s_menu[!s_curMenu]);
+}
+
+void menuFileAssocClear(void)
+{
+	_menuClear(&s_menuFileAssoc[!s_curMenuFileAssoc]);
+}
+
+void menuFileAssocAddEntry(menuEntry_s* me)
+{
+	_menuAddEntry(&s_menuFileAssoc[!s_curMenuFileAssoc], me);
+}
+
+static void menuAddEntry(menuEntry_s* me)
+{
+	_menuAddEntry(&s_menu[!s_curMenu], me);
 }
 
 static int menuEntryCmp(const void *p1, const void *p2)
@@ -92,6 +115,45 @@ static void menuSort(void)
 	free(list);
 }
 
+int menuFileAssocScan(const char* target)
+{
+	menuFileAssocClear();
+
+	if (chdir(target) < 0)
+		return 1;
+
+	if (getcwd(s_menuFileAssoc[!s_curMenuFileAssoc].dirname, PATH_MAX + 1) == NULL)
+		return 1;
+
+	DIR* dir;
+	struct dirent* dp;
+	char temp[PATH_MAX + 1];
+
+	dir = opendir(s_menuFileAssoc[!s_curMenuFileAssoc].dirname);
+	if (!dir)
+		return 2;
+
+	while ((dp = readdir(dir))) {
+		if (dp->d_name[0] == '.')
+			continue;
+
+		memset(temp, 0, sizeof(temp));
+		snprintf(temp, sizeof(temp) - 1, "%s%s", s_menuFileAssoc[!s_curMenuFileAssoc].dirname, dp->d_name);
+
+		const char* ext = getExtension(dp->d_name);
+		if (strcasecmp(ext, ".cfg") != 0)
+			continue;
+
+		menuEntryFileAssocLoad(temp);
+	}
+
+	closedir(dir);
+	s_curMenuFileAssoc = !s_curMenuFileAssoc;
+	menuFileAssocClear();
+
+	return 0;
+}
+
 int menuScan(const char* target)
 {
 	if (chdir(target) < 0) return 1;
@@ -118,6 +180,9 @@ int menuScan(const char* target)
 			const char* ext = getExtension(dp->d_name);
 			if (strcasecmp(ext, ".3dsx")==0 || (shortcut = strcasecmp(ext, ".xml")==0))
 				me = menuCreateEntry(ENTRY_TYPE_FILE);
+
+			if (!me)
+				me = menuCreateEntry(ENTRY_TYPE_FILE_OTHER);
 		}
 
 		if (!me)

@@ -20,6 +20,7 @@ const uiStateInfo_s g_uiStateTable[UI_STATE_MAX] =
 
 static void startup(void* unused)
 {
+	menuLoadFileAssoc();
 	menuScan("sdmc:/3ds");
 	uiEnterState(UI_STATE_MENU);
 }
@@ -35,6 +36,7 @@ int main()
 	if (R_FAILED(rc))
 		svcBreak(USERBREAK_PANIC);
 
+	menuStartupPath();
 	hidSetRepeatParameters(20, 10);
 	ptmuInit();
 	uiInit();

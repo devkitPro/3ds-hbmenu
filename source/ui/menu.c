@@ -1,10 +1,14 @@
 #include "menu.h"
+
 #include "netloader.h"
 #include "netsender.h"
 
 static bool showingHomeIcon;
 static float homeIconStatus;
 static u32 storedButtons;
+
+char rootPathBase[PATH_MAX];
+char rootPath[PATH_MAX + 8];
 
 static void changeDirTask(void* arg)
 {
@@ -26,6 +30,51 @@ static void toggleStarTask(void* arg)
 	menuEntry_s* me = (menuEntry_s*)arg;
 	menuToggleStar(me);
 	uiEnterState(UI_STATE_MENU);
+}
+
+char *menuGetRootBasePath(void) {
+	return rootPathBase;
+}
+
+void menuStartupPath(void) {
+	char temp[PATH_MAX + 28];
+
+	#if defined(__3DS__)
+		strncpy(rootPathBase, "sdmc:", sizeof(rootPathBase) - 1);
+	#else
+		getcwd(rootPathBase, sizeof(rootPathBase));
+	#endif
+
+	snprintf(rootPath, sizeof(rootPath) - 1, "%s%s%s", rootPathBase, DIRECTORY_SEPARATOR, "3ds");
+
+	struct stat fileStat = {0};
+
+	/* create the root directory */
+	if (stat(rootPath, &fileStat) == -1)
+		mkdir(rootPath, 0755);
+
+	/* create the /config directory */
+	snprintf(temp, sizeof(temp) - 1, "%s/config", rootPathBase);
+	mkdir(temp, 0755);
+
+	/* create /config/hbmenu directory */
+	snprintf(temp, sizeof(temp) - 1, "%s/config/hbmenu", rootPathBase);
+	mkdir(temp, 0755);
+
+	snprintf(temp, sizeof(temp) - 1, "%s/config/hbmenu/fileassoc", rootPathBase);
+
+	/* create /config/hbmenu/fileassoc */
+	if (stat(temp, &fileStat) == -1)
+		mkdir(temp, 0755);
+}
+
+void menuLoadFileAssoc(void) {
+	char temp[PATH_MAX + 28];
+
+	memset(temp, 0, sizeof(temp) - 1);
+	snprintf(temp, sizeof(temp) - 1, "%s/config/hbmenu/fileassoc", rootPathBase);
+
+	menuFileAssocScan(temp);
 }
 
 static float menuGetScrollHeight(menu_s* menu)
