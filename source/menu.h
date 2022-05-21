@@ -39,8 +39,8 @@ struct menuEntry_s_tag
 	char description[ENTRY_DESCLENGTH+1];
 	char author[ENTRY_AUTHORLENGTH+1];
 
-    bool fileAssocType; 					//< 0 file_extension, 1 = filename
-    char fileAssocStr[PATH_MAX + 1];		//< file_extension/filename
+	bool fileAssocType; 					//< 0 file_extension, 1 = filename
+	char fileAssocStr[PATH_MAX + 1];		//< file_extension/filename
 
 	smdh_s smdh;
 	descriptor_s descriptor;

@@ -181,10 +181,10 @@ void menuEntryFileAssocLoad(const char* filepath)
 				snprintf(appPath, sizeof(appPath) - 1, "%s%s", menuGetRootBasePath(), stringValue);
 
 			if (config_setting_lookup_string(fileAssoc, "icon_path", &stringValue))
-                snprintf(mainIconPath, sizeof(mainIconPath) - 1, "%s%s", menuGetRootBasePath(), stringValue);
+				snprintf(mainIconPath, sizeof(mainIconPath) - 1, "%s%s", menuGetRootBasePath(), stringValue);
 
 			appArguments = config_setting_lookup(fileAssoc, "app_args");
-            targets = config_setting_lookup(fileAssoc, "targets");
+			targets = config_setting_lookup(fileAssoc, "targets");
 
 			if (appPath[0] && targets) {
 				targetsLength = config_setting_length(targets);

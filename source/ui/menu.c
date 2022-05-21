@@ -33,7 +33,7 @@ static void toggleStarTask(void* arg)
 }
 
 char *menuGetRootBasePath(void) {
-    return rootPathBase;
+	return rootPathBase;
 }
 
 void menuStartupPath(void) {
@@ -59,13 +59,13 @@ void menuStartupPath(void) {
 
 	/* create /config/hbmenu directory */
 	snprintf(temp, sizeof(temp) - 1, "%s/config/hbmenu", rootPathBase);
-    mkdir(temp, 0755);
+	mkdir(temp, 0755);
 
 	snprintf(temp, sizeof(temp) - 1, "%s/config/hbmenu/fileassoc", rootPathBase);
 
 	/* create /config/hbmenu/fileassoc */
-    if (stat(temp, &fileStat) == -1)
-        mkdir(temp, 0755);
+	if (stat(temp, &fileStat) == -1)
+		mkdir(temp, 0755);
 }
 
 void menuLoadFileAssoc(void) {

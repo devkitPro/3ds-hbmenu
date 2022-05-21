@@ -25,10 +25,5 @@
 #include "titles.h"
 #include "ui/error.h"
 
-#ifdef _WIN32
-#define DIRECTORY_SEPARATOR_CHAR '\\'
-static const char DIRECTORY_SEPARATOR[] = "\\";
-#else
 #define DIRECTORY_SEPARATOR_CHAR '/'
 static const char DIRECTORY_SEPARATOR[] = "/";
-#endif
