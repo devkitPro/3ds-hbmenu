@@ -11,7 +11,7 @@ include $(DEVKITARM)/3ds_rules
 
 
 export VER_MAJOR	:= 2
-export VER_MINOR	:= 3
+export VER_MINOR	:= 4
 export VER_PATCH	:= 0
 
 export VERSTRING	:=	v$(VER_MAJOR).$(VER_MINOR).$(VER_PATCH)
@@ -61,11 +61,10 @@ APP_AUTHOR		:=	hbmenu team
 ARCH	:=	-march=armv6k -mtune=mpcore -mfloat-abi=hard -mtp=soft
 
 CFLAGS	:=	-g -Wall -O2 -mword-relocations \
-			-fomit-frame-pointer -ffunction-sections \
-			-fno-math-errno \
+			-fno-math-errno -ffunction-sections \
 			$(ARCH)
 
-CFLAGS	+=	$(INCLUDE) -DARM11 -D__3DS__ -DVERSION=\"$(VERSTRING)\"
+CFLAGS	+=	$(INCLUDE) -D__3DS__ -DVERSION=\"$(VERSTRING)\"
 
 CXXFLAGS	:= $(CFLAGS) -fno-rtti -fno-exceptions -std=gnu++11
 
