@@ -86,6 +86,10 @@ hbmenu uses zlib for compression and tinyxml2 for XML parsing. These libraries a
 
 Binaries of hbmenu can be downloaded from the [Releases](https://github.com/fincs/new-hbmenu/releases) page.
 
+#### File Associations
+
+This is a feature backported from [nx-hbmenu](https://switchbrew.org/wiki/Homebrew_Menu#File_Associations). However, there is one notable difference: icons must be a 48x48 t3x-generated file with GPU_RGB565 as its color format.
+
 #### Contributing
 
 hbmenu is looking for contributors! We're making this repository public so that you, the community, can make hbmenu into the menu of your dreams. Or show you how to make your own, better menu! Of course we'd rather you improved hbmenu rather than went off and started fragmenting the userbase, but any contributions to the homebrew scene are welcome. Feel free to use code from hbmenu for your own projects, so long as you give credit to its original authors.
