@@ -184,7 +184,7 @@ void menuUpdate(void)
 		if (me->type == ENTRY_TYPE_FILE)
 			workerSchedule(netsenderTask, me);
 	}
-	else if (selectPress)
+	else if (selectPress && menu->nEntries > 0)
 	{
 		int i;
 		menuEntry_s* me;
