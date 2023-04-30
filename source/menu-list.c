@@ -138,7 +138,7 @@ int menuFileAssocScan(const char* target)
 			continue;
 
 		memset(temp, 0, sizeof(temp));
-		snprintf(temp, sizeof(temp) - 1, "%s%s", s_menuFileAssoc[!s_curMenuFileAssoc].dirname, dp->d_name);
+		snprintf(temp, sizeof(temp) - 1, "%s/%s", s_menuFileAssoc[!s_curMenuFileAssoc].dirname, dp->d_name);
 
 		const char* ext = getExtension(dp->d_name);
 		if (strcasecmp(ext, ".cfg") != 0)
@@ -188,7 +188,7 @@ int menuScan(const char* target)
 		if (!me)
 			continue;
 
-		snprintf(me->path, sizeof(me->path), "%s%s", s_menu[!s_curMenu].dirname, dp->d_name);
+		snprintf(me->path, sizeof(me->path), "%s/%s", s_menu[!s_curMenu].dirname, dp->d_name);
 		if (menuEntryLoad(me, dp->d_name, shortcut))
 			menuAddEntry(me);
 		else
