@@ -7,7 +7,11 @@ The Homebrew Launcher (hbmenu for short) is the main menu used to list and launc
 - [Luma3DS Rosalina](https://github.com/LumaTeam/Luma3DS) **(recommended)**: Works on all system versions from 4.0 onwards; it provides unrestricted access to 3DS system resources as well as nice extra features such as remote debugging (GDB). For more information read the [Rosalina documentation](https://github.com/LumaTeam/Luma3DS/wiki/Rosalina).
 - [Legacy \*hax 2.x](https://smealum.github.io/3ds/): This is a now-obsolete homebrew loading system that only provides limited access to 3DS system resources, as it only attacks a low privilege level. Support for this entrypoint is deprecated and may be removed in a future release.
 
-3DS homebrew is built and distributed as executables with the `.3dsx` extension. Note that you may encounter files with the `.cia` extension - these are **not** homebrew executables that can be loaded using hbmenu.
+> [!NOTE]
+> 3DS homebrew is built and distributed as executables with the `.3dsx` extension.
+
+> [!IMPORTANT]
+> Note that you may encounter files with the `.cia` extension - these are **not** homebrew executables that can be loaded using hbmenu.
 
 #### Usage
 
@@ -74,17 +78,56 @@ setting the current working directory if you already have data files in a partic
 
 3dslink is provided with devkitARM or you can download binaries from [WinterMute's website](http://davejmurphy.com/3dslink/).
 
-#### Building
-
-hbmenu uses zlib for compression and tinyxml2 for XML parsing. These libraries are provided by devkitPro through the portlibs mechanism. In order to install them, use the following command:
-
-```shell
-    pacman -S 3ds-zlib 3ds-tinyxml2 3ds-libconfig
-```
-
-(Note that `dkp-pacman` is used instead on systems that do not distribute pacman, such as macOS or Debian-based Linux distros)
+#### Usage
 
 Binaries of hbmenu can be downloaded from the [Releases](https://github.com/fincs/new-hbmenu/releases) page.
+
+#### Building from source
+
+##### Newcomers
+
+If this is your first time building a homebrew application for the Nintendo 3DS, please consult the following resources:
+- [devkitPro pacman (devkitpro.org)](https://devkitpro.org/wiki/devkitPro_pacman): Introduction to devkitPro's modified version of the [Arch Linux package manager](https://wiki.archlinux.org/index.php/pacman), which is used to simplify the distribution of homebrew toolchains and dependencies. You *must* use it to compile this project.
+- [Getting Started (devkitpro.org)](https://devkitpro.org/wiki/Getting_Started): Installation tutorial for devkitPro's toolchains.
+- [portlibs (devkitpro.org)](https://devkitpro.org/wiki/portlibs) (Advanced): *portlibs* is used to distribute useful libraries for software ports.
+
+You will also have to use the well-known [`make` utility](https://www.gnu.org/software/make/manual/make.html) in order to build this software. (We would like to encourage you to find out how to install it on your own.)
+
+##### Software Dependencies
+
+hbmenu uses *zlib* for compression and *tinyxml2* for XML parsing. To install them, please execute the following command:
+
+```shell
+dkp-pacman -S 3ds-zlib 3ds-tinyxml2 3ds-libconfig
+```
+
+If you are using *Arch Linux* with a [modified install of pacman](https://devkitpro.org/wiki/devkitPro_pacman#Customising_Existing_Pacman_Install), remember to run `pacman` instead of `dkp-pacman`.
+
+After installing those dependencies, you should be able to compile the launcher by running `make`.
+
+##### Environment Variables
+
+> [!NOTE]
+> Problems with environment variables are most likely to happen on Linux-based or Unix-like operating systems.
+
+> [!WARNING]
+> If you are experiencing issues with environment variables on **macOS** after using the [devkitPro installer](https://devkitpro.org/wiki/devkitPro_pacman#macOS), remember to reboot your system!
+
+You may get an error asking you to run either `export DEVKITPRO=<path to>devkitPro` or `export DEVKITARM=<path to>devkitARM`; this means that `make` does not know where to find the files it needs to compile `hbmenu`.
+
+> Environment variables are named strings available to all applications. Variables are used to adapt each application's behavior to the environment [...]. You might define paths for files, language options, and so on.
+> *- AnttiM and JeffRoush, [Debian Wiki](https://wiki.debian.org/EnvironmentVariables)*
+
+Assuming that devkitPro's toolchains are present in the directory `/opt/devkitpro`, you should set the following variables:
+- `DEVKITPRO=/opt/devkitpro`
+- `DEVKITARM=/opt/devkitpro/devkitARM`
+
+> [!NOTE]
+> On Linux, macOS and BSD-like systems, there are two ways to set a variable until you exit the command line:
+> - prepending the variables before running `make` (e.g. `DEVKITPRO=/opt/devkitpro DEVKITARM=/opt/devkitpro/devkitARM`)
+> - the `export` command before running `make` (e.g. `export DEVKITPRO=/opt/devkitpro`)
+>
+> On Windows, the equivalent of `export` is `set`. In order to set the environment variables permanently for your user account or your entire system, please consult your operating system's documentation.
 
 #### File Associations
 
