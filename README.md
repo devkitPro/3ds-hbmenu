@@ -91,7 +91,7 @@ If this is your first time building a homebrew application for the Nintendo 3DS,
 - [Getting Started (devkitpro.org)](https://devkitpro.org/wiki/Getting_Started): Installation tutorial for devkitPro's toolchains.
 - [portlibs (devkitpro.org)](https://devkitpro.org/wiki/portlibs) (Advanced): *portlibs* is used to distribute useful libraries for software ports.
 
-You will also have to use the well-known [`make` utility](https://www.gnu.org/software/make/manual/make.html) in order to build this software. (We would like to encourage you to find out how to install it on your own.)
+You will also have to use the well-known [`make` utility](https://www.gnu.org/software/make/manual/make.html) in order to build this software. (We would like to encourage you to find out how to install it on your own.
 
 ##### Software Dependencies
 
@@ -116,7 +116,8 @@ After installing those dependencies, you should be able to compile the launcher 
 You may get an error asking you to run either `export DEVKITPRO=<path to>devkitPro` or `export DEVKITARM=<path to>devkitARM`; this means that `make` does not know where to find the files it needs to compile `hbmenu`.
 
 > Environment variables are named strings available to all applications. Variables are used to adapt each application's behavior to the environment [...]. You might define paths for files, language options, and so on.
-> *- AnttiM and JeffRoush, [Debian Wiki](https://wiki.debian.org/EnvironmentVariables)*
+>
+> *— AnttiM and JeffRoush, [Debian Wiki](https://wiki.debian.org/EnvironmentVariables)*
 
 Assuming that devkitPro's toolchains are present in the directory `/opt/devkitpro`, you should set the following variables:
 - `DEVKITPRO=/opt/devkitpro`
@@ -124,10 +125,10 @@ Assuming that devkitPro's toolchains are present in the directory `/opt/devkitpr
 
 > [!NOTE]
 > On Linux, macOS and BSD-like systems, there are two ways to set a variable until you exit the command line:
-> - prepending the variables before running `make` (e.g. `DEVKITPRO=/opt/devkitpro DEVKITARM=/opt/devkitpro/devkitARM`)
+> - prepending the variables before running `make` (e.g. `DEVKITPRO=/opt/devkitpro DEVKITARM=/opt/devkitpro/devkitARM make`)
 > - the `export` command before running `make` (e.g. `export DEVKITPRO=/opt/devkitpro`)
 >
-> On Windows, the equivalent of `export` is `set`. In order to set the environment variables permanently for your user account or your entire system, please consult your operating system's documentation.
+> On Windows, the equivalent of `export` is `set`. In order to set the environment variables permanently for your user account, please consult your operating system's documentation.
 
 #### File Associations
 
