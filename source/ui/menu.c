@@ -37,7 +37,7 @@ char *menuGetRootBasePath(void) {
 }
 
 void menuStartupPath(void) {
-	char temp[PATH_MAX + 28];
+	char temp[PATH_MAX + 29];
 
 	#if defined(__3DS__)
 		strncpy(rootPathBase, "sdmc:", sizeof(rootPathBase) - 1);
@@ -57,22 +57,22 @@ void menuStartupPath(void) {
 	snprintf(temp, sizeof(temp) - 1, "%s/config", rootPathBase);
 	mkdir(temp, 0755);
 
-	/* create /config/hbmenu directory */
-	snprintf(temp, sizeof(temp) - 1, "%s/config/hbmenu", rootPathBase);
+	/* create /config/3ds-hbmenu directory */
+	snprintf(temp, sizeof(temp) - 1, "%s/config/3ds-hbmenu", rootPathBase);
 	mkdir(temp, 0755);
 
-	snprintf(temp, sizeof(temp) - 1, "%s/config/hbmenu/fileassoc", rootPathBase);
+	snprintf(temp, sizeof(temp) - 1, "%s/config/3ds-hbmenu/fileassoc", rootPathBase);
 
-	/* create /config/hbmenu/fileassoc */
+	/* create /config/3ds-hbmenu/fileassoc */
 	if (stat(temp, &fileStat) == -1)
 		mkdir(temp, 0755);
 }
 
 void menuLoadFileAssoc(void) {
-	char temp[PATH_MAX + 28];
+	char temp[PATH_MAX + 29];
 
 	memset(temp, 0, sizeof(temp) - 1);
-	snprintf(temp, sizeof(temp) - 1, "%s/config/hbmenu/fileassoc", rootPathBase);
+	snprintf(temp, sizeof(temp) - 1, "%s/config/3ds-hbmenu/fileassoc", rootPathBase);
 
 	menuFileAssocScan(temp);
 }
