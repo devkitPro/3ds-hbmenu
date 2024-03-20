@@ -17,7 +17,7 @@ export VER_PATCH	:= 2
 export VERSTRING	:=	v$(VER_MAJOR).$(VER_MINOR).$(VER_PATCH)
 
 ifeq ($(RELEASE),)
-	export VERSTRING	:=	$(VERSTRING)-$(shell git describe --dirty --always)
+	export VERSTRING	:=	$(VERSTRING)-$(shell git describe --tags --dirty --always)
 endif
 
 #---------------------------------------------------------------------------------
