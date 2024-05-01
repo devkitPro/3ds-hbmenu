@@ -9,16 +9,7 @@ endif
 TOPDIR ?= $(CURDIR)
 include $(DEVKITARM)/3ds_rules
 
-
-export VER_MAJOR	:= 2
-export VER_MINOR	:= 4
-export VER_PATCH	:= 2
-
-export VERSTRING	:=	v$(VER_MAJOR).$(VER_MINOR).$(VER_PATCH)
-
-ifeq ($(RELEASE),)
-	export VERSTRING	:=	$(VERSTRING)-$(shell git describe --dirty --always)
-endif
+export VERSTRING	:=	$(shell git describe --tags --match "v[0-9]*" --abbrev=7 | sed 's/-[0-9]*-g/-/')
 
 #---------------------------------------------------------------------------------
 # TARGET is the name of the output
