@@ -1,0 +1,32 @@
+name: Release CI
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    name: Build boot.3dsx
+    uses: ./.github/workflows/build.yaml
+  publish_release:
+    name: Publish release archive
+    needs: build
+    runs-on: ubuntu-latest
+    env:
+      VERSTRING: ${{ needs.build.outputs.VERSTRING }}
+    steps:
+    - name: Download cacert.pem
+      run: mkdir -p config/ssl && curl -sSfL "https://curl.se/ca/cacert.pem" -o config/ssl/cacert.pem
+    - name: Download build artifact from previous job
+      uses: actions/download-artifact@v4
+      with:
+        name: 3ds-hbmenu-${{ env.VERSTRING }}
+    - name: Bundle release archive
+      run: zip "3ds-hbmenu-$VERSTRING.zip" -r config boot.3dsx
+    - name: Publish release archive
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+        files: "./3ds-hbmenu-${{ env.VERSTRING }}.zip"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

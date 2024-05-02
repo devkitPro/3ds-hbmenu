@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push: # Note: will run on tags push too
+  pull_request:
+  workflow_dispatch: # manual run
+  workflow_call:
+    outputs:
+      VERSTRING:
+        description: Version string
+        value: ${{ jobs.build.outputs.VERSTRING }}
+
+jobs:
+  build:
+    name: Build boot.3dsx
+    runs-on: ubuntu-latest
+    outputs:
+      VERSTRING: ${{ steps.verstring.outputs.VERSTRING }}
+    container:
+      image: devkitpro/devkitarm
+      options: --user 1001 # runner user, for git safedir
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive # we currently don't use submodules, but just in case...
+        fetch-depth: 0 # deep clone (for git describe)
+        fetch-tags: true
+    - name: Set version string
+      id: verstring
+      run: |
+        VERSTRING=$(git describe --tags --match "v[0-9]*" --abbrev=7 | sed 's/-[0-9]*-g/-/')
+        echo "VERSTRING=$VERSTRING" | tee -a $GITHUB_OUTPUT
+    - name: Build
+      run: make -j$(nproc --all)
+    - name: Publish boot.3dsx (only on manual run or release)
+      if: github.event_name == 'workflow_dispatch' || github.event_name == 'release'
+      uses: actions/upload-artifact@v4
+      with:
+        # This produces a zip with boot.3dsx inside for security reasons
+        # For publish_release this is presented as boot.3dsx however
+        name: 3ds-hbmenu-${{ steps.verstring.outputs.VERSTRING }}
+        path: boot.3dsx

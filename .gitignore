@@ -1,4 +1,5 @@
 .*/
+!.github/
 build/
 *.t3x
 *.3dsx
