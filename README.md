@@ -72,7 +72,7 @@ If 3dslink says 3DS not found then you can use `-a <ip address>` to tell it wher
 All the other arguments you give 3dslink will be passed as arguments to the launched 3dsx file. You can also specify argv[0] with `-0 <argument>` which is useful for
 setting the current working directory if you already have data files in a particular place, i.e. `3dslink myfile.3dsx -0 sdmc:/3ds/mydata/`
 
-3dslink is provided with devkitARM or you can download binaries from [WinterMute's website](http://davejmurphy.com/3dslink/).
+3dslink is provided as a package via [devkitPro pacman](https://devkitpro.org/wiki/devkitPro_pacman) as 3dslink and as part of the 3ds-dev package group.
 
 #### Building
 
