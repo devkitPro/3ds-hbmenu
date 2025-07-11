@@ -176,7 +176,7 @@ void menuUpdate(void)
 	{
 		workerSchedule(netloaderTask, NULL);
 	}
-	else if (down & KEY_X)
+	else if ((down & KEY_X) && menu->nEntries > 0)
 	{
 		int i;
 		menuEntry_s* me;
