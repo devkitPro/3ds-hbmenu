@@ -1,36 +1,84 @@
 #include "text.h"
 
 #define NUM_ASCII_CHARS 128
+#define SHEETS_PER_BIG_SHEET 32
 
 static C3D_Tex* s_glyphSheets;
 static float s_textScale;
 static int s_textLang = CFG_LANGUAGE_EN;
+static uint32_t s_numSheetsThatWereCombined;
 static charWidthInfo_s* s_asciiCacheCharWidth[NUM_ASCII_CHARS];
 // @Note: Could use s_asciiCacheCharWidth to reimplement fontCalcGlyphPos, but it would cache slightly less computations.
 static fontGlyphPos_s s_asciiCacheGlyphPos[NUM_ASCII_CHARS];
+
+static fontGlyphPos_s _textGetGlyphPosFromCodePoint(uint32_t code, uint32_t flags, float scaleX, float scaleY)
+{
+	fontGlyphPos_s result;
+	int glyphIdx = fontGlyphIndexFromCodePoint(NULL, code);
+	fontCalcGlyphPos(&result, NULL, glyphIdx, flags, scaleX, scaleY);
+
+	if (result.sheetIndex < s_numSheetsThatWereCombined)
+	{
+		uint32_t indexWithinBigSheet = result.sheetIndex % SHEETS_PER_BIG_SHEET;
+		result.sheetIndex /= SHEETS_PER_BIG_SHEET;
+
+		// Readjust glyph UVs to account for being a part of the combined texture.
+		result.texcoord.top    = (result.texcoord.top    + (SHEETS_PER_BIG_SHEET - indexWithinBigSheet - 1)) / (float) SHEETS_PER_BIG_SHEET;
+		result.texcoord.bottom = (result.texcoord.bottom + (SHEETS_PER_BIG_SHEET - indexWithinBigSheet - 1)) / (float) SHEETS_PER_BIG_SHEET;
+	}
+	else
+	{
+		result.sheetIndex -= s_numSheetsThatWereCombined * SHEETS_PER_BIG_SHEET;
+	}
+
+	return result;
+}
+
+static void fillSheet(C3D_Tex *tex, void *data, TGLP_s *glyphInfo)
+{
+	tex->data     = data;
+	tex->fmt      = glyphInfo->sheetFmt;
+	tex->size     = glyphInfo->sheetSize;
+	tex->width    = glyphInfo->sheetWidth;
+	tex->height   = glyphInfo->sheetHeight;
+	tex->param    = GPU_TEXTURE_MAG_FILTER(GPU_LINEAR) | GPU_TEXTURE_MIN_FILTER(GPU_LINEAR)
+		| GPU_TEXTURE_WRAP_S(GPU_CLAMP_TO_EDGE) | GPU_TEXTURE_WRAP_T(GPU_CLAMP_TO_EDGE);
+	tex->border   = 0;
+	tex->lodParam = 0;
+}
 
 void textInit(void)
 {
 	// Ensure the shared system font is mapped
 	fontEnsureMapped();
 
+	CFNT_s* font = fontGetSystemFont();
 	// Load the glyph texture sheets
-	int i;
 	TGLP_s* glyphInfo = fontGetGlyphInfo(NULL);
-	s_glyphSheets = malloc(sizeof(C3D_Tex)*glyphInfo->nSheets);
+
+	// As it turns out, the sytem font texture sheets are all 128x32 pixels and adjacent in memory! We can reinterpet
+	// the memory starting at sheet 0 and describe a much bigger texture that encompasses all of the ASCII glyphs and
+	// make our cache use that instead of the individual sheets. This will massively improve performance by reducing
+	// texture swaps within a piece of text, down to 0 if it's all English. We don't need any extra linear allocating to
+	// do this!
+	uint32_t numSheetsBig   = glyphInfo->nSheets / SHEETS_PER_BIG_SHEET;
+	uint32_t numSheetsSmall = glyphInfo->nSheets % SHEETS_PER_BIG_SHEET;
+	uint32_t numSheetsTotal = numSheetsBig + numSheetsSmall;
+	s_numSheetsThatWereCombined = glyphInfo->nSheets - numSheetsSmall;
+
+	s_glyphSheets = malloc(sizeof(C3D_Tex)*numSheetsTotal);
 	s_textScale = 30.0f / glyphInfo->cellHeight;
-	for (i = 0; i < glyphInfo->nSheets; i ++)
+	for (uint32_t i = 0; i < numSheetsBig; i++)
 	{
 		C3D_Tex* tex = &s_glyphSheets[i];
-		tex->data = fontGetGlyphSheetTex(NULL, i);
-		tex->fmt = glyphInfo->sheetFmt;
-		tex->size = glyphInfo->sheetSize;
-		tex->width = glyphInfo->sheetWidth;
-		tex->height = glyphInfo->sheetHeight;
-		tex->param = GPU_TEXTURE_MAG_FILTER(GPU_LINEAR) | GPU_TEXTURE_MIN_FILTER(GPU_LINEAR)
-			| GPU_TEXTURE_WRAP_S(GPU_CLAMP_TO_EDGE) | GPU_TEXTURE_WRAP_T(GPU_CLAMP_TO_EDGE);
-		tex->border = 0;
-		tex->lodParam = 0;
+		fillSheet(tex, fontGetGlyphSheetTex(font, i * SHEETS_PER_BIG_SHEET), glyphInfo);
+		tex->height = (uint16_t) (tex->height * SHEETS_PER_BIG_SHEET);
+		tex->size   = tex->size * SHEETS_PER_BIG_SHEET;
+	}
+
+	for (uint32_t i = 0; i < numSheetsSmall; i++)
+	{
+		fillSheet(&s_glyphSheets[numSheetsBig + i], fontGetGlyphSheetTex(font, numSheetsBig * SHEETS_PER_BIG_SHEET + i), glyphInfo);
 	}
 
 	// Cache up front the results of fontGetCharWidthInfo and fontCalcGlyphPos for ASCII characters, since these functions
@@ -39,7 +87,7 @@ void textInit(void)
 	{
 		int glyphIdx = fontGlyphIndexFromCodePoint(NULL, i);
 		s_asciiCacheCharWidth[i] = fontGetCharWidthInfo(NULL, glyphIdx);
-		fontCalcGlyphPos(&s_asciiCacheGlyphPos[i], NULL, glyphIdx, GLYPH_POS_CALC_VTXCOORD, 1, 1);
+		s_asciiCacheGlyphPos[i]  = _textGetGlyphPosFromCodePoint(i, GLYPH_POS_CALC_VTXCOORD, 1, 1);
 	}
 
 	Result res = cfguInit();
@@ -104,11 +152,9 @@ charWidthInfo_s *textGetCharWidthFromCodePoint(uint32_t code)
 
 fontGlyphPos_s textGetGlyphPosFromCodePoint(uint32_t code, uint32_t flags, float scaleX, float scaleY)
 {
-	fontGlyphPos_s result;
-
 	if (code < NUM_ASCII_CHARS)
 	{
-		result = s_asciiCacheGlyphPos[code];
+		fontGlyphPos_s result = s_asciiCacheGlyphPos[code];
 
 		if ((flags & GLYPH_POS_AT_BASELINE))
 		{
@@ -124,14 +170,12 @@ fontGlyphPos_s textGetGlyphPosFromCodePoint(uint32_t code, uint32_t flags, float
 		result.vtxcoord.right  *= scaleX;
 		result.vtxcoord.top    *= scaleY;
 		result.vtxcoord.bottom *= scaleY;
+		return result;
 	}
 	else
 	{
-		int glyphIdx = fontGlyphIndexFromCodePoint(NULL, code);
-		fontCalcGlyphPos(&result, NULL, glyphIdx, flags, scaleX, scaleY);
+		return _textGetGlyphPosFromCodePoint(code, flags, scaleX, scaleY);
 	}
-
-	return result;
 }
 
 float textCalcWidth(const char* text)
