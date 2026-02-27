@@ -31,7 +31,7 @@ void rebootUpdate(void)
 				// Reboot the console.
 				rebooting = true;
 				drawingSetFade(-1.0/60);
-				NS_RebootToTitle(2, 0);
+				NS_RebootToTitle(2, 0, 0);
 				nsExit();
 				return;
 			}
