@@ -1,12 +1,11 @@
 #include "text.h"
 
 #define NUM_ASCII_CHARS 128
-#define SHEETS_PER_BIG_SHEET 32
-
 static C3D_Tex* s_glyphSheets;
 static float s_textScale;
 static int s_textLang = CFG_LANGUAGE_EN;
 static uint32_t s_numFontSheetsCombined;
+static uint32_t s_sheetsPerBigSheet;
 static charWidthInfo_s* s_asciiCacheCharWidth[NUM_ASCII_CHARS];
 // @Note: Could use s_asciiCacheCharWidth to reimplement fontCalcGlyphPos, but it would cache slightly less computations.
 static fontGlyphPos_s s_asciiCacheGlyphPos[NUM_ASCII_CHARS];
@@ -19,16 +18,16 @@ static fontGlyphPos_s _textGetGlyphPosFromCodePoint(uint32_t code, uint32_t flag
 
 	if (result.sheetIndex < s_numFontSheetsCombined)
 	{
-		uint32_t indexWithinBigSheet = result.sheetIndex % SHEETS_PER_BIG_SHEET;
-		result.sheetIndex /= SHEETS_PER_BIG_SHEET;
+		uint32_t indexWithinBigSheet = result.sheetIndex % s_sheetsPerBigSheet;
+		result.sheetIndex /= s_sheetsPerBigSheet;
 
 		// Readjust glyph UVs to account for being a part of the combined texture.
-		result.texcoord.top    = (result.texcoord.top    + (SHEETS_PER_BIG_SHEET - indexWithinBigSheet - 1)) / (float) SHEETS_PER_BIG_SHEET;
-		result.texcoord.bottom = (result.texcoord.bottom + (SHEETS_PER_BIG_SHEET - indexWithinBigSheet - 1)) / (float) SHEETS_PER_BIG_SHEET;
+		result.texcoord.top    = (result.texcoord.top    + (s_sheetsPerBigSheet - indexWithinBigSheet - 1)) / (float) s_sheetsPerBigSheet;
+		result.texcoord.bottom = (result.texcoord.bottom + (s_sheetsPerBigSheet - indexWithinBigSheet - 1)) / (float) s_sheetsPerBigSheet;
 	}
 	else
 	{
-		result.sheetIndex = result.sheetIndex - s_numFontSheetsCombined + s_numFontSheetsCombined / SHEETS_PER_BIG_SHEET;
+		result.sheetIndex = result.sheetIndex - s_numFontSheetsCombined + s_numFontSheetsCombined / s_sheetsPerBigSheet;
 	}
 
 	return result;
@@ -60,8 +59,11 @@ void textInit(void)
 	// reinterpet the memory to describe a smaller set of much taller textures if we'd like. If we choose the right size,
 	// we can get all of the ASCII glyphs under a single texture, which will massively improve performance by reducing
 	// texture swaps within a piece of all-English text down to 0! We don't need any extra linear allocating to do this!
-	uint32_t numSheetsBig   = glyphInfo->nSheets / SHEETS_PER_BIG_SHEET;
-	uint32_t numSheetsSmall = glyphInfo->nSheets % SHEETS_PER_BIG_SHEET;
+	// Let's combine as many sheets as it takes to get to a big sheet height of 1024, which is the maximum height a
+	// texture can have.
+	s_sheetsPerBigSheet     = 1024U / glyphInfo->sheetHeight;
+	uint32_t numSheetsBig   = glyphInfo->nSheets / s_sheetsPerBigSheet;
+	uint32_t numSheetsSmall = glyphInfo->nSheets % s_sheetsPerBigSheet;
 	uint32_t numSheetsTotal = numSheetsBig + numSheetsSmall;
 	s_numFontSheetsCombined = glyphInfo->nSheets - numSheetsSmall;
 
@@ -70,14 +72,14 @@ void textInit(void)
 	for (uint32_t i = 0; i < numSheetsBig; i++)
 	{
 		C3D_Tex* tex = &s_glyphSheets[i];
-		fillSheet(tex, fontGetGlyphSheetTex(font, i * SHEETS_PER_BIG_SHEET), glyphInfo);
-		tex->height = (uint16_t) (tex->height * SHEETS_PER_BIG_SHEET);
-		tex->size   = tex->size * SHEETS_PER_BIG_SHEET;
+		fillSheet(tex, fontGetGlyphSheetTex(font, i * s_sheetsPerBigSheet), glyphInfo);
+		tex->height = (uint16_t) (tex->height * s_sheetsPerBigSheet);
+		tex->size   = tex->size * s_sheetsPerBigSheet;
 	}
 
 	for (uint32_t i = 0; i < numSheetsSmall; i++)
 	{
-		fillSheet(&s_glyphSheets[numSheetsBig + i], fontGetGlyphSheetTex(font, numSheetsBig * SHEETS_PER_BIG_SHEET + i), glyphInfo);
+		fillSheet(&s_glyphSheets[numSheetsBig + i], fontGetGlyphSheetTex(font, numSheetsBig * s_sheetsPerBigSheet + i), glyphInfo);
 	}
 
 	// Cache up front the results of fontGetCharWidthInfo and fontCalcGlyphPos for ASCII characters, since these functions
